@@ -8,15 +8,15 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-type ExampleV1Interface interface {
+type SopsV1Interface interface {
 	SopsSecrets(namespace string) SopsSecretInterface
 }
 
-type ExampleV1Client struct {
+type SopsV1Client struct {
 	restClient rest.Interface
 }
 
-func NewForConfig(c *rest.Config) (*ExampleV1Client, error) {
+func NewForConfig(c *rest.Config) (*SopsV1Client, error) {
 	config := *c
 	config.ContentConfig.GroupVersion = &schema.GroupVersion{Group: v1.GroupName, Version: v1.GroupVersion}
 	config.APIPath = "/apis"
@@ -28,10 +28,10 @@ func NewForConfig(c *rest.Config) (*ExampleV1Client, error) {
 		return nil, err
 	}
 
-	return &ExampleV1Client{restClient: client}, nil
+	return &SopsV1Client{restClient: client}, nil
 }
 
-func (c *ExampleV1Client) SopsSecrets(namespace string) SopsSecretInterface {
+func (c *SopsV1Client) SopsSecrets(namespace string) SopsSecretInterface {
 	return &sopsSecretClient{
 		restClient: c.restClient,
 		ns:         namespace,

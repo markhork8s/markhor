@@ -66,3 +66,6 @@ https://github.com/dishavirk/first-custom-k8s-controller
 https://github.com/kubernetes/apiextensions-apiserver/tree/master/examples/client-go
 https://github.com/kubernetes/client-go/tree/v0.29.3/examples/fake-client
 https://github.com/dishavirk/canary-k8s-operator/tree/master
+
+## TODOs:
+- customordering CRD cant be recursive, it seems

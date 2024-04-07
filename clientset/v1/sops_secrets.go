@@ -12,8 +12,8 @@ import (
 
 type SopsSecretInterface interface {
 	List(opts metav1.ListOptions) (*v1.SopsSecretList, error)
-	Get(name string, options metav1.GetOptions) (*v1.SopsSecret, error)
-	Create(*v1.SopsSecret) (*v1.SopsSecret, error)
+	// Get(name string, options metav1.GetOptions) (*v1.SopsSecret, error)
+	// Create(*v1.SopsSecret) (*v1.SopsSecret, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	// ...
 }
@@ -27,8 +27,8 @@ func (c *sopsSecretClient) List(opts metav1.ListOptions) (*v1.SopsSecretList, er
 	result := v1.SopsSecretList{}
 	err := c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("sopsSecrets").
+		// Namespace(c.ns).
+		Resource("sopssecrets").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
 		Into(&result)
@@ -40,8 +40,8 @@ func (c *sopsSecretClient) Get(name string, opts metav1.GetOptions) (*v1.SopsSec
 	result := v1.SopsSecret{}
 	err := c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("sopsSecrets").
+		//Namespace(c.ns).
+		Resource("sopssecrets").
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
@@ -54,8 +54,8 @@ func (c *sopsSecretClient) Create(sopsSecret *v1.SopsSecret) (*v1.SopsSecret, er
 	result := v1.SopsSecret{}
 	err := c.restClient.
 		Post().
-		Namespace(c.ns).
-		Resource("sopsSecrets").
+		//Namespace(c.ns).
+		Resource("sopssecrets").
 		Body(sopsSecret).
 		Do(context.TODO()).
 		Into(&result)
@@ -67,8 +67,8 @@ func (c *sopsSecretClient) Watch(opts metav1.ListOptions) (watch.Interface, erro
 	opts.Watch = true
 	return c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("sopsSecrets").
+		//Namespace(c.ns).
+		Resource("sopssecrets").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(context.TODO())
 }

@@ -13,14 +13,14 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-func WatchResources(clientSet client_v1.ExampleV1Interface) cache.Store {
+func WatchResources(client client_v1.SopsV1Interface) cache.Store {
 	sopsSecretStore, sopsSecretController := cache.NewInformer(
 		&cache.ListWatch{
 			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-				return clientSet.SopsSecrets("some-namespace").List(lo)
+				return client.SopsSecrets("irrelevant").List(lo)
 			},
 			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-				return clientSet.SopsSecrets("some-namespace").Watch(lo)
+				return client.SopsSecrets("irrelevant").Watch(lo)
 			},
 		},
 		&v1.SopsSecret{},
