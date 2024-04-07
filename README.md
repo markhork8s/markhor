@@ -38,11 +38,9 @@ However, since the 'Secret' resource is defined by kubernetes, it is not possibl
 Should not be possible since, thanks to the MAC (Message Authentication Code) that SOPS includes in its files, it is not possible to alter their content -even the parts which are unencrypted-. Also, the program creates the Seccret only in the same namespace where the SopsSecret was created.
 
 # Limitations:
-K8s sorts the fields alphabetically recursively and removes the comments when doing a kubectl apply.
+Due to how k8s marshals the applied configurations, comments will not persist in the final output.
 
-For the decryption to work, all the fields and comments must be in the same order as the original file -otherwise, the MAC check fails-.
-
-This means that the developers must write the yaml with the keys -and subkeys- sorted and without comments.
+Also, for the decryption to work, all the fields must be in the same order as the original file -otherwise, the MAC check fails-.
 
 Also, no empty lines -except for the last one-
 
@@ -69,3 +67,9 @@ https://github.com/dishavirk/canary-k8s-operator/tree/master
 
 ## TODOs:
 - customordering CRD cant be recursive, it seems
+
+- indentation does not count!
+- comments do not count!
+- it seems that all that is needed is for all the fields to be in the same order
+- the order inside the 'sops' field does not matter
+- it is 
