@@ -1,0 +1,13 @@
+keys:
+  - &mykey age1apq7ck5adq6dkd0c242phl42fsurvpxvt9pwk0qg7ahdex7fqppqj8pe8y
+# These rules are evaluated sqeuentially. The first one that matches is the one applied
+creation_rules:
+  - path_regex: '.*_secret.ya?ml'
+    key_groups:
+      - age:
+          - *mykey
+    # For k8s secrets
+    encrypted_regex: ^(data|stringData)$
+stores:
+  yaml:
+    indent: 2 #This is the default value in k8s

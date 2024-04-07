@@ -22,6 +22,18 @@
           buildInputs = [
             go
             gopls
+            gcc
+            glibc
+            #Go specific
+            gopkgs
+            go-outline
+            gotest
+            gomodifytags
+            impl
+            delve
+            go-tools # includes `staticcheck`
+            govulncheck
+            kubernetes-controller-tools
             (vscode-with-extensions.override {
               vscode = vscodium;
               vscodeExtensions = with vscode-extensions; [

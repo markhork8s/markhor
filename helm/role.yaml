@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: sops-k8s
+  name: sops-k8s-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "create", "update", "delete"]
+- apiGroups: ["sops-k8s.example.com"]
+  resources: ["sopssecrets", "customorderings"]
+  verbs: ["list", "watch"]

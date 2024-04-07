@@ -1,0 +1,39 @@
+apiVersion: sops-k8s.example.com/v1
+kind: CustomOrdering
+metadata:
+  name: sops-custom-ordering
+  namespace: default
+items:
+  - apiVersion
+  - kind
+  - name: metadata
+    items:
+      - name
+      - namespace
+  - type
+  - data
+  - stringData
+  - name: sops
+    items:
+      - name: kms
+        items:
+          - created_at
+          - enc
+          - arn
+      - name: pgp
+        items:
+          - fp
+          - created_at
+          - enc
+      - gcp_kms
+      - azure_kv
+      - hc_vault
+      - name: age
+        items:
+          - recipient
+          - enc
+      - lastmodified
+      - mac
+      - pgp
+      - encrypted_regex
+      - version

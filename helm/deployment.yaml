@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sops-k8s
+  namespace: sops-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sops-k8s
+  template:
+    metadata:
+      labels:
+        app: sops-k8s
+    spec:
+      serviceAccountName: sopsk8s-service-account
+      containers:
+      - name: sops-k8s
+        image: sopsk8s/sopsk8s:latest
+        imagePullPolicy: Never
