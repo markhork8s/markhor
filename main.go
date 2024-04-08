@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -8,7 +9,6 @@ import (
 	v1 "sops_k8s/api/types/v1"
 	clientV1 "sops_k8s/clientset/v1"
 
-	"gopkg.in/yaml.v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -42,15 +42,19 @@ func main() {
 		}
 		switch event.Type {
 		case watch.Added:
-			jsonConfig := sopsSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
-			fmt.Println("A sopsSecret was added with this config", jsonConfig)
-			yamlBytes, err := yaml.Marshal(event.Object)
+			jsonConfigStr := sopsSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
+			fmt.Println("A sopsSecret was added ", sopsSecret.ObjectMeta.Namespace, "/", sopsSecret.ObjectMeta.Name)
+
+			var jsonObj map[string]interface{}
+			err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
 			if err != nil {
-				fmt.Println("Error marshaling object to YAML:", err)
+				fmt.Println("Error unmarshalling JSON:", err)
 				return
 			}
-			yamlString := string(yamlBytes)
-			fmt.Println(yamlString)
+
+			sortedJson := sortJson(jsonObj)
+			fmt.Println(sortedJson)
+
 		case watch.Modified:
 			fmt.Println("A sopsSecret was updated")
 		case watch.Deleted:

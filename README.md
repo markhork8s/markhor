@@ -72,4 +72,4 @@ https://github.com/dishavirk/canary-k8s-operator/tree/master
 - comments do not count!
 - it seems that all that is needed is for all the fields to be in the same order
 - the order inside the 'sops' field does not matter
-- it is 
+- it does not even need to be in the same format. You can encrypt as YAML, convert to JSON and decrypt! Provided the order rules are respected

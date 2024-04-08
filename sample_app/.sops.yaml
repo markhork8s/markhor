@@ -8,6 +8,6 @@ creation_rules:
           - *mykey
     # For k8s secrets
     encrypted_regex: ^(data|stringData)$
-stores:
-  yaml:
-    indent: 2 #This is the default value in k8s
+# stores: #Indentation is irrelevant for the decryption
+#   yaml:
+#     indent: 2
