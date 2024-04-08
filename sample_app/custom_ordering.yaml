@@ -1,7 +1,7 @@
-apiVersion: sops-k8s.example.com/v1
+apiVersion: markhor.example.com/v1
 kind: CustomOrdering
 metadata:
-  name: sops-custom-ordering
+  name: markhor-custom-ordering
   namespace: default
 items:
   - apiVersion
@@ -13,7 +13,7 @@ items:
   - type
   - data
   - stringData
-  - name: sops
+  - name: markhor
     items:
       - name: kms
         items:

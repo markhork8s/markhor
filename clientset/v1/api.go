@@ -1,22 +1,22 @@
 package v1
 
 import (
-	v1 "sops_k8s/api/types/v1"
+	v1 "markhor/api/types/v1"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 )
 
-type SopsV1Interface interface {
-	SopsSecrets(namespace string) SopsSecretInterface
+type MarkhorV1Interface interface {
+	MarkhorSecrets(namespace string) MarkhorSecretInterface
 }
 
-type SopsV1Client struct {
+type MarkhorV1Client struct {
 	restClient rest.Interface
 }
 
-func NewForConfig(c *rest.Config) (*SopsV1Client, error) {
+func NewForConfig(c *rest.Config) (*MarkhorV1Client, error) {
 	config := *c
 	config.ContentConfig.GroupVersion = &schema.GroupVersion{Group: v1.GroupName, Version: v1.GroupVersion}
 	config.APIPath = "/apis"
@@ -28,11 +28,11 @@ func NewForConfig(c *rest.Config) (*SopsV1Client, error) {
 		return nil, err
 	}
 
-	return &SopsV1Client{restClient: client}, nil
+	return &MarkhorV1Client{restClient: client}, nil
 }
 
-func (c *SopsV1Client) SopsSecrets(namespace string) SopsSecretInterface {
-	return &sopsSecretClient{
+func (c *MarkhorV1Client) MarkhorSecrets(namespace string) MarkhorSecretInterface {
+	return &markhorSecretClient{
 		restClient: c.restClient,
 		ns:         namespace,
 	}

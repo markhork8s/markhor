@@ -2,7 +2,7 @@ package v1
 
 import (
 	"context"
-	v1 "sops_k8s/api/types/v1"
+	v1 "markhor/api/types/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -10,25 +10,25 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-type SopsSecretInterface interface {
-	List(opts metav1.ListOptions) (*v1.SopsSecretList, error)
-	// Get(name string, options metav1.GetOptions) (*v1.SopsSecret, error)
-	// Create(*v1.SopsSecret) (*v1.SopsSecret, error)
+type MarkhorSecretInterface interface {
+	List(opts metav1.ListOptions) (*v1.MarkhorSecretList, error)
+	// Get(name string, options metav1.GetOptions) (*v1.MarkhorSecret, error)
+	// Create(*v1.MarkhorSecret) (*v1.MarkhorSecret, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
 	// ...
 }
 
-type sopsSecretClient struct {
+type markhorSecretClient struct {
 	restClient rest.Interface
 	ns         string
 }
 
-func (c *sopsSecretClient) List(opts metav1.ListOptions) (*v1.SopsSecretList, error) {
-	result := v1.SopsSecretList{}
+func (c *markhorSecretClient) List(opts metav1.ListOptions) (*v1.MarkhorSecretList, error) {
+	result := v1.MarkhorSecretList{}
 	err := c.restClient.
 		Get().
 		// Namespace(c.ns).
-		Resource("sopssecrets").
+		Resource("markhorsecrets").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
 		Into(&result)
@@ -36,12 +36,12 @@ func (c *sopsSecretClient) List(opts metav1.ListOptions) (*v1.SopsSecretList, er
 	return &result, err
 }
 
-func (c *sopsSecretClient) Get(name string, opts metav1.GetOptions) (*v1.SopsSecret, error) {
-	result := v1.SopsSecret{}
+func (c *markhorSecretClient) Get(name string, opts metav1.GetOptions) (*v1.MarkhorSecret, error) {
+	result := v1.MarkhorSecret{}
 	err := c.restClient.
 		Get().
 		//Namespace(c.ns).
-		Resource("sopssecrets").
+		Resource("markhorsecrets").
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
@@ -50,25 +50,25 @@ func (c *sopsSecretClient) Get(name string, opts metav1.GetOptions) (*v1.SopsSec
 	return &result, err
 }
 
-func (c *sopsSecretClient) Create(sopsSecret *v1.SopsSecret) (*v1.SopsSecret, error) {
-	result := v1.SopsSecret{}
+func (c *markhorSecretClient) Create(markhorSecret *v1.MarkhorSecret) (*v1.MarkhorSecret, error) {
+	result := v1.MarkhorSecret{}
 	err := c.restClient.
 		Post().
 		//Namespace(c.ns).
-		Resource("sopssecrets").
-		Body(sopsSecret).
+		Resource("markhorsecrets").
+		Body(markhorSecret).
 		Do(context.TODO()).
 		Into(&result)
 
 	return &result, err
 }
 
-func (c *sopsSecretClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
+func (c *markhorSecretClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	opts.Watch = true
 	return c.restClient.
 		Get().
 		//Namespace(c.ns).
-		Resource("sopssecrets").
+		Resource("markhorsecrets").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(context.TODO())
 }

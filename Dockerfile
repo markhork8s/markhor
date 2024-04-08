@@ -1,7 +1,7 @@
 FROM golang:1.22 as builder
 COPY . .
-RUN go build -ldflags "-linkmode external -extldflags -static" -o sops_k8s
+RUN go build -ldflags "-linkmode external -extldflags -static" -o markhor
 
 FROM scratch
-COPY --from=builder /go/sops_k8s .
-CMD ["./sops_k8s"]
+COPY --from=builder /go/markhor .
+CMD ["./markhor"]

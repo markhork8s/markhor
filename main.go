@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 
-	v1 "sops_k8s/api/types/v1"
-	clientV1 "sops_k8s/clientset/v1"
+	v1 "markhor/api/types/v1"
+	clientV1 "markhor/clientset/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
@@ -28,22 +28,22 @@ func main() {
 
 	k8sclient := getK8sClient()
 
-	sopsSecrets, err := k8sclient.SopsSecrets("irrelevant").Watch(metav1.ListOptions{})
+	markhorSecrets, err := k8sclient.MarkhorSecrets("irrelevant").Watch(metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Starting to watch the events in the cluster to see when sopsSecrets are created")
-	for event := range sopsSecrets.ResultChan() {
-		sopsSecret, ok := event.Object.(*v1.SopsSecret)
+	fmt.Println("Starting to watch the events in the cluster to see when markhorSecrets are created")
+	for event := range markhorSecrets.ResultChan() {
+		markhorSecret, ok := event.Object.(*v1.MarkhorSecret)
 		if !ok {
-			fmt.Println("Failed to cast the object to type SopsSecret")
+			fmt.Println("Failed to cast the object to type MarkhorSecret")
 			continue
 		}
 		switch event.Type {
 		case watch.Added:
-			jsonConfigStr := sopsSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
-			fmt.Println("A sopsSecret was added ", sopsSecret.ObjectMeta.Namespace, "/", sopsSecret.ObjectMeta.Name)
+			jsonConfigStr := markhorSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
+			fmt.Println("A markhorSecret was added ", markhorSecret.ObjectMeta.Namespace, "/", markhorSecret.ObjectMeta.Name)
 
 			var jsonObj map[string]interface{}
 			err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
@@ -56,15 +56,15 @@ func main() {
 			fmt.Println(sortedJson)
 
 		case watch.Modified:
-			fmt.Println("A sopsSecret was updated")
+			fmt.Println("A markhorSecret was updated")
 		case watch.Deleted:
-			fmt.Println("A sopsSecret was deleted")
+			fmt.Println("A markhorSecret was deleted")
 		}
 	}
 	fmt.Println("Finished watching the events in the cluster. Most probably, the channel was closed")
 }
 
-func getK8sClient() *clientV1.SopsV1Client {
+func getK8sClient() *clientV1.MarkhorV1Client {
 	config := getK8sConfig()
 
 	clientSet, err := clientV1.NewForConfig(config)

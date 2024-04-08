@@ -1,4 +1,4 @@
-module sops_k8s
+module markhor
 
 go 1.22.1
 

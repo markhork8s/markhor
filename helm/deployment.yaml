@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sops-k8s
-  namespace: sops-k8s
+  name: markhor
+  namespace: markhor
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sops-k8s
+      app: markhor
   template:
     metadata:
       labels:
-        app: sops-k8s
+        app: markhor
     spec:
-      serviceAccountName: sopsk8s-service-account
+      serviceAccountName: markhor-service-account
       containers:
-      - name: sops-k8s
-        image: sopsk8s/sopsk8s:latest
+      - name: markhor
+        image: markhor/markhor:latest
         imagePullPolicy: Never

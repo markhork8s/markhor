@@ -6,7 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-const GroupName = "sops-k8s.example.com"
+const GroupName = "markhor.example.com"
 const GroupVersion = "v1"
 
 var SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: GroupVersion}
@@ -18,8 +18,8 @@ var (
 
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&SopsSecret{},
-		&SopsSecretList{},
+		&MarkhorSecret{},
+		&MarkhorSecretList{},
 	)
 
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)

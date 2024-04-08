@@ -1,13 +1,13 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: sopsk8s-role-binding
-  namespace: sops-k8s
+  name: markhor-role-binding
+  namespace: markhor
 subjects:
 - kind: ServiceAccount
-  name: sopsk8s-service-account
-  namespace: sops-k8s
+  name: markhor-service-account
+  namespace: markhor
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: sops-k8s-role
+  name: markhor-role

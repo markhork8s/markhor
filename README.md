@@ -1,8 +1,8 @@
-# SOPS_K8S
+# Markhor 🐐🔒
 
 -In its current state, this is a 100% experimental project. I do not know if this will ever work. DO NOT USE THIS CODE-
 
-This is a program meant to run as a pod in your k8s cluster. Once installed -with the sops private key mounted in `/root/.config/sops/age/keys.txt`-, it watches for SopsSecret resources. When one is created, the pod will decrypt its content and create corresponding secret. If you update/delete the SopsSecret, the generated secret will reflect the changes as well.
+This is a program meant to run as a pod in your k8s cluster. Once installed -with the sops private key mounted in `/root/.config/sops/age/keys.txt`-, it watches for MarkhorSecret resources. When one is created, the pod will decrypt its content and create corresponding Kubernetes Secret. If you update/delete the MarkhorSecret, the generated secret will reflect the changes as well.
 
 Check the Example usage section to see how to define the secrets.
 
@@ -10,8 +10,8 @@ This project is in no way affiliated or endorsed by SOPS nor Kubernetes.
 
 # Example usage
 ## Setup on the cluster
-1. Install sops_k8s in your cluster -along with the CRDs-
-1. Create a serviceaccount, a role and a role-binding to give it permission to view the SopsSecret resources and manage the Secret ones.
+1. Install markhor in your cluster -along with the CRDs-
+1. Create a serviceaccount, a role and a role-binding to give it permission to view the MarkhorSecret resources and manage the Secret ones.
 ## Setup on the app
 1. Create a `sops.yaml` file
 1. Create a sops-encrypted secret. Ensure that no comments or empty lines are present in the file (see the limitations section).
@@ -24,18 +24,18 @@ I wanted to use it to encrypt my k8s secrets so that I could keep them in my rep
 
 While SOPS is supported for Flux, the support for ArgoCD is only available through plugins.
 Now, looking at these resources, the integrations seem a bit too hacky for me
-- https://blog.pelo.tech/k-sops-k8s-argocd-54becd3a1a34
+- https://blog.pelo.tech/k-markhor-argocd-54becd3a1a34
 - https://community.ops.io/jilgue/secrets-in-argocd-with-sops-pa6
 - https://medium.com/@CoyoteLeo/security-upgrade-with-sops-5d4a1385c680
 - https://www.redhat.com/en/blog/a-guide-to-gitops-and-secret-management-with-argocd-operator-and-sops
 
 So I decided to adopt the same philosophy as reflector, which clones the secrets.
 
-However, since the 'Secret' resource is defined by kubernetes, it is not possible to create a Secret that also has the `sops` property (TODO: add an explanation where you show what happens when you try to apply a secret encrypted with sops that fails because the base64 encoded data is incorrect and there is the additional property `sops`). This is the reason why I created a CRD for a SopsSecret. It may have been possible to extend the definition of a k8s secret, but this seems to me to have too much disruptive potential.
+However, since the 'Secret' resource is defined by kubernetes, it is not possible to create a Secret that also has the `sops` property (TODO: add an explanation where you show what happens when you try to apply a secret encrypted with sops that fails because the base64 encoded data is incorrect and there is the additional property `sops`). This is the reason why I created a CRD for a MarkhorSecret. It may have been possible to extend the definition of a k8s secret, but this seems to me to have too much disruptive potential.
 
 # Security concerns
 ## Confused deputy attack
-Should not be possible since, thanks to the MAC (Message Authentication Code) that SOPS includes in its files, it is not possible to alter their content -even the parts which are unencrypted-. Also, the program creates the Seccret only in the same namespace where the SopsSecret was created.
+Should not be possible since, thanks to the MAC (Message Authentication Code) that SOPS includes in its files, it is not possible to alter their content -even the parts which are unencrypted-. Also, the program creates the Seccret only in the same namespace where the MarkhorSecret was created.
 
 # Limitations:
 Due to how k8s marshals the applied configurations, comments will not persist in the final output.
@@ -45,7 +45,7 @@ Also, for the decryption to work, all the fields must be in the same order as th
 Also, no empty lines -except for the last one-
 
 ## Possible solutions:
-- Optional field order in the sopssecret itself, since arrays are not reordered
+- Optional field order in the Markhorsecret itself, since arrays are not reordered
   ```yaml
   dataOrder:
     - z/key.pem
