@@ -1,10 +1,10 @@
-package main
+package pkg
 
 import (
 	"time"
 
-	v1 "markhor/api/types/v1"
-	client_v1 "markhor/clientset/v1"
+	v1 "markhor/pkg/api/types/v1"
+	client_v1 "markhor/pkg/clientset/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
