@@ -21,14 +21,18 @@ func sortJson(jsonData map[string]interface{}) *orderedmap.OrderedMap[string, in
 
 		return orderedMap
 	}
+	_, present := ordered.Get("sops")
+	if !present {
+		ordered.Set("sops", jsonData["sops"])
+	}
 	return ordered
 }
 
 func sortJSONData(jsonData map[string]interface{}) (*orderedmap.OrderedMap[string, interface{}], error) {
 
-	sortingParams, ok := jsonData["sortingParams"].(map[string]interface{})
+	sortingParams, ok := jsonData["markhorParams"].(map[string]interface{})
 	if !ok {
-		return nil, errors.New("missing key sortingParams")
+		return nil, errors.New("missing key markhorParams")
 	}
 	separator, ok := sortingParams["hierarchySeparator"].(string)
 	if !ok {

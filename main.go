@@ -9,6 +9,8 @@ import (
 	v1 "markhor/api/types/v1"
 	clientV1 "markhor/clientset/v1"
 
+	"github.com/getsops/sops/v3/decrypt"
+	orderedmap "github.com/wk8/go-ordered-map/v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -36,32 +38,70 @@ func main() {
 	fmt.Println("Starting to watch the events in the cluster to see when markhorSecrets are created")
 	for event := range markhorSecrets.ResultChan() {
 		markhorSecret, ok := event.Object.(*v1.MarkhorSecret)
+		secretName := fmt.Sprintf("%s/%s", markhorSecret.ObjectMeta.Namespace, markhorSecret.ObjectMeta.Name)
 		if !ok {
 			fmt.Println("Failed to cast the object to type MarkhorSecret")
 			continue
 		}
 		switch event.Type {
 		case watch.Added:
-			jsonConfigStr := markhorSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
-			fmt.Println("A markhorSecret was added ", markhorSecret.ObjectMeta.Namespace, "/", markhorSecret.ObjectMeta.Name)
+			fmt.Println("A MarkhorSecret was added:", secretName)
 
-			var jsonObj map[string]interface{}
-			err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
+			decryptedData, err := decryptMarkhorSecret(markhorSecret)
 			if err != nil {
-				fmt.Println("Error unmarshalling JSON:", err)
-				return
+				fmt.Println("Error: something went wrong decrypting ", secretName)
+				continue
 			}
 
-			sortedJson := sortJson(jsonObj)
-			fmt.Println(sortedJson)
+			b, err := json.Marshal(decryptedData)
+			if err != nil {
+				fmt.Println("Error decrypted to json ", secretName)
+				continue
+			}
+
+			fmt.Println(string(b))
 
 		case watch.Modified:
-			fmt.Println("A markhorSecret was updated")
+			fmt.Println("A MarkhorSecret was updated:", secretName)
+
 		case watch.Deleted:
-			fmt.Println("A markhorSecret was deleted")
+			fmt.Println("A MarkhorSecret was deleted:", secretName)
 		}
 	}
 	fmt.Println("Finished watching the events in the cluster. Most probably, the channel was closed")
+}
+
+func decryptMarkhorSecret(markhorSecret *v1.MarkhorSecret) (*orderedmap.OrderedMap[string, interface{}], error) {
+	jsonConfigStr := markhorSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
+
+	var jsonObj map[string]interface{}
+	err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
+	if err != nil {
+		fmt.Println("Error unmarshalling encrypted JSON:", err)
+		return nil, err
+	}
+
+	sortedJson := sortJson(jsonObj)
+	encData, err := json.Marshal(sortedJson)
+	if err != nil {
+		fmt.Println("Error marshalling sorted encrypted JSON:", err)
+		return nil, err
+	}
+
+	decryptedDataBytes, err := decrypt.Data(encData, "json")
+	if err != nil {
+		fmt.Println("Error decrypting JSON:", err)
+		return nil, err
+	}
+
+	decryptedData := orderedmap.New[string, interface{}]()
+	err = json.Unmarshal(decryptedDataBytes, &decryptedData)
+	if err != nil {
+		fmt.Println("Error parsing decrypted JSON:", err)
+		return nil, err
+	}
+
+	return decryptedData, nil
 }
 
 func getK8sClient() *clientV1.MarkhorV1Client {
