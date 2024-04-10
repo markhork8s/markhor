@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	v1 "markhor/pkg/api/types/v1"
+	v1 "github.com/civts/markhor/pkg/api/types/v1"
 
 	"github.com/getsops/sops/v3/decrypt"
 	orderedmap "github.com/wk8/go-ordered-map/v2"

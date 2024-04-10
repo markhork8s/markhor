@@ -1,4 +1,4 @@
-module markhor
+module github.com/civts/markhor
 
 go 1.22.1
 

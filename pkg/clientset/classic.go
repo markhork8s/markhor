@@ -3,7 +3,7 @@ package clientset
 import (
 	"log"
 
-	clientV1 "markhor/pkg/clientset/v1"
+	clientV1 "github.com/civts/markhor/pkg/clientset/v1"
 
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"

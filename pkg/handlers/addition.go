@@ -5,15 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"markhor/pkg"
-	v1 "markhor/pkg/api/types/v1"
+	"github.com/civts/markhor/pkg"
+
+	v1 "github.com/civts/markhor/pkg/api/types/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1a "k8s.io/client-go/applyconfigurations/core/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
-const MANAGED_BY = "Markhor"
+const MANAGED_BY = "github.com/civts/markhor"
 
 func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespace string, clientset *kubernetes.Clientset) {
 
@@ -77,7 +78,7 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 
 		// clientset.CoreV1().Secrets("").Watch(context.TODO(), metav1.ListOptions{})
 		// Apply the secret
-		fieldManager := "markhor"
+		fieldManager := "github.com/civts/markhor"
 
 		_, err = clientset.CoreV1().Secrets(namespace).Apply(context.TODO(), secret, metav1.ApplyOptions{
 			FieldManager: fieldManager,

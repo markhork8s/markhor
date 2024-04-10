@@ -1,7 +1,7 @@
 package v1
 
 import (
-	v1 "markhor/pkg/api/types/v1"
+	v1 "github.com/civts/markhor/pkg/api/types/v1"
 
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes/scheme"
