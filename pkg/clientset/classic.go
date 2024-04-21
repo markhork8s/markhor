@@ -26,7 +26,7 @@ func GetK8sConfig(kubeconfig string) *rest.Config {
 		log.Printf("Using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
-		log.Printf("Using configuration from the command flags")
+		log.Printf("Reading k8s configuration from the specified file")
 		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	}
 

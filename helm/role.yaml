@@ -6,7 +6,7 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
-  verbs: ["get", "watch", "create", "update", "delete"]
+  verbs: ["create", "update", "delete"]
 - apiGroups: ["markhor.example.com"]
-  resources: ["markhorsecrets", "customorderings"]
+  resources: ["markhorsecrets"]
   verbs: ["list", "watch"]

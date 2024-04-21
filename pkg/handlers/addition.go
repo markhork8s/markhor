@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"log"
 
 	"github.com/civts/markhor/pkg"
 
@@ -20,7 +20,7 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 
 	decryptedData, err := pkg.DecryptMarkhorSecret(markhorSecret)
 	if err != nil {
-		fmt.Println("Error: something went wrong decrypting ", secretName)
+		log.Println("Error: could not decrypt MarkhorSecret", secretName)
 		return
 	}
 
@@ -28,22 +28,22 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 		annotation, present := pkg.GetAnnotation(decryptedData)
 		metadata, ok := decryptedData.Get("metadata")
 		if !ok {
-			fmt.Println("Missing metadata in ", secretName)
+			log.Println("Missing metadata in ", secretName)
 			return
 		}
 		metadataObj, ok := metadata.(map[string]interface{})
 		if !ok {
-			fmt.Println("Missing metadata in ", secretName)
+			log.Println("Missing metadata in ", secretName)
 			return
 		}
 		annotations, ok := metadataObj["annotations"]
 		if !ok {
-			fmt.Println("Missing annotations in ", secretName)
+			log.Println("Missing annotations in ", secretName)
 			annotations = make(map[string]interface{})
 		}
 		annotationsObj, ok := annotations.(map[string]interface{})
 		if !ok {
-			fmt.Println("Missing annotations in ", secretName)
+			log.Println("Missing annotations in ", secretName)
 			annotationsObj = make(map[string]interface{})
 		}
 		if present {
@@ -68,11 +68,11 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 
 		bytes, err := json.Marshal(decryptedData)
 		if err != nil {
-			fmt.Println("can't convert decrypted final to JSON:", err)
+			log.Println("can't convert decrypted final to JSON:", err)
 			panic(err)
 		}
 		if err := json.Unmarshal(bytes, secret); err != nil {
-			fmt.Println("can't make secret from final JSON:", err)
+			log.Println("can't make secret from final JSON:", err)
 			panic(err)
 		}
 
@@ -84,10 +84,10 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 			FieldManager: fieldManager,
 		})
 		if err != nil {
-			fmt.Println("error creating the secret:", err)
+			log.Println("error creating the secret:", err)
 			//Apply failed with 1 conflict: conflict with>another fieldmanager has the secret
 		} else {
-			fmt.Println("new secret created correctly", secretName)
+			log.Println("new secret created correctly", secretName)
 		}
 	}
 }

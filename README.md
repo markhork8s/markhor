@@ -55,21 +55,73 @@ Also, no empty lines -except for the last one-
   ```
 - Another CRD: customorder with a spec field with an array of objects. The program, runtime, will load them
 
-#### Custom client
-https://pkg.go.dev/k8s.io/client-go/examples#section-readme
-https://aimuke.github.io/k8s/2021/01/28/k8s-access-crds-from-client-go/
-https://medium.com/cloud-native-daily/kubernetes-crd-handling-in-go-d426e9c3c1ab
-https://medium.com/@disha.20.10/building-and-extending-kubernetes-a-writing-first-custom-controller-with-go-bc57a50d61f7
-https://github.com/dishavirk/first-custom-k8s-controller
-https://github.com/kubernetes/apiextensions-apiserver/tree/master/examples/client-go
-https://github.com/kubernetes/client-go/tree/v0.29.3/examples/fake-client
-https://github.com/dishavirk/canary-k8s-operator/tree/master
-
 ## TODOs:
-- customordering CRD cant be recursive, it seems
 
 - indentation does not count!
 - comments do not count!
 - it seems that all that is needed is for all the fields to be in the same order
 - the order inside the 'sops' field does not matter
 - it does not even need to be in the same format. You can encrypt as YAML, convert to JSON and decrypt! Provided the order rules are respected
+
+# Config:
+
+Markhor can get its configuration form one or more of these sources. Here they are listed in order of decreasing priority.
+
+1. Environment variables
+1. Config file
+1. Runtime arguments
+
+If a configuration value is specified in more than one source, a warning will be issued unless `logging.warn_on_value_override` is set to `false`.
+
+## Values:
+
+```yaml
+
+kubeconfigPath: null #Path to the kubeconfig file to connect with the kubernetes cluster
+kubernetesClusterTimeoutSeconds: 10
+sopsKeysPath: ~/.config/sops/keys #Path to the keys that SOPS will use for decryption
+
+healthcheck:
+  port: 8080
+
+logging:
+  level: "info"
+
+behavior:
+  fieldmanager:  # The field manager for the k8s Secrets managed by Markhor. See https://kubernetes.io/docs/reference/using-api/server-side-apply/#field-management
+    name: "github.com/civts/markhor"
+    forceUpdates: false
+  overrideExistingSecrets: false
+  pruneDanglingSecrets: false #Deletes Secrets that have the managed-by Markhor annotation but no corresponding Markhor Secret
+
+markorSecrets:
+  hierarchySeparator:
+    default: "/"
+    allowOverride: false
+    warnOnOverride: true
+  managed_annotation:
+    default: "markhor.example.com/managed-by"
+    allowOverride: false
+    warnOnOverride: true
+  namespaces: # Watch for Markhor secrets only in these namespaces
+    - a
+    - b
+
+```
+
+```
+--config, -c   path to the config file (default /etc/markhor/config.yaml)
+```
+
+# Features:
+
+1. Validation hook that checks if it is possible to decrypt a MarkhorSecret and if not tells you why -preventing its creation-.
+
+1. Create a MS ✅
+  1. If it can be decrypted, it does a kubectl apply, meaning it creates the Secret if it's missing, updates it if needed and leaves it unchanged if everything is the same
+1. Modify a MS ✅
+  Same as create since kubectl handles the apply
+1. Delete a MS ✅
+  The corresponding Secret is deleted
+
+1. Healthcheck ✅

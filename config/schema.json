@@ -1,0 +1,180 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "title": "Markhor configuration schema",
+    "description": "Schema for the configuration file of Markhor (github.com/civts/markhor)",
+    "additionalProperties": false,
+    "properties": {
+        "kubernetes": {
+            "type": "object",
+            "description": "Config options relative to kubernetes",
+            "additionalProperties": false,
+            "properties": {
+                "kubeconfigPath": {
+                    "type": "string",
+                    "description": "Path to the file containing the information necessary to connect with the kubernetes cluster (More info at https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/). If Markhor will run inside the cluster, leave it unspecified so it uses the default value of \"\".",
+                    "default": "",
+                    "examples": [
+                        "/var/k8s_configs/my_cluster_01.conf"
+                    ]
+                },
+                "clusterTimeoutSeconds": {
+                    "type": "integer",
+                    "description": "The amount of time, in seconds, that Markhor should wait when connecting to the cluster before timing out.",
+                    "default": 10,
+                    "minimum": 0
+                }
+            }
+        },
+        "sops": {
+            "type": "object",
+            "description": "Config options relative to SOPS",
+            "additionalProperties": false,
+            "properties": {
+                "keysPath": {
+                    "type": "string",
+                    "description": "Path (seen from inside the Markhor pod where the SOPS private keys are stored.",
+                    "default": "~/.config/sops/keys",
+                    "minLength": 1
+                }
+            }
+        },
+        "healthcheck": {
+            "description": "Configuration for the healthcheck endpoint(s)",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65534,
+                    "default": 8080,
+                    "description": "The port number where the healthcheck endpoint should listen on"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Wether to enable the healthcheck or not"
+                }
+            }
+        },
+        "logging": {
+            "type": "object",
+            "description": "Configuring the logs of the Markhor program",
+            "additionalProperties": false,
+            "properties": {
+                "level": {
+                    "type": "string",
+                    "description": "The verbosity of the logs (see https://github.com/sirupsen/logrus?tab=readme-ov-file#level-logging)",
+                    "enum": [
+                        "info"
+                    ],
+                    "default": "info"
+                }
+            }
+        },
+        "behavior": {
+            "description": "General behavior of Markhor",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "fieldmanager": {
+                    "type": "object",
+                    "description": "Configuration related to the kubernetes field management. See the latest docs https://kubernetes.io/docs/reference/using-api/server-side-apply/#field-management or the version when I wrote this https://github.com/kubernetes/website/blob/snapshot-initial-v1.29/content/en/docs/reference/using-api/server-side-apply.md#field-management",
+                    "additionalProperties": false,
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the field manager that Markhor will give to kubernetes",
+                            "minLength": 1,
+                            "default": "github.com/civts/markhor"
+                        },
+                        "forceUpdates": {
+                            "type": "boolean",
+                            "description": "If this is inactive -default-, Markhor will not modify secrets which have another fieldmanager -e.g., the ones created by the admins or other apps-. On the contrary, if this is active, Markhor will take over the field manager -overriding existing secrets-. In any case, when the field manager mismatches, a warning is printed.",
+                            "default": false
+                        }
+                    }
+                },
+                "pruneDanglingMarkhorSecrets": {
+                    "type": "boolean",
+                    "description": "If enabled, Markhor will delete all the Secrets which do not have a corresponding MarkhorSecret",
+                    "default": true
+                },
+                "namespaces": {
+                    "type": "array",
+                    "description": "List of all the namespaces where Markhor is allowed to operate in. An empty list -the default- signifies that Markhor will operate on all namespaces",
+                    "items": {
+                        "description": "The name of a kubernetes namespace where Markhor will operate",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": []
+                },
+                "excludedNamespaces": {
+                    "type": "array",
+                    "description": "List of all the namespaces where Markhor is forbidden to operate in. This has higher priority than the \"namespaces\" field.",
+                    "items": {
+                        "description": "The name of a kubernetes namespace where Markhor will not operate",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": []
+                }
+            }
+        },
+        "markorSecrets": {
+            "type": "object",
+            "description": "Configuration options relative to the MarkhorSecret objects themselves (essentially, the markhorParams key)",
+            "additionalProperties": false,
+            "properties": {
+                "hierarchySeparator": {
+                    "type": "object",
+                    "description": "Options for the character/string that represents hierarchy in the markhorParams>order array in a MarkhorSecret manifest",
+                    "additionalProperties": false,
+                    "properties": {
+                        "default": {
+                            "type": "string",
+                            "description": "Which character (or string) is used as a marker for indentation in markhorParams>order. The dafault value is \"/\", meaning that the string \"a/b\" indicates a property that in JSON would be \"a\":{\"b\":\"some-value\"} while \"a.b\" indicates a property that in JSON would be \"a.b\":\"some-value\"",
+                            "default": "/",
+                            "minLength": 1
+                        },
+                        "allowOverride": {
+                            "type": "boolean",
+                            "description": "If false -default-, a MarkhorSecret manifest cannot override the value of the hierarchy separator defined in this configuration file -and a warning is printed if it tries to do so-.",
+                            "default": false
+                        },
+                        "warnOnOverride": {
+                            "type": "boolean",
+                            "description": "Wether to print a warning when a MarkhorSecret manifest overrides the value of the hierarchy separator defined in this configuration file. Defaults to true",
+                            "default": true
+                        }
+                    }
+                },
+                "managed_annotation": {
+                    "type": "object",
+                    "description": "Markhor adds a custom label to the Secrets it manages. Here, it is possible to configure it.",
+                    "additionalProperties": false,
+                    "properties": {
+                        "default": {
+                            "type": "string",
+                            "description": "The name of the label that Markhor adds to the Secrets it manages",
+                            "default": "markhor.example.com/managed-by",
+                            "minLength": 1
+                        },
+                        "allowOverride": {
+                            "type": "boolean",
+                            "description": "If false -default-, a MarkhorSecret manifest cannot override the value of the custom label defined in this configuration file -and a warning is printed if it tries to do so-.",
+                            "default": false
+                        },
+                        "warnOnOverride": {
+                            "type": "boolean",
+                            "description": "Wether to print a warning when a MarkhorSecret manifest overrides the value of the custom label defined in this configuration file. Defaults to true",
+                            "default": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

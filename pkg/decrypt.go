@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 
 	v1 "github.com/civts/markhor/pkg/api/types/v1"
 
@@ -17,27 +17,27 @@ func DecryptMarkhorSecret(markhorSecret *v1.MarkhorSecret) (*orderedmap.OrderedM
 	var jsonObj map[string]interface{}
 	err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
 	if err != nil {
-		fmt.Println("Error unmarshalling encrypted JSON:", err)
+		log.Println("Error unmarshalling encrypted JSON:", err)
 		return nil, err
 	}
 
 	sortedJson := sortJson(jsonObj)
 	encData, err := json.Marshal(sortedJson)
 	if err != nil {
-		fmt.Println("Error marshalling sorted encrypted JSON:", err)
+		log.Println("Error marshalling sorted encrypted JSON:", err)
 		return nil, err
 	}
 
 	decryptedDataBytes, err := decrypt.Data(encData, "json")
 	if err != nil {
-		fmt.Println("Error decrypting JSON:", err)
+		log.Println("Error decrypting JSON:", err)
 		return nil, err
 	}
 
 	decryptedData := orderedmap.New[string, interface{}]()
 	err = json.Unmarshal(decryptedDataBytes, &decryptedData)
 	if err != nil {
-		fmt.Println("Error parsing decrypted JSON:", err)
+		log.Println("Error parsing decrypted JSON:", err)
 		return nil, err
 	}
 

@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/civts/markhor/pkg"
 
@@ -19,7 +20,7 @@ func HandleDeletion(markhorSecret *v1.MarkhorSecret, clientset *kubernetes.Clien
 	secretName := fmt.Sprintf("%s/%s", namespace, name)
 	_, err := pkg.DecryptMarkhorSecret(markhorSecret)
 	if err != nil {
-		fmt.Println("Error: something went wrong decrypting ", secretName)
+		log.Println("Error: could not decrypt MarkhorSecret", secretName)
 		return
 	}
 
@@ -28,10 +29,10 @@ func HandleDeletion(markhorSecret *v1.MarkhorSecret, clientset *kubernetes.Clien
 		err = clientset.CoreV1().Secrets(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
 
 		if err != nil {
-			fmt.Println("error deleting the secret:", err)
+			log.Println("error deleting the secret:", err)
 			//Apply failed with 1 conflict: conflict with>another fieldmanager has the secret
 		} else {
-			fmt.Println("secret deleted correctly", secretName)
+			log.Println("secret deleted correctly", secretName)
 		}
 	}
 }

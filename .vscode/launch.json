@@ -14,8 +14,8 @@
         "CGO_CFLAGS": "-U_FORTIFY_SOURCE"
       },
       "args": [
-        "--kubeconfig",
-        "cluster.conf"
+        "--config",
+        "testing_conf.yaml"
       ],
       "preLaunchTask": "generate"
     }

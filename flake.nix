@@ -39,6 +39,7 @@
               vscodeExtensions = with vscode-extensions; [
                 jnoortheen.nix-ide
                 golang.go
+                redhat.vscode-yaml
               ]
                 #  ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
                 #   {

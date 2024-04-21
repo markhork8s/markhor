@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	"log"
 
 	"github.com/civts/markhor/pkg"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
@@ -10,19 +10,17 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 )
 
-var kubeconfig string
-
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "", "path to Kubernetes config file")
-	flag.Parse()
+	apiV1.AddToScheme(scheme.Scheme)
 }
 
 func main() {
-	apiV1.AddToScheme(scheme.Scheme)
+	log.Println("Starting Markhor")
+	config := pkg.ParseConfig()
 
-	mClient, clientset := cs.GetK8sClients(kubeconfig)
+	mClient, clientset := cs.GetK8sClients(config.Kubernetes.KubeconfigPath)
 
-	go pkg.SetupHealthcheck(8080)
+	go pkg.SetupHealthcheck(config.Healthcheck)
 
 	cs.WatchMarkhorSecrets(mClient, clientset)
 }

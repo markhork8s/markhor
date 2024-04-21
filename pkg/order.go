@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	orderedmap "github.com/wk8/go-ordered-map/v2"
@@ -11,7 +12,7 @@ import (
 func sortJson(jsonData map[string]interface{}) *orderedmap.OrderedMap[string, interface{}] {
 	ordered, err := sortJSONData(jsonData)
 	if err != nil {
-		fmt.Println("Error ordering the JSON:", err, "\nWill keep the default order (alphabetic in k8s)")
+		log.Println("Error ordering the JSON:", err, "\nWill keep the default order (alphabetic in k8s)")
 
 		orderedMap := orderedmap.New[string, interface{}]()
 
@@ -38,7 +39,7 @@ func sortJSONData(jsonData map[string]interface{}) (*orderedmap.OrderedMap[strin
 	if !ok {
 		separator = "."
 	} else {
-		fmt.Println("Info: using custom hierarchy separator: ", separator)
+		log.Println("Warning: using custom hierarchy separator: ", separator)
 	}
 	rawOrderIntf, ok := sortingParams["order"].([]interface{})
 	if !ok {
@@ -67,7 +68,7 @@ func sortWithOrdering(jsonData map[string]interface{}, ordering Ordering) *order
 		} else {
 			data, ok := jsonData[k.name].(map[string]interface{})
 			if !ok {
-				fmt.Println("Error no key ", k.name, "in JSON")
+				log.Println("Error no key ", k.name, "in JSON")
 			}
 			nestedObj := sortWithOrdering(data, k)
 			om.Set(k.name, nestedObj)
