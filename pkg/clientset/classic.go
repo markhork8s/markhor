@@ -1,7 +1,8 @@
 package clientset
 
 import (
-	"log"
+	"fmt"
+	"log/slog"
 
 	clientV1 "github.com/civts/markhor/pkg/clientset/v1"
 
@@ -23,15 +24,15 @@ func GetK8sConfig(kubeconfig string) *rest.Config {
 	var err error
 
 	if kubeconfig == "" {
-		log.Printf("Using in-cluster configuration")
+		slog.Info("Using in-cluster configuration")
 		config, err = rest.InClusterConfig()
 	} else {
-		log.Printf("Reading k8s configuration from the specified file")
+		slog.Info(fmt.Sprint("Reading k8s configuration from the specified file: ", kubeconfig))
 		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	}
 
 	if err != nil {
-		log.Printf("Could not find a valid configuration to communicate with the k8s cluster")
+		slog.Error("Could not find a valid configuration to communicate with the k8s cluster")
 		panic(err)
 	}
 	return config

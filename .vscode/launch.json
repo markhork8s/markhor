@@ -15,7 +15,7 @@
       },
       "args": [
         "--config",
-        "testing_conf.yaml"
+        "debugging_conf.yaml"
       ],
       "preLaunchTask": "generate"
     }

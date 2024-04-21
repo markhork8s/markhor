@@ -4,3 +4,4 @@ cluster.conf
 .vscode/settings.json
 debugging_conf.yaml
 __debug_bin*
+*.log

@@ -3,7 +3,8 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"log"
+	"fmt"
+	"log/slog"
 
 	"github.com/civts/markhor/pkg"
 
@@ -16,11 +17,13 @@ import (
 
 const MANAGED_BY = "github.com/civts/markhor"
 
-func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespace string, clientset *kubernetes.Clientset) {
+func HandleAddition(markhorSecret *v1.MarkhorSecret, eid slog.Attr, clientset *kubernetes.Clientset) {
 
-	decryptedData, err := pkg.DecryptMarkhorSecret(markhorSecret)
+	namespace := markhorSecret.ObjectMeta.Namespace
+	secretName := fmt.Sprintf("%s/%s", namespace, markhorSecret.ObjectMeta.Name)
+	decryptedData, err := pkg.DecryptMarkhorSecret(markhorSecret, eid)
 	if err != nil {
-		log.Println("Error: could not decrypt MarkhorSecret", secretName)
+		slog.Error(fmt.Sprint("Could not decrypt MarkhorSecret ", secretName), eid)
 		return
 	}
 
@@ -28,22 +31,22 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 		annotation, present := pkg.GetAnnotation(decryptedData)
 		metadata, ok := decryptedData.Get("metadata")
 		if !ok {
-			log.Println("Missing metadata in ", secretName)
+			slog.Error(fmt.Sprint("Missing metadata in ", secretName), eid)
 			return
 		}
 		metadataObj, ok := metadata.(map[string]interface{})
 		if !ok {
-			log.Println("Missing metadata in ", secretName)
+			slog.Error(fmt.Sprint("Missing metadata in ", secretName), eid)
 			return
 		}
 		annotations, ok := metadataObj["annotations"]
 		if !ok {
-			log.Println("Missing annotations in ", secretName)
+			slog.Error(fmt.Sprint("Missing annotations in ", secretName), eid)
 			annotations = make(map[string]interface{})
 		}
 		annotationsObj, ok := annotations.(map[string]interface{})
 		if !ok {
-			log.Println("Missing annotations in ", secretName)
+			slog.Error(fmt.Sprint("Missing annotations in ", secretName), eid)
 			annotationsObj = make(map[string]interface{})
 		}
 		if present {
@@ -68,11 +71,11 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 
 		bytes, err := json.Marshal(decryptedData)
 		if err != nil {
-			log.Println("can't convert decrypted final to JSON:", err)
+			slog.Error(fmt.Sprint("Can't convert decrypted final to JSON: ", err), eid)
 			panic(err)
 		}
 		if err := json.Unmarshal(bytes, secret); err != nil {
-			log.Println("can't make secret from final JSON:", err)
+			slog.Error(fmt.Sprint("Can't make secret from final JSON: ", err), eid)
 			panic(err)
 		}
 
@@ -84,10 +87,10 @@ func HandleAddition(markhorSecret *v1.MarkhorSecret, secretName string, namespac
 			FieldManager: fieldManager,
 		})
 		if err != nil {
-			log.Println("error creating the secret:", err)
+			slog.Error(fmt.Sprint("Error creating the secret: ", err), eid)
 			//Apply failed with 1 conflict: conflict with>another fieldmanager has the secret
 		} else {
-			log.Println("new secret created correctly", secretName)
+			slog.Info(fmt.Sprint("New secret created correctly: ", secretName), eid)
 		}
 	}
 }

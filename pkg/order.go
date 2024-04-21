@@ -3,16 +3,16 @@ package pkg
 import (
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"strings"
 
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
-func sortJson(jsonData map[string]interface{}) *orderedmap.OrderedMap[string, interface{}] {
-	ordered, err := sortJSONData(jsonData)
+func sortJson(jsonData map[string]interface{}, eid slog.Attr) *orderedmap.OrderedMap[string, interface{}] {
+	ordered, err := sortJSONData(jsonData, eid)
 	if err != nil {
-		log.Println("Error ordering the JSON:", err, "\nWill keep the default order (alphabetic in k8s)")
+		slog.Error(fmt.Sprint("Error ordering the JSON: ", err, "\nWill keep the default order (alphabetic in k8s)"), eid)
 
 		orderedMap := orderedmap.New[string, interface{}]()
 
@@ -29,7 +29,7 @@ func sortJson(jsonData map[string]interface{}) *orderedmap.OrderedMap[string, in
 	return ordered
 }
 
-func sortJSONData(jsonData map[string]interface{}) (*orderedmap.OrderedMap[string, interface{}], error) {
+func sortJSONData(jsonData map[string]interface{}, eid slog.Attr) (*orderedmap.OrderedMap[string, interface{}], error) {
 
 	sortingParams, ok := jsonData["markhorParams"].(map[string]interface{})
 	if !ok {
@@ -39,7 +39,7 @@ func sortJSONData(jsonData map[string]interface{}) (*orderedmap.OrderedMap[strin
 	if !ok {
 		separator = "."
 	} else {
-		log.Println("Warning: using custom hierarchy separator: ", separator)
+		slog.Warn(fmt.Sprint("Using custom hierarchy separator: ", separator), eid)
 	}
 	rawOrderIntf, ok := sortingParams["order"].([]interface{})
 	if !ok {
@@ -56,10 +56,10 @@ func sortJSONData(jsonData map[string]interface{}) (*orderedmap.OrderedMap[strin
 
 	ordering := Ordering{name: "", terms: parseOrdering(rawOrder, separator)}
 
-	return sortWithOrdering(jsonData, ordering), nil
+	return sortWithOrdering(jsonData, ordering, eid), nil
 }
 
-func sortWithOrdering(jsonData map[string]interface{}, ordering Ordering) *orderedmap.OrderedMap[string, interface{}] {
+func sortWithOrdering(jsonData map[string]interface{}, ordering Ordering, eid slog.Attr) *orderedmap.OrderedMap[string, interface{}] {
 	om := orderedmap.New[string, interface{}]()
 
 	for _, k := range ordering.terms {
@@ -68,9 +68,9 @@ func sortWithOrdering(jsonData map[string]interface{}, ordering Ordering) *order
 		} else {
 			data, ok := jsonData[k.name].(map[string]interface{})
 			if !ok {
-				log.Println("Error no key ", k.name, "in JSON")
+				slog.Error(fmt.Sprint("Error no key ", k.name, "in JSON"), eid)
 			}
-			nestedObj := sortWithOrdering(data, k)
+			nestedObj := sortWithOrdering(data, k, eid)
 			om.Set(k.name, nestedObj)
 		}
 	}

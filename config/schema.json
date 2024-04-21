@@ -67,9 +67,37 @@
                     "type": "string",
                     "description": "The verbosity of the logs (see https://github.com/sirupsen/logrus?tab=readme-ov-file#level-logging)",
                     "enum": [
-                        "info"
+                        "info",
+                        "warning",
+                        "error",
+                        "debug"
                     ],
                     "default": "info"
+                },
+                "style": {
+                    "type": "string",
+                    "description": "The format of the logs (as provided by slog)",
+                    "enum": [
+                        "text",
+                        "json"
+                    ],
+                    "default": "text"
+                },
+                "logToStdout": {
+                    "type": "boolean",
+                    "description": "Wether to log the output of this program to stdout",
+                    "default": true
+                },
+                "additionalLogFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Path to the file where the logs should be written to",
+                        "minLength": 1
+                    },
+                    "uniqueItems": true,
+                    "minLength": 1,
+                    "default": []
                 }
             }
         },
@@ -109,7 +137,8 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "default": []
+                    "default": [],
+                    "uniqueItems": true
                 },
                 "excludedNamespaces": {
                     "type": "array",
@@ -119,7 +148,8 @@
                         "type": "string",
                         "minLength": 1
                     },
-                    "default": []
+                    "default": [],
+                    "uniqueItems": true
                 }
             }
         },

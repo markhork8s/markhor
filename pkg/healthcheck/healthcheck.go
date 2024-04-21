@@ -1,9 +1,11 @@
-package pkg
+package healthcheck
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
+
+	"github.com/civts/markhor/pkg/config"
 )
 
 var Healthy bool = false
@@ -18,12 +20,12 @@ func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func SetupHealthcheck(conf HealthcheckConfig) {
+func SetupHealthcheck(conf config.HealthcheckConfig) {
 	if conf.Enabled {
-		log.Println("Healthcheck endpoint created on port", conf.Port)
+		slog.Debug(fmt.Sprint("Healthcheck endpoint created on port ", conf.Port))
 		http.HandleFunc("/health", healthCheckHandler)
 		http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil)
 	} else {
-		log.Println("Skipping healthcheck -disabled in the config-")
+		slog.Debug("Skipping healthcheck -disabled in the config-")
 	}
 }

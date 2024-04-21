@@ -1,11 +1,10 @@
 package main
 
 import (
-	"log"
-
-	"github.com/civts/markhor/pkg"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
 	cs "github.com/civts/markhor/pkg/clientset"
+	"github.com/civts/markhor/pkg/config"
+	"github.com/civts/markhor/pkg/healthcheck"
 
 	"k8s.io/client-go/kubernetes/scheme"
 )
@@ -15,12 +14,11 @@ func init() {
 }
 
 func main() {
-	log.Println("Starting Markhor")
-	config := pkg.ParseConfig()
+	config := config.ParseConfig()
 
 	mClient, clientset := cs.GetK8sClients(config.Kubernetes.KubeconfigPath)
 
-	go pkg.SetupHealthcheck(config.Healthcheck)
+	go healthcheck.SetupHealthcheck(config.Healthcheck)
 
-	cs.WatchMarkhorSecrets(mClient, clientset)
+	cs.WatchMarkhorSecrets(mClient, clientset, config)
 }

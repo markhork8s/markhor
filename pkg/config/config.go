@@ -1,9 +1,12 @@
-package pkg
+package config
 
 import (
+	"fmt"
 	"log"
+	"log/slog"
 	"os"
 
+	"github.com/civts/markhor/pkg"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -19,7 +22,10 @@ type Config struct {
 	} `mapstructure:"kubernetes"`
 
 	Logging struct {
-		Level string `mapstructure:"level"`
+		Level              string   `mapstructure:"level"`
+		Style              string   `mapstructure:"style"`
+		LogToStdout        bool     `mapstructure:"logToStdout"`
+		AdditionalLogFiles []string `mapstructure:"additionalLogFiles"`
 	} `mapstructure:"logging"`
 
 	Behavior struct {
@@ -62,29 +68,30 @@ func ParseConfig() Config {
 	ParseCliArgs()
 	configFilePath := viper.GetString("config")
 
-	if configFilePath != "" {
-		log.Println("Reading Markhor config from user-defined path:", configFilePath)
-		viper.SetConfigFile(configFilePath)
+	if configFilePath != pkg.DEFAULT_CONFIG_PATH {
+		defer slog.Info(fmt.Sprint("Reading Markhor config from user-defined path: ", configFilePath))
 	} else {
-		log.Println("Reading Markhor config from default path:", DEFAULT_CONFIG_PATH)
-		viper.SetConfigFile(DEFAULT_CONFIG_PATH)
+		defer slog.Info(fmt.Sprint("Reading Markhor config from default path: ", pkg.DEFAULT_CONFIG_PATH))
 	}
 
+	viper.SetConfigFile(configFilePath)
 	setDefaultConfigValues()
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Println("Error reading Markhor config file:", err)
-		os.Exit(1)
+		log.Fatal("Error reading Markhor config file:", err)
 	}
 
 	// Define custom Config struct
 	var config Config
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		log.Println("Error parsing Markhor config data:", err)
-		os.Exit(1)
+		log.Fatal("Error parsing Markhor config data:", err)
 	}
+
+	ValidateConfig(config)
+
+	SetupLogging(config)
 
 	return config
 }
@@ -97,6 +104,9 @@ func setDefaultConfigValues() {
 	viper.SetDefault("healthcheck.port", 8080)
 	viper.SetDefault("healthcheck.enabled", true)
 	viper.SetDefault("logging.level", "info")
+	viper.SetDefault("logging.style", "text")
+	viper.SetDefault("logging.logToStdout", true)
+	viper.SetDefault("logging.additionalLogFiles", make([]string, 0))
 	viper.SetDefault("behavior.fieldmanager.name", "github.com/civts/markhor")
 	viper.SetDefault("behavior.namespaces", make([]string, 0))
 	viper.SetDefault("behavior.excludedNamespaces", make([]string, 0))
@@ -112,7 +122,7 @@ func setDefaultConfigValues() {
 
 func ParseCliArgs() {
 	// Define CLI flags
-	pflag.StringP("config", "c", "", "Path to config file")
+	pflag.StringP("config", "c", pkg.DEFAULT_CONFIG_PATH, "Path to config file")
 	helpSet := pflag.BoolP("help", "h", false, "Show this help message")
 	versionSet := pflag.BoolP("version", "v", false, "Print the version of this program and exit")
 	pflag.Parse()
@@ -123,7 +133,7 @@ func ParseCliArgs() {
 		pflag.PrintDefaults()
 		os.Exit(0)
 	} else if *versionSet {
-		log.Printf("v%s\n", VERSION)
+		fmt.Printf("v%s\n", pkg.VERSION)
 		os.Exit(0)
 	}
 }

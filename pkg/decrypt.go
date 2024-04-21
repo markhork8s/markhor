@@ -2,7 +2,8 @@ package pkg
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
+	"log/slog"
 
 	v1 "github.com/civts/markhor/pkg/api/types/v1"
 
@@ -11,33 +12,33 @@ import (
 )
 
 // Given an encrypted MarkhorSecret, this function attempts to decrypt it using SOPS.
-func DecryptMarkhorSecret(markhorSecret *v1.MarkhorSecret) (*orderedmap.OrderedMap[string, interface{}], error) {
+func DecryptMarkhorSecret(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (*orderedmap.OrderedMap[string, interface{}], error) {
 	jsonConfigStr := markhorSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
 
 	var jsonObj map[string]interface{}
 	err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
 	if err != nil {
-		log.Println("Error unmarshalling encrypted JSON:", err)
+		slog.Error(fmt.Sprint("Error unmarshalling encrypted JSON: ", err), eid)
 		return nil, err
 	}
 
-	sortedJson := sortJson(jsonObj)
+	sortedJson := sortJson(jsonObj, eid)
 	encData, err := json.Marshal(sortedJson)
 	if err != nil {
-		log.Println("Error marshalling sorted encrypted JSON:", err)
+		slog.Error(fmt.Sprint("Error marshalling sorted encrypted JSON: ", err), eid)
 		return nil, err
 	}
 
 	decryptedDataBytes, err := decrypt.Data(encData, "json")
 	if err != nil {
-		log.Println("Error decrypting JSON:", err)
+		slog.Error(fmt.Sprint("Error decrypting JSON: ", err), eid)
 		return nil, err
 	}
 
 	decryptedData := orderedmap.New[string, interface{}]()
 	err = json.Unmarshal(decryptedDataBytes, &decryptedData)
 	if err != nil {
-		log.Println("Error parsing decrypted JSON:", err)
+		slog.Error(fmt.Sprint("Error parsing decrypted JSON: ", err), eid)
 		return nil, err
 	}
 
