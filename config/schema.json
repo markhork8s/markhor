@@ -181,7 +181,7 @@
                         }
                     }
                 },
-                "managed_annotation": {
+                "managedAnnotation": {
                     "type": "object",
                     "description": "Markhor adds a custom label to the Secrets it manages. Here, it is possible to configure it.",
                     "additionalProperties": false,

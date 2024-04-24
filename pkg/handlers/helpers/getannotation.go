@@ -1,9 +1,12 @@
-package pkg
+package helpers
 
-import orderedmap "github.com/wk8/go-ordered-map/v2"
+import (
+	"github.com/civts/markhor/pkg"
+	orderedmap "github.com/wk8/go-ordered-map/v2"
+)
 
 func GetAnnotation(decryptedData *orderedmap.OrderedMap[string, interface{}]) (string, bool) {
-	params, present := decryptedData.Get("markhorParams")
+	params, present := decryptedData.Get(pkg.MARKHORPARAMS_MANIFEST_KEY)
 	if !present {
 		return "", false
 	}
@@ -11,7 +14,7 @@ func GetAnnotation(decryptedData *orderedmap.OrderedMap[string, interface{}]) (s
 	if !ok {
 		return "", false
 	}
-	annotation, present := paramsObj.Get("managedAnnotation")
+	annotation, present := paramsObj.Get(pkg.MSPARAMS_MANAGED_ANNOTATION_KEY)
 	if !present {
 		return "", false
 	}

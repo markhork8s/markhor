@@ -99,7 +99,7 @@ markorSecrets:
     default: "/"
     allowOverride: false
     warnOnOverride: true
-  managed_annotation:
+  managedAnnotation:
     default: "markhor.example.com/managed-by"
     allowOverride: false
     warnOnOverride: true
@@ -115,7 +115,7 @@ markorSecrets:
 
 # Features:
 
-1. Validation hook that checks if it is possible to decrypt a MarkhorSecret and if not tells you why -preventing its creation-.
+1. Validation hook that checks if it is possible to decrypt a MarkhorSecret and if not tells you why -preventing its creation-. ❌
 
 1. Create a MS ✅
   1. If it can be decrypted, it does a kubectl apply, meaning it creates the Secret if it's missing, updates it if needed and leaves it unchanged if everything is the same
@@ -125,3 +125,9 @@ markorSecrets:
   The corresponding Secret is deleted
 
 1. Healthcheck ✅
+
+1. Logging with slog and different levels ✅
+
+1. Honoring all the config values ❌
+
+1. Testing ❌

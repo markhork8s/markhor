@@ -46,16 +46,22 @@ func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clie
 			slog.Debug("Failed to cast the object to type MarkhorSecret")
 			continue
 		}
+		args := handlers.HandlerAttrs{
+			MarkhorSecret: markhorSecret,
+			EventId:       eid,
+			Clientset:     k8sClient,
+			Config:        config,
+		}
 		switch event.Type {
 		case watch.Added:
 			slog.Info(fmt.Sprint("A MarkhorSecret was added: ", secretName), eid)
-			handlers.HandleAddition(markhorSecret, eid, k8sClient)
+			handlers.HandleAddition(args)
 		case watch.Modified:
 			slog.Info(fmt.Sprint("A MarkhorSecret was updated: ", secretName), eid)
-			handlers.HandleAddition(markhorSecret, eid, k8sClient)
+			handlers.HandleAddition(args)
 		case watch.Deleted:
 			slog.Info(fmt.Sprint("A MarkhorSecret was deleted: ", secretName), eid)
-			handlers.HandleDeletion(markhorSecret, eid, k8sClient)
+			handlers.HandleDeletion(args)
 		}
 	}
 	healthcheck.Healthy = false

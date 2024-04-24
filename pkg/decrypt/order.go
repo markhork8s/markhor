@@ -1,4 +1,4 @@
-package pkg
+package decrypt
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"strings"
 
+	"github.com/civts/markhor/pkg"
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
@@ -31,7 +32,7 @@ func sortJson(jsonData map[string]interface{}, eid slog.Attr) *orderedmap.Ordere
 
 func sortJSONData(jsonData map[string]interface{}, eid slog.Attr) (*orderedmap.OrderedMap[string, interface{}], error) {
 
-	sortingParams, ok := jsonData["markhorParams"].(map[string]interface{})
+	sortingParams, ok := jsonData[pkg.MARKHORPARAMS_MANIFEST_KEY].(map[string]interface{})
 	if !ok {
 		return nil, errors.New("missing key markhorParams")
 	}
