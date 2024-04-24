@@ -68,7 +68,8 @@ func ParseConfig() Config {
 	ParseCliArgs()
 	configFilePath := viper.GetString("config")
 
-	if configFilePath != pkg.DEFAULT_CONFIG_PATH {
+	usingCustomConfigFile := configFilePath != pkg.DEFAULT_CONFIG_PATH
+	if usingCustomConfigFile {
 		defer slog.Info(fmt.Sprint("Reading Markhor config from user-defined path: ", configFilePath))
 	} else {
 		defer slog.Info(fmt.Sprint("Reading Markhor config from default path: ", pkg.DEFAULT_CONFIG_PATH))
@@ -78,7 +79,7 @@ func ParseConfig() Config {
 	setDefaultConfigValues()
 
 	err := viper.ReadInConfig()
-	if err != nil {
+	if err != nil && usingCustomConfigFile {
 		log.Fatal("Error reading Markhor config file:", err)
 	}
 
@@ -98,26 +99,26 @@ func ParseConfig() Config {
 
 // Defines the default Markhor config values
 func setDefaultConfigValues() {
-	viper.SetDefault("kubernetes.kubeconfigPath", "")
-	viper.SetDefault("kubernetes.clusterTimeoutSeconds", 10)
-	viper.SetDefault("sops.keysPath", "~/.config/sops/keys")
-	viper.SetDefault("healthcheck.port", 8080)
-	viper.SetDefault("healthcheck.enabled", true)
-	viper.SetDefault("logging.level", "info")
-	viper.SetDefault("logging.style", "text")
-	viper.SetDefault("logging.logToStdout", true)
-	viper.SetDefault("logging.additionalLogFiles", make([]string, 0))
-	viper.SetDefault("behavior.fieldmanager.name", "github.com/civts/markhor")
-	viper.SetDefault("behavior.namespaces", make([]string, 0))
-	viper.SetDefault("behavior.excludedNamespaces", make([]string, 0))
-	viper.SetDefault("behavior.fieldmanager.forceUpdates", false)
-	viper.SetDefault("behavior.pruneDanglingMarkhorSecrets", true)
-	viper.SetDefault("markorSecrets.hierarchySeparator.default", "/")
-	viper.SetDefault("markorSecrets.hierarchySeparator.allowOverride", false)
-	viper.SetDefault("markorSecrets.hierarchySeparator.warnOnOverride", true)
-	viper.SetDefault("markorSecrets.managedAnnotation.default", "markhor.example.com/managed-by")
-	viper.SetDefault("markorSecrets.managedAnnotation.allowOverride", false)
-	viper.SetDefault("markorSecrets.managedAnnotation.warnOnOverride", true)
+	viper.SetDefault("kubernetes.kubeconfigPath", DefaultKubeconfigPath)
+	viper.SetDefault("kubernetes.clusterTimeoutSeconds", DefaultClusterTimeoutSeconds)
+	viper.SetDefault("sops.keysPath", DefaultSopsKeysPath)
+	viper.SetDefault("healthcheck.port", DefaultHealthcheckPort)
+	viper.SetDefault("healthcheck.enabled", DefaultHealthcheckEnabled)
+	viper.SetDefault("logging.level", DefaultLoggingLevel)
+	viper.SetDefault("logging.style", DefaultLoggingStyle)
+	viper.SetDefault("logging.logToStdout", DefaultLoggingLogToStdout)
+	viper.SetDefault("logging.additionalLogFiles", DefaultLoggingAdditionalLogFiles)
+	viper.SetDefault("behavior.fieldmanager.name", DefaultBehaviorFieldManagerName)
+	viper.SetDefault("behavior.namespaces", DefaultBehaviorNamespaces)
+	viper.SetDefault("behavior.excludedNamespaces", DefaultBehaviorExcludedNamespaces)
+	viper.SetDefault("behavior.fieldmanager.forceUpdates", DefaultBehaviorFieldManagerForceUpdates)
+	viper.SetDefault("behavior.pruneDanglingMarkhorSecrets", DefaultBehaviorPruneDanglingMarkhorSecrets)
+	viper.SetDefault("markorSecrets.hierarchySeparator.default", DefaultMarkorSecretsHierarchySeparatorDefault)
+	viper.SetDefault("markorSecrets.hierarchySeparator.allowOverride", DefaultMarkorSecretsHierarchySeparatorAllowOverride)
+	viper.SetDefault("markorSecrets.hierarchySeparator.warnOnOverride", DefaultMarkorSecretsHierarchySeparatorWarnOnOverride)
+	viper.SetDefault("markorSecrets.managedAnnotation.default", DefaultMarkorSecretsManagedAnnotationDefault)
+	viper.SetDefault("markorSecrets.managedAnnotation.allowOverride", DefaultMarkorSecretsManagedAnnotationAllowOverride)
+	viper.SetDefault("markorSecrets.managedAnnotation.warnOnOverride", DefaultMarkorSecretsManagedAnnotationWarnOnOverride)
 }
 
 func ParseCliArgs() {
