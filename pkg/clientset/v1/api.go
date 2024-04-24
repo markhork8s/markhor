@@ -9,7 +9,7 @@ import (
 )
 
 type MarkhorV1Interface interface {
-	MarkhorSecrets(namespace string) MarkhorSecretInterface
+	MarkhorSecrets() MarkhorSecretInterface
 }
 
 type MarkhorV1Client struct {
@@ -31,9 +31,8 @@ func NewForConfig(c *rest.Config) (*MarkhorV1Client, error) {
 	return &MarkhorV1Client{restClient: client}, nil
 }
 
-func (c *MarkhorV1Client) MarkhorSecrets(namespace string) MarkhorSecretInterface {
+func (c *MarkhorV1Client) MarkhorSecrets() MarkhorSecretInterface {
 	return &markhorSecretClient{
 		restClient: c.restClient,
-		ns:         namespace,
 	}
 }

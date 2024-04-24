@@ -24,7 +24,7 @@ var connectedSuccessfully = false
 
 func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clientset, config config.Config) {
 	go checkConnectTimeout(config.Kubernetes.ClusterTimeoutSeconds)
-	markhorSecrets, err := mClient.MarkhorSecrets("irrelevant").Watch(metav1.ListOptions{})
+	markhorSecrets, err := mClient.MarkhorSecrets().Watch(metav1.ListOptions{})
 	if err != nil {
 		e := err.Error()
 		if strings.Contains(e, "the server could not find the requested resource") {

@@ -17,10 +17,10 @@ func WatchResources(client client_v1.MarkhorV1Interface) cache.Store {
 	markhorSecretStore, markhorSecretController := cache.NewInformer(
 		&cache.ListWatch{
 			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-				return client.MarkhorSecrets("irrelevant").List(lo)
+				return client.MarkhorSecrets().List(lo)
 			},
 			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-				return client.MarkhorSecrets("irrelevant").Watch(lo)
+				return client.MarkhorSecrets().Watch(lo)
 			},
 		},
 		&v1.MarkhorSecret{},

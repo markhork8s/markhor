@@ -21,15 +21,15 @@ type MarkhorSecretInterface interface {
 
 type markhorSecretClient struct {
 	restClient rest.Interface
-	ns         string
 }
+
+const msecretsResource = "markhorsecrets"
 
 func (c *markhorSecretClient) List(opts metav1.ListOptions) (*v1.MarkhorSecretList, error) {
 	result := v1.MarkhorSecretList{}
 	err := c.restClient.
 		Get().
-		// Namespace(c.ns).
-		Resource("markhorsecrets").
+		Resource(msecretsResource).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
 		Into(&result)
@@ -41,8 +41,7 @@ func (c *markhorSecretClient) Get(name string, opts metav1.GetOptions) (*v1.Mark
 	result := v1.MarkhorSecret{}
 	err := c.restClient.
 		Get().
-		//Namespace(c.ns).
-		Resource("markhorsecrets").
+		Resource(msecretsResource).
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(context.TODO()).
@@ -55,8 +54,7 @@ func (c *markhorSecretClient) Create(markhorSecret *v1.MarkhorSecret) (*v1.Markh
 	result := v1.MarkhorSecret{}
 	err := c.restClient.
 		Post().
-		//Namespace(c.ns).
-		Resource("markhorsecrets").
+		Resource(msecretsResource).
 		Body(markhorSecret).
 		Do(context.TODO()).
 		Into(&result)
@@ -68,8 +66,7 @@ func (c *markhorSecretClient) Watch(opts metav1.ListOptions) (watch.Interface, e
 	opts.Watch = true
 	return c.restClient.
 		Get().
-		//Namespace(c.ns).
-		Resource("markhorsecrets").
+		Resource(msecretsResource).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(context.TODO())
 }
