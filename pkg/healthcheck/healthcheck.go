@@ -20,10 +20,12 @@ func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+const healthcheckEndpoint = "/health"
+
 func SetupHealthcheck(conf config.HealthcheckConfig) {
 	if conf.Enabled {
 		slog.Debug(fmt.Sprint("Healthcheck endpoint created on port ", conf.Port))
-		http.HandleFunc("/health", healthCheckHandler)
+		http.HandleFunc(healthcheckEndpoint, healthCheckHandler)
 		http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil)
 	} else {
 		slog.Debug("Skipping healthcheck -disabled in the config-")
