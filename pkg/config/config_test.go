@@ -317,9 +317,42 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 }
 
 // If the file has an invalid yaml syntax, the program should exit with code 1
-func TestParseConfigInvalidFile(t *testing.T) {
+func TestParseConfigInvalidYamlFile(t *testing.T) {
 	reset()
 	configFileContents := "this is no yaml file for sure"
+
+	// Create temporary file with the config data
+	f, err := createTempFile()
+	if err != nil {
+		t.Fatalf("Error creating temporary config file: %v", err)
+	}
+	yamlName := fmt.Sprintf("%s.yaml", f.Name())
+	err = os.Rename(f.Name(), yamlName)
+	if err != nil {
+		t.Fatalf("Error renaming temporary config file: %v", err)
+	}
+	_, err = f.Write([]byte(configFileContents))
+	if err != nil {
+		t.Fatalf("Error writing to temporary config file: %v", err)
+	}
+
+	defer removeTempFile(f)
+
+	// Fake running the program with these CLI args
+	// The 1st one is the program name, which is irrelevant now
+	os.Args = []string{">", "--config", yamlName}
+
+	// Test the ParseConfig function with the temporary config file
+	_, err = ParseConfig()
+	if err == nil {
+		t.Fatalf("Parsing this invalid config should have failed, but it did not")
+	}
+}
+
+// If the file has an invalid yaml syntax, the program should exit with code 1
+func TestParseConfigInvalidConfigFile(t *testing.T) {
+	reset()
+	configFileContents := "kubernetes:\n  clusterTimeoutSeconds: \"oops, wrong value\""
 
 	// Create temporary file with the config data
 	f, err := createTempFile()
@@ -363,18 +396,3 @@ func ensureDefaultConfigDoesNotExist(t *testing.T) {
 		t.Fatal("A prerequisite for this test is that this file does NOT exist, but it seems that it does. Please remove", pkg.DEFAULT_CONFIG_PATH)
 	}
 }
-
-// func TestSetupLogging(t *testing.T) {
-// 	// Implement test logic for testing SetupLogging function
-// 	panic("TODO")
-// }
-
-// func TestValidateConfig(t *testing.T) {
-// 	// Implement test logic for validating the parsed configuration
-// 	panic("TODO")
-// }
-
-// func TestSetDefaultConfigValues(t *testing.T) {
-// 	// Implement test logic for setting default configuration values
-// 	panic("TODO")
-// }
