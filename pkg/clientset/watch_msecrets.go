@@ -22,7 +22,7 @@ import (
 
 var connectedSuccessfully = false
 
-func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clientset, config config.Config) {
+func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clientset, config *config.Config) {
 	go checkConnectTimeout(config.Kubernetes.ClusterTimeoutSeconds)
 	markhorSecrets, err := mClient.MarkhorSecrets().Watch(metav1.ListOptions{})
 	if err != nil {

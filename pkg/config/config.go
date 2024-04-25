@@ -1,8 +1,8 @@
 package config
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 
@@ -73,8 +73,11 @@ type HealthcheckConfig struct {
 // Parses the program configuration (from CLI and file).
 // Will terminate the execution if it fails since it would not be illogical to
 // proceed w/o a valid config
-func ParseConfig() Config {
-	ParseCliArgs()
+func ParseConfig() (*Config, error) {
+	err := ParseCliArgs()
+	if err != nil {
+		return nil, err
+	}
 	configFilePath := viper.GetString("config")
 
 	usingCustomConfigFile := configFilePath != pkg.DEFAULT_CONFIG_PATH
@@ -87,23 +90,26 @@ func ParseConfig() Config {
 	viper.SetConfigFile(configFilePath)
 	setDefaultConfigValues()
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil && usingCustomConfigFile {
-		log.Fatal("Error reading Markhor config file:", err)
+		return nil, errors.New("Error reading Markhor config file: " + err.Error())
 	}
 
 	// Define custom Config struct
 	var config Config
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		log.Fatal("Error parsing Markhor config data:", err)
+		return nil, errors.New("Error parsing Markhor config data: " + err.Error())
 	}
 
-	ValidateConfig(config)
+	err = ValidateConfig(config)
+	if err != nil {
+		return nil, err
+	}
 
 	SetupLogging(config)
 
-	return config
+	return &config, nil
 }
 
 // Defines the default Markhor config values
@@ -130,13 +136,16 @@ func setDefaultConfigValues() {
 	viper.SetDefault("markorSecrets.managedAnnotation.warnOnOverride", DefaultMarkorSecretsManagedAnnotationWarnOnOverride)
 }
 
-func ParseCliArgs() {
+func ParseCliArgs() error {
 	// Define CLI flags
 	pflag.StringP("config", "c", pkg.DEFAULT_CONFIG_PATH, "Path to config file")
 	helpSet := pflag.BoolP("help", "h", false, "Show this help message")
 	versionSet := pflag.BoolP("version", "v", false, "Print the version of this program and exit")
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
+	err := viper.BindPFlags(pflag.CommandLine)
+	if err != nil {
+		return errors.New("Could not parse CLI flags: " + err.Error())
+	}
 
 	// Print help or version message if needed
 	if *helpSet {
@@ -146,4 +155,6 @@ func ParseCliArgs() {
 		fmt.Printf("v%s\n", pkg.VERSION)
 		os.Exit(0)
 	}
+
+	return nil
 }

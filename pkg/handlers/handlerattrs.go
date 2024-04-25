@@ -19,5 +19,5 @@ type HandlerAttrs struct {
 	//Client to talk with kubernetes
 	Clientset *kubernetes.Clientset
 	//The configuration of Markhor
-	Config config.Config
+	Config *config.Config
 }

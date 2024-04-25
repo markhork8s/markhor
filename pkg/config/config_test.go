@@ -20,7 +20,7 @@ func reset() {
 }
 
 // The configuration with all the default values
-var defaultConfig = Config{
+var defaultConfig = &Config{
 	Sops: sopsConfig{KeysPath: DefaultSopsKeysPath},
 	Kubernetes: kubernetesConfig{
 		KubeconfigPath:        DefaultKubeconfigPath,
@@ -64,8 +64,10 @@ var defaultConfig = Config{
 func TestValidDefaultConfig(t *testing.T) {
 	reset()
 	ensureDefaultConfigDoesNotExist(t)
-	_ = ParseConfig()
-	//If we get here the test passed since a valid configuration was created
+	_, err := ParseConfig()
+	if err != nil {
+		t.Fatal("Parsing the config should not have failed, but instead we got this error:", err)
+	}
 }
 
 // When no configuration file is provided, no error should occour in
@@ -76,7 +78,10 @@ func TestParseConfigDefaultValuesOnMissingDefaultFile(t *testing.T) {
 	ensureDefaultConfigDoesNotExist(t)
 
 	// Parse the config without the --config flag specified
-	config := ParseConfig()
+	config, err := ParseConfig()
+	if err != nil {
+		t.Fatal("There was an unexpected error parsing the config: ", err)
+	}
 
 	// Add assertions to validate the returned Config struct
 	diff := cmp.Diff(config, defaultConfig)
@@ -105,7 +110,10 @@ func TestValidDefaultConfigOnEmptyFile(t *testing.T) {
 	// The 1st one is the program name, which is irrelevant now
 	os.Args = []string{">", "--config", yamlName}
 
-	config := ParseConfig()
+	config, err := ParseConfig()
+	if err != nil {
+		t.Fatal("There was an unexpected error parsing the config: ", err)
+	}
 
 	// Add assertions to validate the returned Config struct
 	diff := cmp.Diff(config, defaultConfig)
@@ -144,12 +152,15 @@ func TestParseConfigValidPartialFile(t *testing.T) {
 	os.Args = []string{">", "--config", yamlName}
 
 	// Test the ParseConfig function with the temporary config file
-	config := ParseConfig()
+	config, err := ParseConfig()
+	if err != nil {
+		t.Fatal("There was an unexpected error parsing the config: ", err)
+	}
 
 	if config.Sops.KeysPath != sopsKeyPath {
 		t.Fatalf("The parsed config does not use the provided value for sops keys path: expected %s, got %s", sopsKeyPath, config.Sops.KeysPath)
 	}
-	customDefaultConfig := deepcopy.Copy(defaultConfig).(Config)
+	customDefaultConfig := deepcopy.Copy(defaultConfig).(*Config)
 	customDefaultConfig.Sops.KeysPath = sopsKeyPath
 	diff := cmp.Diff(config, customDefaultConfig)
 	if diff != "" {
@@ -188,12 +199,15 @@ func TestParseConfigValidPartialFile2(t *testing.T) {
 	os.Args = []string{">", "--config", yamlName}
 
 	// Test the ParseConfig function with the temporary config file
-	config := ParseConfig()
+	config, err := ParseConfig()
+	if err != nil {
+		t.Fatal("There was an unexpected error parsing the config: ", err)
+	}
 
 	if config.Behavior.Fieldmanager.Name != name {
 		t.Fatalf("The parsed config does not use the provided value for sops keys path: expected %s, got %s", name, config.Behavior.Fieldmanager.Name)
 	}
-	customDefaultConfig := deepcopy.Copy(defaultConfig).(Config)
+	customDefaultConfig := deepcopy.Copy(defaultConfig).(*Config)
 	customDefaultConfig.Behavior.Fieldmanager.Name = name
 	diff := cmp.Diff(config, customDefaultConfig)
 	if diff != "" {
@@ -291,11 +305,47 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 	os.Args = []string{">", "--config", yamlName}
 
 	// Test the ParseConfig function with the temporary config file
-	config := ParseConfig()
+	config, err := ParseConfig()
+	if err != nil {
+		t.Fatal("There was an unexpected error parsing the config: ", err)
+	}
 
-	diff := cmp.Diff(config, xConfig)
+	diff := cmp.Diff(config, &xConfig)
 	if diff != "" {
 		t.Fatal("The two structs are not equal:", diff)
+	}
+}
+
+// If the file has an invalid yaml syntax, the program should exit with code 1
+func TestParseConfigInvalidFile(t *testing.T) {
+	reset()
+	configFileContents := "this is no yaml file for sure"
+
+	// Create temporary file with the config data
+	f, err := createTempFile()
+	if err != nil {
+		t.Fatalf("Error creating temporary config file: %v", err)
+	}
+	yamlName := fmt.Sprintf("%s.yaml", f.Name())
+	err = os.Rename(f.Name(), yamlName)
+	if err != nil {
+		t.Fatalf("Error renaming temporary config file: %v", err)
+	}
+	_, err = f.Write([]byte(configFileContents))
+	if err != nil {
+		t.Fatalf("Error writing to temporary config file: %v", err)
+	}
+
+	defer removeTempFile(f)
+
+	// Fake running the program with these CLI args
+	// The 1st one is the program name, which is irrelevant now
+	os.Args = []string{">", "--config", yamlName}
+
+	// Test the ParseConfig function with the temporary config file
+	_, err = ParseConfig()
+	if err == nil {
+		t.Fatalf("Parsing this invalid config should have failed, but it did not")
 	}
 }
 
@@ -326,10 +376,5 @@ func ensureDefaultConfigDoesNotExist(t *testing.T) {
 
 // func TestSetDefaultConfigValues(t *testing.T) {
 // 	// Implement test logic for setting default configuration values
-// 	panic("TODO")
-// }
-
-// func TestParseConfigInvalidFile(t *testing.T) {
-// 	// Implement test logic for parsing an invalid configuration file
 // 	panic("TODO")
 // }

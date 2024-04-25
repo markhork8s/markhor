@@ -1,16 +1,17 @@
 package config
 
 import (
+	"errors"
 	"fmt"
-	"log"
 )
 
 // This function sanitizes the Markhor configuration before it is used
-func ValidateConfig(c Config) {
+func ValidateConfig(c Config) error {
 	s := validate(c)
 	if s != "" {
-		log.Fatalf("Invalid configuration: %s", s)
+		return errors.New("Invalid configuration: " + s)
 	}
+	return nil
 }
 
 func validate(c Config) string {
