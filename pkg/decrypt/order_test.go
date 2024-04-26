@@ -382,7 +382,7 @@ func TestSortJson(t *testing.T) {
 			"name":      "sample-secret",
 		},
 		"markhorParams": map[string]interface{}{
-			"order": []string{
+			"order": []interface{}{
 				"apiVersion",
 				"kind",
 				"metadata/name",
@@ -452,6 +452,6 @@ func TestSortJson(t *testing.T) {
 	s1 := string(m1)
 	s2 := string(m2)
 	if s1 != s2 {
-		t.Errorf("Result doesn't match the expected ordering. Expected %s, got %s", s1, s2)
+		t.Errorf("Result doesn't match the expected ordering. Expected %s, got %s", s2, s1)
 	}
 }

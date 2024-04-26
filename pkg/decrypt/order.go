@@ -43,9 +43,17 @@ func sortJSONData(jsonData map[string]interface{}, eid slog.Attr) (*orderedmap.O
 	} else {
 		slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", separator), eid)
 	}
-	rawOrder, ok := sortingParams["order"].([]string)
+	rawOrderIntf, ok := sortingParams["order"].([]interface{})
 	if !ok {
-		return nil, errors.New("the order field must be an array of strings (or empty)")
+		return nil, errors.New("no order field found")
+	}
+	rawOrder := make([]string, len(rawOrderIntf))
+	for i, v := range rawOrderIntf {
+		s, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("order term number %d (0-indexed) is not a string", i)
+		}
+		rawOrder[i] = s
 	}
 
 	o, err := parseOrdering(rawOrder, separator)

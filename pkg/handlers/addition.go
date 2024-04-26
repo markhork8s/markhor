@@ -28,7 +28,7 @@ func HandleAddition(attrs HandlerAttrs) {
 
 	{ // Add managed-by annotation
 		annotation, present := helpers.GetAnnotation(decryptedData)
-		metadata, ok := decryptedData.Get("metadata")
+		metadata, ok := decryptedData["metadata"]
 		if !ok {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
 			return
@@ -40,12 +40,12 @@ func HandleAddition(attrs HandlerAttrs) {
 		}
 		annotations, ok := metadataObj["annotations"]
 		if !ok {
-			slog.Error(fmt.Sprint("Missing annotations in ", secretName), attrs.EventId)
+			slog.Debug(fmt.Sprint("No existing annotations found in ", secretName, " will add managed-by markhor anyway"), attrs.EventId)
 			annotations = make(map[string]interface{})
 		}
 		annotationsObj, ok := annotations.(map[string]interface{})
 		if !ok {
-			slog.Error(fmt.Sprint("Missing annotations in ", secretName), attrs.EventId)
+			slog.Error(fmt.Sprint("Annotations in ", secretName, " do not appear to be a YAML object"), attrs.EventId)
 			annotationsObj = make(map[string]interface{})
 		}
 		if present {
@@ -54,14 +54,14 @@ func HandleAddition(attrs HandlerAttrs) {
 			annotationsObj[attrs.Config.MarkorSecrets.ManagedAnnotation.Default] = MANAGED_BY
 		}
 		metadataObj["annotations"] = annotationsObj
-		decryptedData.Set("metadata", metadataObj)
+		decryptedData["metadata"] = metadataObj
 	}
 
 	{ //Remove extra fields
-		decryptedData.Delete(pkg.MARKHORPARAMS_MANIFEST_KEY)
-		decryptedData.Delete("sops")
-		decryptedData.Set("apiVersion", "v1")
-		decryptedData.Set("kind", "Secret")
+		decryptedData[pkg.MARKHORPARAMS_MANIFEST_KEY] = nil
+		decryptedData["sops"] = nil
+		decryptedData["apiVersion"] = "v1"
+		decryptedData["kind"] = "Secret"
 	}
 
 	{ //Create new secret
