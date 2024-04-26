@@ -1,8 +1,9 @@
 package config
 
 import (
+	"errors"
+	"fmt"
 	"io"
-	"log"
 	"log/slog"
 	"os"
 )
@@ -14,7 +15,7 @@ var loggerLevels = map[string]slog.Level{
 	"error":   slog.LevelError,
 }
 
-func SetupLogging(config Config) {
+func SetupLogging(config Config) error {
 
 	files := make([]*os.File, 0)
 
@@ -25,7 +26,7 @@ func SetupLogging(config Config) {
 	for _, fname := range config.Logging.AdditionalLogFiles {
 		f, err := os.OpenFile(fname, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		files = append(files, f)
 	}
@@ -39,7 +40,7 @@ func SetupLogging(config Config) {
 
 	level, ok := loggerLevels[config.Logging.Level]
 	if !ok {
-		log.Fatal("Invalid log level specified:", config.Logging.Level)
+		return errors.New(fmt.Sprint("Invalid log level specified:", config.Logging.Level))
 	}
 	isDebugModeActive := level == slog.LevelDebug
 	opts := &slog.HandlerOptions{
@@ -53,8 +54,9 @@ func SetupLogging(config Config) {
 	case "json":
 		handler = slog.NewJSONHandler(writer, opts)
 	default:
-		log.Fatal("Invalid log style specified:", config.Logging.Style)
+		return errors.New(fmt.Sprint("Invalid log style specified:", config.Logging.Style))
 	}
 
 	slog.SetDefault(slog.New(handler))
+	return nil
 }

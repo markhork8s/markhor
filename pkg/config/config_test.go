@@ -389,6 +389,7 @@ func createTempFile() (*os.File, error) {
 
 func removeTempFile(f *os.File) {
 	os.Remove(f.Name())
+	f.Close()
 }
 
 func ensureDefaultConfigDoesNotExist(t *testing.T) {

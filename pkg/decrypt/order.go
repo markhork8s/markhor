@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/civts/markhor/pkg"
+	"github.com/civts/markhor/pkg/config"
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
@@ -38,21 +39,13 @@ func sortJSONData(jsonData map[string]interface{}, eid slog.Attr) (*orderedmap.O
 	}
 	separator, ok := sortingParams["hierarchySeparator"].(string)
 	if !ok {
-		separator = "."
+		separator = config.DefaultMarkorSecretsHierarchySeparatorDefault
 	} else {
-		slog.Warn(fmt.Sprint("Using custom hierarchy separator: ", separator), eid)
+		slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", separator), eid)
 	}
-	rawOrderIntf, ok := sortingParams["order"].([]interface{})
+	rawOrder, ok := sortingParams["order"].([]string)
 	if !ok {
-		return nil, errors.New("no order field found")
-	}
-	rawOrder := make([]string, len(rawOrderIntf))
-	for i, v := range rawOrderIntf {
-		s, ok := v.(string)
-		if !ok {
-			return nil, fmt.Errorf("order term number %d (0-indexed) is not a string", i)
-		}
-		rawOrder[i] = s
+		return nil, errors.New("the order field must be an array of strings (or empty)")
 	}
 
 	o, err := parseOrdering(rawOrder, separator)

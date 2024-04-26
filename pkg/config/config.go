@@ -46,7 +46,10 @@ func ParseConfig() (*Config, error) {
 		return nil, err
 	}
 
-	SetupLogging(config)
+	err = SetupLogging(config)
+	if err != nil {
+		return nil, err
+	}
 
 	return &config, nil
 }
