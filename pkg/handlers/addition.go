@@ -20,7 +20,7 @@ func HandleAddition(attrs HandlerAttrs) {
 
 	namespace := attrs.MarkhorSecret.ObjectMeta.Namespace
 	secretName := fmt.Sprintf("%s/%s", namespace, attrs.MarkhorSecret.ObjectMeta.Name)
-	decryptedData, err := decrypt.DecryptMarkhorSecret(attrs.MarkhorSecret, attrs.EventId)
+	decryptedData, err := decrypt.DecryptMarkhorSecretEvent(attrs.MarkhorSecret, attrs.EventId)
 	if err != nil {
 		slog.Error(fmt.Sprint("Could not decrypt MarkhorSecret ", secretName), attrs.EventId)
 		return

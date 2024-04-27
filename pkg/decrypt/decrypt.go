@@ -10,9 +10,11 @@ import (
 	"github.com/getsops/sops/v3/decrypt"
 )
 
+const LASTAPPLIEDANNOTAION_K8s = "kubectl.kubernetes.io/last-applied-configuration"
+
 // Given an encrypted MarkhorSecret, this function attempts to decrypt it using SOPS.
-func DecryptMarkhorSecret(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (map[string]interface{}, error) {
-	jsonConfigStr := markhorSecret.ObjectMeta.Annotations["kubectl.kubernetes.io/last-applied-configuration"]
+func DecryptMarkhorSecretEvent(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (map[string]interface{}, error) {
+	jsonConfigStr := markhorSecret.ObjectMeta.Annotations[LASTAPPLIEDANNOTAION_K8s]
 
 	var jsonObj map[string]interface{}
 	err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
@@ -20,6 +22,10 @@ func DecryptMarkhorSecret(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (map[s
 		slog.Error(fmt.Sprint("Error unmarshalling encrypted JSON: ", err), eid)
 		return nil, err
 	}
+	return DecryptMarkhorSecret(jsonObj, eid)
+}
+
+func DecryptMarkhorSecret(jsonObj map[string]interface{}, eid slog.Attr) (map[string]interface{}, error) {
 
 	sortedJson := sortJson(jsonObj, eid)
 	encData, err := json.Marshal(sortedJson)

@@ -14,7 +14,7 @@ func HandleDeletion(args HandlerAttrs) {
 	name := args.MarkhorSecret.ObjectMeta.Name
 	namespace := args.MarkhorSecret.ObjectMeta.Namespace
 	secretName := fmt.Sprintf("%s/%s", namespace, name)
-	_, err := decrypt.DecryptMarkhorSecret(args.MarkhorSecret, args.EventId)
+	_, err := decrypt.DecryptMarkhorSecretEvent(args.MarkhorSecret, args.EventId)
 	if err != nil {
 		slog.Error(fmt.Sprint("Could not decrypt MarkhorSecret ", secretName), args.EventId)
 		return
