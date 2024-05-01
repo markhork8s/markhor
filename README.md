@@ -1,4 +1,12 @@
-# Markhor 🐐🔒
+<p align="center">
+  <picture height="200px">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/images/logo/dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/images/logo/classic.svg">
+    <img height="200px" alt="Markhor logo" src=".github/images/logo/classic.png">
+  </picture>
+</p>
+
+# Markhor 🐐
 
 -In its current state, this is a 100% experimental project. I do not know if this will ever work. DO NOT USE THIS CODE-
 
