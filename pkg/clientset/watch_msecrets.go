@@ -29,6 +29,7 @@ func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clie
 		e := err.Error()
 		if strings.Contains(e, "the server could not find the requested resource") {
 			slog.Error("Kubernetes does not know what a MarkhorSecret is. Did you forget to install the CRD?")
+			os.Exit(1)
 		}
 		panic(err)
 	}
