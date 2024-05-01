@@ -22,6 +22,10 @@ func DecryptMarkhorSecretEvent(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (
 		slog.Error(fmt.Sprint("Error unmarshalling encrypted JSON: ", err), eid)
 		return nil, err
 	}
+	message, ok := CheckSopsVersion(jsonObj)
+	if !ok {
+		slog.Warn(fmt.Sprint("The SOPS version used to encrypt this MarkhorSecret has not been tested on this release of markhor. Decryption may fail", message))
+	}
 	return DecryptMarkhorSecret(jsonObj, eid)
 }
 
