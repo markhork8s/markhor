@@ -18,5 +18,6 @@ func GetK8sClients(kubeconfig string) (*v1.MarkhorV1Client, *kubernetes.Clientse
 		slog.Error("Could not get a client to communicate with the k8s cluster")
 		panic(err.Error())
 	}
+	VersionCheck(clientset)
 	return mClient, clientset
 }
