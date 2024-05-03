@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/civts/markhor/pkg/admission_controller"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
 	cs "github.com/civts/markhor/pkg/clientset"
 	"github.com/civts/markhor/pkg/config"
@@ -26,6 +27,7 @@ func main() {
 	mClient, clientset := cs.GetK8sClients(config.Kubernetes.KubeconfigPath)
 
 	go healthcheck.SetupHealthcheck(config.Healthcheck)
+	go admission_controller.SetupAdmissionController(config)
 
 	cs.WatchMarkhorSecrets(mClient, clientset, config)
 }

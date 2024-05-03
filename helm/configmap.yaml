@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: markhor-config
+  namespace: markhor
+data:
+  config.yaml: |
+    logging:
+      level: debug
+
+    tls:
+      mode: file
+      certPath: /etc/markhor/tls/tls.crt
+      keyPath: /etc/markhor/tls/tls.key

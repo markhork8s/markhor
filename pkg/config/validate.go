@@ -3,6 +3,8 @@ package config
 import (
 	"errors"
 	"fmt"
+	"log/slog"
+	"strings"
 )
 
 // This function sanitizes the Markhor configuration before it is used
@@ -14,17 +16,33 @@ func ValidateConfig(c Config) error {
 	return nil
 }
 
+const maxPort = 65535
+
 func validate(c Config) string {
 	if c.Kubernetes.ClusterTimeoutSeconds <= 0 {
 		return "Kubernetes.ClusterTimeoutSeconds must be greater than zero"
 	}
 
-	if len(c.Sops.KeysPath) == 0 {
-		return "The SOPS key path can't have a length of zero"
+	if c.Healthcheck.Port < 1 || c.Healthcheck.Port > maxPort {
+		return fmt.Sprintf("The port number for the healthcheck endpoint shall be in the range [1, %d]", maxPort)
 	}
 
-	if c.Healthcheck.Port < 1 || c.Healthcheck.Port > 65534 {
-		return "The port number for the healthcheck endpoint shall be in the range [1, 65534]"
+	if c.AdmissionController.Port < 1 || c.AdmissionController.Port > maxPort {
+		return fmt.Sprintf("The port number for the admission controller endpoint shall be in the range [1, %d]", maxPort)
+	}
+
+	if c.AdmissionController.Enabled && c.Healthcheck.Enabled {
+		if c.AdmissionController.Port == c.Healthcheck.Port {
+			return "The port number for the admission controller and healthcheck cannot be equal"
+		}
+	}
+
+	if len(c.Tls.CertPath) == 0 {
+		return "The TLS certificate file path can't have a length of zero"
+	}
+
+	if len(c.Tls.KeyPath) == 0 {
+		return "The TLS key file path can't have a length of zero"
 	}
 
 	for i, f := range c.Logging.AdditionalLogFiles {
@@ -66,7 +84,32 @@ func validate(c Config) string {
 		return "The default managed annotation can't be empty"
 	}
 
+	if !contains(ValidTLSModes, c.Tls.Mode) {
+		return "The TLS mode is invalid. Valid values are " + strings.Join(ValidTLSModes, ", ")
+	}
+
+	if !mapContainsKey(LoggerLevels, c.Logging.Level) {
+		return "The log level is invalid. Valid values are " + strings.Join(ValidTLSModes, ", ")
+	}
+
 	return ""
+}
+
+func contains(slice []string, elem string) bool {
+	for _, value := range slice {
+		if value == elem {
+			return true
+		}
+	}
+	return false
+}
+func mapContainsKey(slice map[string]slog.Level, elem string) bool {
+	for k := range slice {
+		if k == elem {
+			return true
+		}
+	}
+	return false
 }
 
 func hasDuplicates(slice []string) bool {

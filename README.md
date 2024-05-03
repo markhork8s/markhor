@@ -16,6 +16,9 @@ Check the Example usage section to see how to define the secrets.
 
 This project is in no way affiliated or endorsed by SOPS nor Kubernetes.
 
+# Table of Contents
+# Introduction
+# Setup
 # Example usage
 ## Setup on the cluster
 1. Install markhor in your cluster -along with the CRDs-
@@ -43,7 +46,7 @@ However, since the 'Secret' resource is defined by kubernetes, it is not possibl
 
 # Security concerns
 ## Confused deputy attack
-Should not be possible since, thanks to the MAC (Message Authentication Code) that SOPS includes in its files, it is not possible to alter their content -even the parts which are unencrypted-. Also, the program creates the Seccret only in the same namespace where the MarkhorSecret was created.
+Should not be possible since, thanks to the MAC (Message Authentication Code) that SOPS includes in its files, it is not possible to alter their content -even the parts which are unencrypted-.
 
 # Limitations:
 Due to how k8s marshals the applied configurations, comments will not persist in the final output.
@@ -123,7 +126,7 @@ markorSecrets:
 
 # Features:
 
-1. Validation hook that checks if it is possible to decrypt a MarkhorSecret and if not tells you why -preventing its creation-. ❌
+1. Validation hook that checks if it is possible to decrypt a MarkhorSecret and if not tells you why -preventing its creation and updating-. ✅
 
 1. Create a MS ✅
   1. If it can be decrypted, it does a kubectl apply, meaning it creates the Secret if it's missing, updates it if needed and leaves it unchanged if everything is the same
@@ -137,5 +140,9 @@ markorSecrets:
 1. Logging with slog and different levels ✅
 
 1. Honoring all the config values ❌
+
+1. Docs ❌
+  1. https://www.bestpractices.dev/en
+  1. https://goreportcard.com/
 
 1. Testing ❌

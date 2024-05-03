@@ -21,7 +21,6 @@ func reset() {
 
 // The configuration with all the default values
 var defaultConfig = &Config{
-	Sops: sopsConfig{KeysPath: DefaultSopsKeysPath},
 	Kubernetes: kubernetesConfig{
 		KubeconfigPath:        DefaultKubeconfigPath,
 		ClusterTimeoutSeconds: DefaultClusterTimeoutSeconds,
@@ -56,6 +55,15 @@ var defaultConfig = &Config{
 	Healthcheck: HealthcheckConfig{
 		Port:    DefaultHealthcheckPort,
 		Enabled: DefaultHealthcheckEnabled,
+	},
+	AdmissionController: AdmissionControllerConfig{
+		Port:    DefaultAdmissionControllerPort,
+		Enabled: DefaultAdmissionControllerEnabled,
+	},
+	Tls: TlsConfig{
+		Mode:     DefaultTlsMode,
+		CertPath: DefaultTlsCertPath,
+		KeyPath:  DefaultTlsKeyPath,
 	},
 }
 
@@ -127,8 +135,8 @@ func TestValidDefaultConfigOnEmptyFile(t *testing.T) {
 func TestParseConfigValidPartialFile(t *testing.T) {
 	reset()
 	// Init with values that are surely different from the default ones
-	sopsKeyPath := "/a/custom/key/path"
-	configFileContents := "sops:\n  keysPath: " + sopsKeyPath + "\n"
+	k8sConfigPath := "/a/custom/config/path"
+	configFileContents := "kubernetes:\n  kubeconfigPath: " + k8sConfigPath + "\n"
 
 	// Create temporary file with the config data
 	f, err := createTempFile()
@@ -157,11 +165,11 @@ func TestParseConfigValidPartialFile(t *testing.T) {
 		t.Fatal("There was an unexpected error parsing the config: ", err)
 	}
 
-	if config.Sops.KeysPath != sopsKeyPath {
-		t.Fatalf("The parsed config does not use the provided value for sops keys path: expected %s, got %s", sopsKeyPath, config.Sops.KeysPath)
+	if config.Kubernetes.KubeconfigPath != k8sConfigPath {
+		t.Fatalf("The parsed config does not use the provided value for kubernetes config path: expected %s, got %s", k8sConfigPath, config.Kubernetes.KubeconfigPath)
 	}
 	customDefaultConfig := deepcopy.Copy(defaultConfig).(*Config)
-	customDefaultConfig.Sops.KeysPath = sopsKeyPath
+	customDefaultConfig.Kubernetes.KubeconfigPath = k8sConfigPath
 	diff := cmp.Diff(config, customDefaultConfig)
 	if diff != "" {
 		t.Fatal("The two structs are not equal:", diff)
@@ -220,12 +228,19 @@ func TestParseConfigValidPartialFile2(t *testing.T) {
 func TestParseConfigValidCompleteFile(t *testing.T) {
 	reset()
 	// Init with values that are surely different from the default ones
-	sopsKeyPath := "/a/custom/key/path"
 	healthConfig := HealthcheckConfig{
 		Port:    DefaultHealthcheckPort / 2,
 		Enabled: !DefaultHealthcheckEnabled,
 	}
-	sopsConfig := sopsConfig{KeysPath: sopsKeyPath}
+	admissionControllerConfig := AdmissionControllerConfig{
+		Port:    DefaultAdmissionControllerPort / 2,
+		Enabled: !DefaultAdmissionControllerEnabled,
+	}
+	tlsConfig := TlsConfig{
+		Mode:     "file",
+		CertPath: defaultConfig.Tls.CertPath + ".new",
+		KeyPath:  defaultConfig.Tls.KeyPath + ".new_again",
+	}
 	kubernetesConfig := kubernetesConfig{
 		KubeconfigPath:        DefaultKubeconfigPath + "and/more",
 		ClusterTimeoutSeconds: DefaultClusterTimeoutSeconds*2 + 1,
@@ -271,12 +286,13 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 		ManagedAnnotation:  managedConfig,
 	}
 	xConfig := Config{
-		Sops:          sopsConfig,
-		Kubernetes:    kubernetesConfig,
-		Logging:       loggingConfig,
-		Behavior:      behaviorConfig,
-		MarkorSecrets: mSecretsConfig,
-		Healthcheck:   healthConfig,
+		Kubernetes:          kubernetesConfig,
+		Logging:             loggingConfig,
+		Behavior:            behaviorConfig,
+		MarkorSecrets:       mSecretsConfig,
+		Healthcheck:         healthConfig,
+		AdmissionController: admissionControllerConfig,
+		Tls:                 tlsConfig,
 	}
 	yamlConf, err := yaml.Marshal(xConfig)
 	if err != nil {

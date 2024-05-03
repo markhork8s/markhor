@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-var loggerLevels = map[string]slog.Level{
+var LoggerLevels = map[string]slog.Level{
 	"info":    slog.LevelInfo,
 	"debug":   slog.LevelDebug,
 	"warning": slog.LevelWarn,
@@ -38,7 +38,7 @@ func SetupLogging(config Config) error {
 
 	writer := io.MultiWriter(writers...)
 
-	level, ok := loggerLevels[config.Logging.Level]
+	level, ok := LoggerLevels[config.Logging.Level]
 	if !ok {
 		return errors.New(fmt.Sprint("Invalid log level specified:", config.Logging.Level))
 	}

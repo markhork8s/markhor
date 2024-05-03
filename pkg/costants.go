@@ -1,7 +1,7 @@
 package pkg
 
 // Version of this package (Markhor)
-const VERSION string = "1.0.0"
+const VERSION string = "0.0.5"
 
 // In a MarkhorSecret, this key contains the Markhor parameters
 const MARKHORPARAMS_MANIFEST_KEY string = "markhorParams"
@@ -12,3 +12,5 @@ const DEFAULT_CONFIG_PATH string = "/etc/markhor/config.yaml"
 
 // In a MarkhorSecret, the name of the custom label added to Secrets managed by Markhor
 const MSPARAMS_MANAGED_ANNOTATION_KEY string = "managedAnnotation"
+
+const SLOG_EVENT_ID_KEY string = "eventId"

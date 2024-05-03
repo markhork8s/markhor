@@ -3,9 +3,13 @@ package config
 const (
 	DefaultKubeconfigPath                                = ""
 	DefaultClusterTimeoutSeconds                         = 10
-	DefaultSopsKeysPath                                  = "~/.config/sops/keys"
-	DefaultHealthcheckPort                               = 8080
+	DefaultHealthcheckPort                               = 8000
 	DefaultHealthcheckEnabled                            = true
+	DefaultAdmissionControllerPort                       = 443
+	DefaultAdmissionControllerEnabled                    = true
+	DefaultTlsMode                                       = "external"
+	DefaultTlsCertPath                                   = "/etc/markhor/tls/server.crt"
+	DefaultTlsKeyPath                                    = "/etc/markhor/tls/server.key"
 	DefaultLoggingLevel                                  = "info"
 	DefaultLoggingStyle                                  = "text"
 	DefaultLoggingLogToStdout                            = true

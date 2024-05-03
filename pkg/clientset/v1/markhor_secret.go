@@ -37,31 +37,6 @@ func (c *markhorSecretClient) List(opts metav1.ListOptions) (*v1.MarkhorSecretLi
 	return &result, err
 }
 
-func (c *markhorSecretClient) Get(name string, opts metav1.GetOptions) (*v1.MarkhorSecret, error) {
-	result := v1.MarkhorSecret{}
-	err := c.restClient.
-		Get().
-		Resource(msecretsResource).
-		Name(name).
-		VersionedParams(&opts, scheme.ParameterCodec).
-		Do(context.TODO()).
-		Into(&result)
-
-	return &result, err
-}
-
-func (c *markhorSecretClient) Create(markhorSecret *v1.MarkhorSecret) (*v1.MarkhorSecret, error) {
-	result := v1.MarkhorSecret{}
-	err := c.restClient.
-		Post().
-		Resource(msecretsResource).
-		Body(markhorSecret).
-		Do(context.TODO()).
-		Into(&result)
-
-	return &result, err
-}
-
 func (c *markhorSecretClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
 	opts.Watch = true
 	return c.restClient.

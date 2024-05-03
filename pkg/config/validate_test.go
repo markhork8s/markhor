@@ -7,9 +7,6 @@ import (
 )
 
 var validConfig = Config{
-	Sops: sopsConfig{
-		KeysPath: "valid/key/path",
-	},
 	Kubernetes: kubernetesConfig{
 		KubeconfigPath:        "", // empty means you are running in the cluster
 		ClusterTimeoutSeconds: 23,
@@ -44,6 +41,15 @@ var validConfig = Config{
 	Healthcheck: HealthcheckConfig{
 		Port:    9091,
 		Enabled: true,
+	},
+	AdmissionController: AdmissionControllerConfig{
+		Port:    4040,
+		Enabled: true,
+	},
+	Tls: TlsConfig{
+		Mode:     "file",
+		CertPath: "/some/path",
+		KeyPath:  "/some/other/path",
 	},
 }
 
@@ -82,8 +88,47 @@ func TestValidateConfig_Invalid(t *testing.T) {
 			"Healthcheck port out of range (65600)",
 			Config{
 				Healthcheck: HealthcheckConfig{
-					Port: 65600, // Over the max
+					Port: maxPort + 1, // Over the max
 				},
+			},
+		},
+		{
+			"AdmissionController port out of range (-10)",
+			Config{
+				AdmissionController: AdmissionControllerConfig{
+					Port: -10, // Less than 1
+				},
+			},
+		},
+		{
+			"AdmissionController port out of range (65600)",
+			Config{
+				AdmissionController: AdmissionControllerConfig{
+					Port: maxPort + 1, // Over the max
+				},
+			},
+		},
+		{
+			"AdmissionController and Healthcheck on the same port",
+			Config{
+				AdmissionController: AdmissionControllerConfig{
+					Port: 8000,
+				},
+				Healthcheck: HealthcheckConfig{
+					Port: 8000,
+				},
+			},
+		},
+		{
+			"Invalid TLS mode",
+			Config{
+				Tls: TlsConfig{Mode: "an invalid mode"},
+			},
+		},
+		{
+			"Invalid log level",
+			Config{
+				Logging: loggingConfig{Level: "invalid logging level"},
 			},
 		},
 		{
@@ -153,7 +198,13 @@ func TestValidateConfig_Invalid(t *testing.T) {
 	v1.Healthcheck.Port = 0
 	err := ValidateConfig(v1)
 	if err == nil {
-		t.Error("Expected invalid configuration, port out of range (0), but got no error")
+		t.Error("Expected invalid configuration, healthcheck port out of range (0), but got no error")
+	}
+	v1 = validConfig
+	v1.AdmissionController.Port = 0
+	err = ValidateConfig(v1)
+	if err == nil {
+		t.Error("Expected invalid configuration, admission controller port out of range (0), but got no error")
 	}
 	v1 = validConfig
 	v1.Behavior.Fieldmanager.Name = ""
@@ -162,10 +213,16 @@ func TestValidateConfig_Invalid(t *testing.T) {
 		t.Error("Expected invalid configuration, empty field manager name, but got no error")
 	}
 	v1 = validConfig
-	v1.Sops.KeysPath = ""
+	v1.Tls.CertPath = ""
 	err = ValidateConfig(v1)
 	if err == nil {
-		t.Error("Expected invalid configuration, SOPS key path with zero length, but got no error")
+		t.Error("Expected invalid configuration, TLS certificate path with zero length, but got no error")
+	}
+	v1 = validConfig
+	v1.Tls.KeyPath = ""
+	err = ValidateConfig(v1)
+	if err == nil {
+		t.Error("Expected invalid configuration, TLS key path with zero length, but got no error")
 	}
 	v1 = validConfig
 	v1.MarkorSecrets.HierarchySeparator.Default = ""

@@ -12,9 +12,50 @@ spec:
     metadata:
       labels:
         app: markhor
+      annotations:
+        linkerd.io/inject: enabled
     spec:
       serviceAccountName: markhor-service-account
       containers:
       - name: markhor
-        image: markhor/markhor:latest
+        image: markhor/markhor:0.0.5
+        env:
+          - name: SOPS_AGE_KEY_FILE
+            value: /age-secrets/age_keys.txt
         imagePullPolicy: Never
+        ports:
+          - name: health
+            containerPort: 8000
+          - name: validationhook
+            containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+        volumeMounts:
+          - name: markhor-config
+            mountPath: /etc/markhor
+            readOnly: true
+          - name: markhor-age
+            mountPath: /age-secrets
+            readOnly: true
+          - name: markhor-tls
+            mountPath: /etc/markhor/tls
+            readOnly: true
+      volumes:
+        - name: markhor-config
+          configMap:
+            name: markhor-config
+            defaultMode: 0400
+        - name: markhor-age
+          secret:
+            secretName: markhor-age-secret
+            defaultMode: 0400
+        - name: markhor-tls
+          secret:
+            secretName: markhor-tls-secret
+            defaultMode: 0400

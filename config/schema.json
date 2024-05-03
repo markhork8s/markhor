@@ -26,19 +26,6 @@
                 }
             }
         },
-        "sops": {
-            "type": "object",
-            "description": "Config options relative to SOPS",
-            "additionalProperties": false,
-            "properties": {
-                "keysPath": {
-                    "type": "string",
-                    "description": "Path (seen from inside the Markhor pod where the SOPS private keys are stored.",
-                    "default": "~/.config/sops/keys",
-                    "minLength": 1
-                }
-            }
-        },
         "healthcheck": {
             "description": "Configuration for the healthcheck endpoint(s)",
             "type": "object",
@@ -47,8 +34,8 @@
                 "port": {
                     "type": "integer",
                     "minimum": 1,
-                    "maximum": 65534,
-                    "default": 8080,
+                    "maximum": 65535,
+                    "default": 8000,
                     "description": "The port number where the healthcheck endpoint should listen on"
                 },
                 "enabled": {
@@ -57,6 +44,55 @@
                     "description": "Wether to enable the healthcheck or not"
                 }
             }
+        },
+        "admissionController": {
+            "description": "Configuration for the Markhor admission controller",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535,
+                    "default": 443,
+                    "description": "The port number where the admission controller should listen on"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Wether to enable the admission controller or not"
+                }
+            }
+        },
+        "tls": {
+            "type": "object",
+            "description": "The TLS configuration. This is mandatory for using the admission controller -unless you expose the service with in https in some other way like a service mesh-",
+            "properties": {
+                "mode": {
+                    "type": "string",
+                    "default": "external",
+                    "enum": [
+                        "file",
+                        "external"
+                    ],
+                    "description": "Valid velues are \"file\" and \"external\". If \"file\" is specified, it means that markhor will terminate the TLS connections, using the certificate and key files provided in this config file. On the other hand, \"external\" indicates that a process external to markhor handles the TLS -for example, the sidecar pod in a service mesh or a reverse proxy-. Therefore, if  \"external\" is speficied, markhor exposes its endpoints as HTTP"
+                },
+                "certPath": {
+                    "type": "string",
+                    "description": "Path (seen from inside the Markhor pod) where the TLS certificate file is stored.",
+                    "default": "/etc/markhor/tls/tls.crt"
+                },
+                "keyPath": {
+                    "type": "string",
+                    "description": "Path (seen from inside the Markhor pod) where the TLS private key file is stored.",
+                    "default": "/etc/markhor/tls/tls.key",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "mode"
+            ],
+            "additionalProperties": false
         },
         "logging": {
             "type": "object",

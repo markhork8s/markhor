@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/civts/markhor/pkg"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
 	v1 "github.com/civts/markhor/pkg/clientset/v1"
 	"github.com/civts/markhor/pkg/config"
@@ -39,7 +40,7 @@ func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clie
 	healthcheck.Healthy = true
 	for event := range channel {
 		eventId := uuid.New()
-		eid := slog.String("eventId", eventId.String())
+		eid := slog.String(pkg.SLOG_EVENT_ID_KEY, eventId.String())
 		markhorSecret, ok := event.Object.(*apiV1.MarkhorSecret)
 		namespace := markhorSecret.ObjectMeta.Namespace
 		secretName := fmt.Sprintf("%s/%s", namespace, markhorSecret.ObjectMeta.Name)

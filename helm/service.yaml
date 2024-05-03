@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: markhor
+  namespace: markhor
+spec:
+  ports:
+    - name: markhor
+      port: 443
+      targetPort: validationhook
+      protocol: TCP
+  selector:
+    app: markhor

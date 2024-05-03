@@ -1,8 +1,6 @@
 package config
 
 type Config struct {
-	Sops sopsConfig `mapstructure:"sops"`
-
 	Kubernetes kubernetesConfig `mapstructure:"kubernetes"`
 
 	Logging loggingConfig `mapstructure:"logging"`
@@ -12,10 +10,10 @@ type Config struct {
 	MarkorSecrets markhorSecretsConfig `mapstructure:"markorSecrets"`
 
 	Healthcheck HealthcheckConfig `mapstructure:"healthcheck"`
-}
 
-type sopsConfig struct {
-	KeysPath string `mapstructure:"keysPath"`
+	AdmissionController AdmissionControllerConfig `mapstructure:"admissionController"`
+
+	Tls TlsConfig `mapstructure:"tls"`
 }
 
 type kubernetesConfig struct {
@@ -57,4 +55,15 @@ type defaultOverrideStruct struct {
 type HealthcheckConfig struct {
 	Port    int  `mapstructure:"port"`
 	Enabled bool `mapstructure:"enabled"`
+}
+
+type AdmissionControllerConfig struct {
+	Port    int  `mapstructure:"port"`
+	Enabled bool `mapstructure:"enabled"`
+}
+
+type TlsConfig struct {
+	Mode     string `mapstructure:"mode"`
+	CertPath string `mapstructure:"certPath"`
+	KeyPath  string `mapstructure:"keyPath"`
 }

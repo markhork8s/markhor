@@ -18,6 +18,7 @@ func ParseConfig() (*Config, error) {
 		return nil, err
 	}
 	configFilePath := viper.GetString("config")
+	defer slog.Info(fmt.Sprint("Starting Markhor, version ", pkg.VERSION))
 
 	usingCustomConfigFile := configFilePath != pkg.DEFAULT_CONFIG_PATH
 	if usingCustomConfigFile {
@@ -54,13 +55,23 @@ func ParseConfig() (*Config, error) {
 	return &config, nil
 }
 
+const TLSExternalMode string = "external"
+
+var ValidTLSModes = []string{
+	"file", TLSExternalMode,
+}
+
 // Defines the default Markhor config values
 func setDefaultConfigValues() {
 	viper.SetDefault("kubernetes.kubeconfigPath", DefaultKubeconfigPath)
 	viper.SetDefault("kubernetes.clusterTimeoutSeconds", DefaultClusterTimeoutSeconds)
-	viper.SetDefault("sops.keysPath", DefaultSopsKeysPath)
 	viper.SetDefault("healthcheck.port", DefaultHealthcheckPort)
 	viper.SetDefault("healthcheck.enabled", DefaultHealthcheckEnabled)
+	viper.SetDefault("admissionController.port", DefaultAdmissionControllerPort)
+	viper.SetDefault("admissionController.enabled", DefaultAdmissionControllerEnabled)
+	viper.SetDefault("tls.mode", DefaultTlsMode)
+	viper.SetDefault("tls.keyPath", DefaultTlsKeyPath)
+	viper.SetDefault("tls.certPath", DefaultTlsCertPath)
 	viper.SetDefault("logging.level", DefaultLoggingLevel)
 	viper.SetDefault("logging.style", DefaultLoggingStyle)
 	viper.SetDefault("logging.logToStdout", DefaultLoggingLogToStdout)
