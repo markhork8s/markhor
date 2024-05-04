@@ -80,8 +80,8 @@ func validate(c Config) string {
 		return "The default hierarchy separator can't be empty"
 	}
 
-	if len(c.MarkorSecrets.ManagedAnnotation.Default) == 0 {
-		return "The default managed annotation can't be empty"
+	if len(c.MarkorSecrets.ManagedLabel.Default) == 0 {
+		return "The default managed label can't be empty"
 	}
 
 	if !contains(ValidTLSModes, c.Tls.Mode) {

@@ -19,9 +19,9 @@ const (
 	DefaultMarkorSecretsHierarchySeparatorDefault        = "/"
 	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = false
 	DefaultMarkorSecretsHierarchySeparatorWarnOnOverride = true
-	DefaultMarkorSecretsManagedAnnotationDefault         = "markhor.example.com/managed-by"
-	DefaultMarkorSecretsManagedAnnotationAllowOverride   = false
-	DefaultMarkorSecretsManagedAnnotationWarnOnOverride  = true
+	DefaultMarkorSecretsManagedLabelDefault              = "app.kubernetes.io/managed-by"
+	DefaultMarkorSecretsManagedLabelAllowOverride        = false
+	DefaultMarkorSecretsManagedLabelWarnOnOverride       = true
 )
 
 // Can't make these costants

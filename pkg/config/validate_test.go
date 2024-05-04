@@ -32,7 +32,7 @@ var validConfig = Config{
 			AllowOverride:  true,
 			WarnOnOverride: false,
 		},
-		ManagedAnnotation: defaultOverrideStruct{
+		ManagedLabel: defaultOverrideStruct{
 			Default:        "managed",
 			AllowOverride:  true,
 			WarnOnOverride: false,
@@ -231,9 +231,9 @@ func TestValidateConfig_Invalid(t *testing.T) {
 		t.Error("Expected invalid configuration, empty default hierarchy separator, but got no error")
 	}
 	v1 = validConfig
-	v1.MarkorSecrets.ManagedAnnotation.Default = ""
+	v1.MarkorSecrets.ManagedLabel.Default = ""
 	err = ValidateConfig(v1)
 	if err == nil {
-		t.Error("Expected invalid configuration, empty default managed annotation, but got no error")
+		t.Error("Expected invalid configuration, empty default managed label, but got no error")
 	}
 }

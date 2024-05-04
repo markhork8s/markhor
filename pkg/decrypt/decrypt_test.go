@@ -219,7 +219,7 @@ func TestDecryptMarkhorSecretEvent_Fails_With_Invalid_Json(t *testing.T) {
 			os.Setenv(SOPS_KEY, testSk)
 
 			m := v1.MarkhorSecret{ObjectMeta: metav1.ObjectMeta{
-				Annotations: map[string]string{
+				Labels: map[string]string{
 					LASTAPPLIEDANNOTAION_K8s: input.Json,
 				},
 			}}

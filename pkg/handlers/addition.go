@@ -14,7 +14,7 @@ import (
 	v1 "k8s.io/client-go/applyconfigurations/core/v1"
 )
 
-const MANAGED_BY = "github.com/civts/markhor"
+const MANAGED_BY = "Markhor"
 
 func HandleAddition(attrs HandlerAttrs) bool {
 
@@ -26,8 +26,8 @@ func HandleAddition(attrs HandlerAttrs) bool {
 		return false
 	}
 
-	{ // Add managed-by annotation
-		annotation, present := helpers.GetAnnotation(decryptedData)
+	{ // Add managed-by label
+		label, present := helpers.GetLabel(decryptedData)
 		metadata, ok := decryptedData["metadata"]
 		if !ok {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
@@ -38,22 +38,22 @@ func HandleAddition(attrs HandlerAttrs) bool {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
 			return false
 		}
-		annotations, ok := metadataObj["annotations"]
+		labels, ok := metadataObj["labels"]
 		if !ok {
-			slog.Debug(fmt.Sprint("No existing annotations found in ", secretName, " will add managed-by markhor anyway"), attrs.EventId)
-			annotations = make(map[string]interface{})
+			slog.Debug(fmt.Sprint("No existing labels found in ", secretName, " will add managed-by markhor anyway"), attrs.EventId)
+			labels = make(map[string]interface{})
 		}
-		annotationsObj, ok := annotations.(map[string]interface{})
+		labelsObj, ok := labels.(map[string]interface{})
 		if !ok {
-			slog.Error(fmt.Sprint("Annotations in ", secretName, " do not appear to be a YAML object"), attrs.EventId)
-			annotationsObj = make(map[string]interface{})
+			slog.Error(fmt.Sprint("Labels in ", secretName, " do not appear to be a YAML object"), attrs.EventId)
+			labelsObj = make(map[string]interface{})
 		}
 		if present {
-			annotationsObj[annotation] = MANAGED_BY
+			labelsObj[label] = MANAGED_BY
 		} else {
-			annotationsObj[attrs.Config.MarkorSecrets.ManagedAnnotation.Default] = MANAGED_BY
+			labelsObj[attrs.Config.MarkorSecrets.ManagedLabel.Default] = MANAGED_BY
 		}
-		metadataObj["annotations"] = annotationsObj
+		metadataObj["labels"] = labelsObj
 		decryptedData["metadata"] = metadataObj
 	}
 

@@ -46,10 +46,10 @@ var defaultConfig = &Config{
 			AllowOverride:  DefaultMarkorSecretsHierarchySeparatorAllowOverride,
 			WarnOnOverride: DefaultMarkorSecretsHierarchySeparatorWarnOnOverride,
 		},
-		ManagedAnnotation: defaultOverrideStruct{
-			Default:        DefaultMarkorSecretsManagedAnnotationDefault,
-			AllowOverride:  DefaultMarkorSecretsManagedAnnotationAllowOverride,
-			WarnOnOverride: DefaultMarkorSecretsManagedAnnotationWarnOnOverride,
+		ManagedLabel: defaultOverrideStruct{
+			Default:        DefaultMarkorSecretsManagedLabelDefault,
+			AllowOverride:  DefaultMarkorSecretsManagedLabelAllowOverride,
+			WarnOnOverride: DefaultMarkorSecretsManagedLabelWarnOnOverride,
 		},
 	},
 	Healthcheck: HealthcheckConfig{
@@ -277,13 +277,13 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 		WarnOnOverride: !DefaultMarkorSecretsHierarchySeparatorWarnOnOverride,
 	}
 	managedConfig := defaultOverrideStruct{
-		Default:        DefaultMarkorSecretsManagedAnnotationDefault + "!",
-		AllowOverride:  !DefaultMarkorSecretsManagedAnnotationAllowOverride,
-		WarnOnOverride: !DefaultMarkorSecretsManagedAnnotationWarnOnOverride,
+		Default:        DefaultMarkorSecretsManagedLabelDefault + "!",
+		AllowOverride:  !DefaultMarkorSecretsManagedLabelAllowOverride,
+		WarnOnOverride: !DefaultMarkorSecretsManagedLabelWarnOnOverride,
 	}
 	mSecretsConfig := markhorSecretsConfig{
 		HierarchySeparator: hierarchySeparatorConfig,
-		ManagedAnnotation:  managedConfig,
+		ManagedLabel:       managedConfig,
 	}
 	xConfig := Config{
 		Kubernetes:          kubernetesConfig,

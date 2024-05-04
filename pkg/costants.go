@@ -11,6 +11,6 @@ const MARKHORPARAMS_MANIFEST_KEY string = "markhorParams"
 const DEFAULT_CONFIG_PATH string = "/etc/markhor/config.yaml"
 
 // In a MarkhorSecret, the name of the custom label added to Secrets managed by Markhor
-const MSPARAMS_MANAGED_ANNOTATION_KEY string = "managedAnnotation"
+const MSPARAMS_MANAGED_LABEL_KEY string = "managedLabel"
 
 const SLOG_EVENT_ID_KEY string = "eventId"

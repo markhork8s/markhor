@@ -4,7 +4,7 @@ import (
 	"github.com/civts/markhor/pkg"
 )
 
-func GetAnnotation(decryptedData map[string]interface{}) (string, bool) {
+func GetLabel(decryptedData map[string]interface{}) (string, bool) {
 	params, present := decryptedData[pkg.MARKHORPARAMS_MANIFEST_KEY]
 	if !present {
 		return "", false
@@ -13,13 +13,13 @@ func GetAnnotation(decryptedData map[string]interface{}) (string, bool) {
 	if !ok {
 		return "", false
 	}
-	annotation, present := paramsObj[pkg.MSPARAMS_MANAGED_ANNOTATION_KEY]
+	label, present := paramsObj[pkg.MSPARAMS_MANAGED_LABEL_KEY]
 	if !present {
 		return "", false
 	}
-	annotationStr, ok := annotation.(string)
+	labelStr, ok := label.(string)
 	if !ok {
 		return "", false
 	}
-	return annotationStr, true
+	return labelStr, true
 }

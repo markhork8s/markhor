@@ -84,7 +84,7 @@ func setDefaultConfigValues() {
 	viper.SetDefault("markorSecrets.hierarchySeparator.default", DefaultMarkorSecretsHierarchySeparatorDefault)
 	viper.SetDefault("markorSecrets.hierarchySeparator.allowOverride", DefaultMarkorSecretsHierarchySeparatorAllowOverride)
 	viper.SetDefault("markorSecrets.hierarchySeparator.warnOnOverride", DefaultMarkorSecretsHierarchySeparatorWarnOnOverride)
-	viper.SetDefault("markorSecrets.managedAnnotation.default", DefaultMarkorSecretsManagedAnnotationDefault)
-	viper.SetDefault("markorSecrets.managedAnnotation.allowOverride", DefaultMarkorSecretsManagedAnnotationAllowOverride)
-	viper.SetDefault("markorSecrets.managedAnnotation.warnOnOverride", DefaultMarkorSecretsManagedAnnotationWarnOnOverride)
+	viper.SetDefault("markorSecrets.managedLabel.default", DefaultMarkorSecretsManagedLabelDefault)
+	viper.SetDefault("markorSecrets.managedLabel.allowOverride", DefaultMarkorSecretsManagedLabelAllowOverride)
+	viper.SetDefault("markorSecrets.managedLabel.warnOnOverride", DefaultMarkorSecretsManagedLabelWarnOnOverride)
 }

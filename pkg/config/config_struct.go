@@ -43,7 +43,7 @@ type fieldManagerConfig struct {
 
 type markhorSecretsConfig struct {
 	HierarchySeparator defaultOverrideStruct `mapstructure:"hierarchySeparator"`
-	ManagedAnnotation  defaultOverrideStruct `mapstructure:"managedAnnotation"`
+	ManagedLabel       defaultOverrideStruct `mapstructure:"managedLabel"`
 }
 
 type defaultOverrideStruct struct {

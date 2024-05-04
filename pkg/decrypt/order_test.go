@@ -20,7 +20,7 @@ func TestParseOrderingRec_Valid(t *testing.T) {
 		"metadata/name",
 		"metadata/namespace",
 		"markhorParams/hierarchySeparator",
-		"markhorParams/managedAnnotation",
+		"markhorParams/managedLabel",
 		"markhorParams/order",
 		"type",
 		"data/sessionSecret",
@@ -36,7 +36,7 @@ func TestParseOrderingRec_Valid(t *testing.T) {
 		}},
 		{Name: "markhorParams", Terms: []Ordering{
 			{Name: "hierarchySeparator", Terms: []Ordering{}},
-			{Name: "managedAnnotation", Terms: []Ordering{}},
+			{Name: "managedLabel", Terms: []Ordering{}},
 			{Name: "order", Terms: []Ordering{}},
 		}},
 		{Name: "type", Terms: []Ordering{}},
@@ -67,7 +67,7 @@ func TestParseOrderingRec_Invalid(t *testing.T) {
 			"metadata/name",
 			"metadata/namespace",
 			"markhorParams/hierarchySeparator",
-			"markhorParams/managedAnnotation",
+			"markhorParams/managedLabel",
 			"markhorParams/order",
 			"markhorParams", //culprit
 			"type",
@@ -78,7 +78,7 @@ func TestParseOrderingRec_Invalid(t *testing.T) {
 			"metadata/name",
 			"metadata/namespace",
 			"markhorParams/hierarchySeparator",
-			"markhorParams/managedAnnotation",
+			"markhorParams/managedLabel",
 			"markhorParams/order/nested", //culprit
 			"markhorParams/order",
 			"type",
@@ -105,7 +105,7 @@ func TestParseOrdering_Invalid_Check_Error_Duplicate(t *testing.T) {
 		"metadata/name",
 		"metadata/namespace",
 		"markhorParams/hierarchySeparator",
-		"markhorParams/managedAnnotation",
+		"markhorParams/managedLabel",
 		"markhorParams/order",
 		culprit,
 		"type",
@@ -128,7 +128,7 @@ func TestParseOrdering_Valid(t *testing.T) {
 		"metadata.name",
 		"metadata.namespace",
 		"markhorParams.hierarchySeparator",
-		"markhorParams.managedAnnotation",
+		"markhorParams.managedLabel",
 		"markhorParams.order",
 		"type",
 		"data.sessionSecret",
@@ -144,7 +144,7 @@ func TestParseOrdering_Valid(t *testing.T) {
 		}},
 		{Name: "markhorParams", Terms: []Ordering{
 			{Name: "hierarchySeparator", Terms: []Ordering{}},
-			{Name: "managedAnnotation", Terms: []Ordering{}},
+			{Name: "managedLabel", Terms: []Ordering{}},
 			{Name: "order", Terms: []Ordering{}},
 		}},
 		{Name: "type", Terms: []Ordering{}},
@@ -175,7 +175,7 @@ func TestParseOrdering_Invalid(t *testing.T) {
 			"metadata.name",
 			"metadata.namespace",
 			"markhorParams.hierarchySeparator",
-			"markhorParams.managedAnnotation",
+			"markhorParams.managedLabel",
 			"markhorParams.order",
 			"markhorParams", //culprit
 			"type",
@@ -187,7 +187,7 @@ func TestParseOrdering_Invalid(t *testing.T) {
 			"metadata.name",
 			"metadata.namespace",
 			"markhorParams.hierarchySeparator",
-			"markhorParams.managedAnnotation",
+			"markhorParams.managedLabel",
 			"markhorParams.order",
 			"type",
 		},
@@ -253,14 +253,14 @@ func TestSortWithOrdering(t *testing.T) {
 					"metadata/name",
 					"metadata/namespace",
 					"markhorParams/hierarchySeparator",
-					"markhorParams/managedAnnotation",
+					"markhorParams/managedLabel",
 					"markhorParams/order",
 					"type",
 					"data/session_secret",
 					"stringData/another",
 				},
 				"hierarchySeparator": "/",
-				"managedAnnotation":  "",
+				"managedLabel":       "",
 			},
 			"type": "Opaque",
 			"stringData": map[string]interface{}{
@@ -282,7 +282,7 @@ func TestSortWithOrdering(t *testing.T) {
 				}},
 				{Name: "markhorParams", Terms: []Ordering{
 					{Name: "hierarchySeparator", Terms: []Ordering{}},
-					{Name: "managedAnnotation", Terms: []Ordering{}},
+					{Name: "managedLabel", Terms: []Ordering{}},
 					{Name: "order", Terms: []Ordering{}},
 				}},
 				{Name: "data", Terms: []Ordering{
@@ -305,14 +305,14 @@ func TestSortWithOrdering(t *testing.T) {
 			expected.Set("metadata", metadata)
 			markhorParams := orderedmap.New[string, interface{}]()
 			markhorParams.Set("hierarchySeparator", "/")
-			markhorParams.Set("managedAnnotation", "")
+			markhorParams.Set("managedLabel", "")
 			markhorParams.Set("order", []string{
 				"apiVersion",
 				"kind",
 				"metadata/name",
 				"metadata/namespace",
 				"markhorParams/hierarchySeparator",
-				"markhorParams/managedAnnotation",
+				"markhorParams/managedLabel",
 				"markhorParams/order",
 				"type",
 				"data/session_secret",
@@ -388,14 +388,14 @@ func TestSortJson(t *testing.T) {
 				"metadata/name",
 				"metadata/namespace",
 				"markhorParams/hierarchySeparator",
-				"markhorParams/managedAnnotation",
+				"markhorParams/managedLabel",
 				"markhorParams/order",
 				"type",
 				"data/session_secret",
 				"stringData/another",
 			},
 			"hierarchySeparator": "/",
-			"managedAnnotation":  "",
+			"managedLabel":       "",
 		},
 		"sops": map[string]interface{}{
 			"something": "values",
@@ -419,14 +419,14 @@ func TestSortJson(t *testing.T) {
 		expected.Set("metadata", metadata)
 		markhorParams := orderedmap.New[string, interface{}]()
 		markhorParams.Set("hierarchySeparator", "/")
-		markhorParams.Set("managedAnnotation", "")
+		markhorParams.Set("managedLabel", "")
 		markhorParams.Set("order", []string{
 			"apiVersion",
 			"kind",
 			"metadata/name",
 			"metadata/namespace",
 			"markhorParams/hierarchySeparator",
-			"markhorParams/managedAnnotation",
+			"markhorParams/managedLabel",
 			"markhorParams/order",
 			"type",
 			"data/session_secret",

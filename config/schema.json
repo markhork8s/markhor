@@ -217,15 +217,15 @@
                         }
                     }
                 },
-                "managedAnnotation": {
+                "managedLabel": {
                     "type": "object",
                     "description": "Markhor adds a custom label to the Secrets it manages. Here, it is possible to configure it.",
                     "additionalProperties": false,
                     "properties": {
                         "default": {
                             "type": "string",
-                            "description": "The name of the label that Markhor adds to the Secrets it manages",
-                            "default": "markhor.example.com/managed-by",
+                            "description": "The name of the label that Markhor adds to the Secrets it manages. https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels",
+                            "default": "app.kubernetes.io/managed-by",
                             "minLength": 1
                         },
                         "allowOverride": {
