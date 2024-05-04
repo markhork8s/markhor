@@ -66,16 +66,12 @@
         },
         "tls": {
             "type": "object",
-            "description": "The TLS configuration. This is mandatory for using the admission controller -unless you expose the service with in https in some other way like a service mesh-",
+            "description": "The TLS configuration. This is mandatory for using the admission controller -unless you perform the TLS termination outside of the Markhor container-",
             "properties": {
-                "mode": {
-                    "type": "string",
-                    "default": "external",
-                    "enum": [
-                        "file",
-                        "external"
-                    ],
-                    "description": "Valid velues are \"file\" and \"external\". If \"file\" is specified, it means that markhor will terminate the TLS connections, using the certificate and key files provided in this config file. On the other hand, \"external\" indicates that a process external to markhor handles the TLS -for example, the sidecar pod in a service mesh or a reverse proxy-. Therefore, if  \"external\" is speficied, markhor exposes its endpoints as HTTP"
+                "enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, the healthcheck and validation admission controller will run on HTTPS. If false, they will run on HTTP. Default: `false`"
                 },
                 "certPath": {
                     "type": "string",

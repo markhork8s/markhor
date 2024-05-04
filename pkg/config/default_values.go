@@ -7,7 +7,7 @@ const (
 	DefaultHealthcheckEnabled                            = true
 	DefaultAdmissionControllerPort                       = 443
 	DefaultAdmissionControllerEnabled                    = true
-	DefaultTlsMode                                       = "external"
+	DefaultTlsEnabled                                    = false
 	DefaultTlsCertPath                                   = "/etc/markhor/tls/server.crt"
 	DefaultTlsKeyPath                                    = "/etc/markhor/tls/server.key"
 	DefaultLoggingLevel                                  = "info"

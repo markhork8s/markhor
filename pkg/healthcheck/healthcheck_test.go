@@ -68,7 +68,7 @@ func TestSetupHealthcheckEnabled_DefaultPort_Unhealthy(t *testing.T) {
 			Enabled: true,
 			Port:    32714,
 		},
-		Tls: config.TlsConfig{Mode: config.TLSExternalMode},
+		Tls: config.TlsConfig{Enabled: false},
 	}
 
 	go SetupHealthcheck(&conf)
@@ -97,7 +97,7 @@ func TestSetupHealthcheckDisabled_RequestFail(t *testing.T) {
 			Enabled: false,
 			Port:    8080,
 		},
-		Tls: config.TlsConfig{Mode: config.TLSExternalMode},
+		Tls: config.TlsConfig{Enabled: false},
 	}
 
 	go SetupHealthcheck(&conf)

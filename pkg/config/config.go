@@ -55,12 +55,6 @@ func ParseConfig() (*Config, error) {
 	return &config, nil
 }
 
-const TLSExternalMode string = "external"
-
-var ValidTLSModes = []string{
-	"file", TLSExternalMode,
-}
-
 // Defines the default Markhor config values
 func setDefaultConfigValues() {
 	viper.SetDefault("kubernetes.kubeconfigPath", DefaultKubeconfigPath)
@@ -69,7 +63,7 @@ func setDefaultConfigValues() {
 	viper.SetDefault("healthcheck.enabled", DefaultHealthcheckEnabled)
 	viper.SetDefault("admissionController.port", DefaultAdmissionControllerPort)
 	viper.SetDefault("admissionController.enabled", DefaultAdmissionControllerEnabled)
-	viper.SetDefault("tls.mode", DefaultTlsMode)
+	viper.SetDefault("tls.mode", DefaultTlsEnabled)
 	viper.SetDefault("tls.keyPath", DefaultTlsKeyPath)
 	viper.SetDefault("tls.certPath", DefaultTlsCertPath)
 	viper.SetDefault("logging.level", DefaultLoggingLevel)

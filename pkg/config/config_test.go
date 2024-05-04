@@ -61,7 +61,7 @@ var defaultConfig = &Config{
 		Enabled: DefaultAdmissionControllerEnabled,
 	},
 	Tls: TlsConfig{
-		Mode:     DefaultTlsMode,
+		Enabled:  DefaultTlsEnabled,
 		CertPath: DefaultTlsCertPath,
 		KeyPath:  DefaultTlsKeyPath,
 	},
@@ -237,7 +237,7 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 		Enabled: !DefaultAdmissionControllerEnabled,
 	}
 	tlsConfig := TlsConfig{
-		Mode:     "file",
+		Enabled:  !defaultConfig.Tls.Enabled,
 		CertPath: defaultConfig.Tls.CertPath + ".new",
 		KeyPath:  defaultConfig.Tls.KeyPath + ".new_again",
 	}

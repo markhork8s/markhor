@@ -84,25 +84,17 @@ func validate(c Config) string {
 		return "The default managed label can't be empty"
 	}
 
-	if !contains(ValidTLSModes, c.Tls.Mode) {
-		return "The TLS mode is invalid. Valid values are " + strings.Join(ValidTLSModes, ", ")
-	}
-
 	if !mapContainsKey(LoggerLevels, c.Logging.Level) {
-		return "The log level is invalid. Valid values are " + strings.Join(ValidTLSModes, ", ")
+		levels := make([]string, 0)
+		for l := range LoggerLevels {
+			levels = append(levels, l)
+		}
+		return "The log level is invalid. Valid values are " + strings.Join(levels, ", ")
 	}
 
 	return ""
 }
 
-func contains(slice []string, elem string) bool {
-	for _, value := range slice {
-		if value == elem {
-			return true
-		}
-	}
-	return false
-}
 func mapContainsKey(slice map[string]slog.Level, elem string) bool {
 	for k := range slice {
 		if k == elem {

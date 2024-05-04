@@ -63,7 +63,7 @@ type AdmissionControllerConfig struct {
 }
 
 type TlsConfig struct {
-	Mode     string `mapstructure:"mode"`
+	Enabled  bool   `mapstructure:"enabled"`
 	CertPath string `mapstructure:"certPath"`
 	KeyPath  string `mapstructure:"keyPath"`
 }

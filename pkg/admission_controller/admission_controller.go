@@ -14,10 +14,10 @@ func SetupAdmissionController(conf *config.Config) {
 	if acConfig.Enabled {
 		http.HandleFunc("/validate", validateHandler)
 		var err error
-		if conf.Tls.Mode == config.TLSExternalMode {
-			err = http.ListenAndServe(fmt.Sprintf(":%d", acConfig.Port), nil)
-		} else {
+		if conf.Tls.Enabled {
 			err = http.ListenAndServeTLS(fmt.Sprintf(":%d", acConfig.Port), conf.Tls.CertPath, conf.Tls.KeyPath, nil)
+		} else {
+			err = http.ListenAndServe(fmt.Sprintf(":%d", acConfig.Port), nil)
 		}
 		if err != nil {
 			slog.Error(fmt.Sprint("Could not start the admission controller on port ", acConfig.Port, ": ", err))

@@ -47,7 +47,7 @@ var validConfig = Config{
 		Enabled: true,
 	},
 	Tls: TlsConfig{
-		Mode:     "file",
+		Enabled:  true,
 		CertPath: "/some/path",
 		KeyPath:  "/some/other/path",
 	},
@@ -117,12 +117,6 @@ func TestValidateConfig_Invalid(t *testing.T) {
 				Healthcheck: HealthcheckConfig{
 					Port: 8000,
 				},
-			},
-		},
-		{
-			"Invalid TLS mode",
-			Config{
-				Tls: TlsConfig{Mode: "an invalid mode"},
 			},
 		},
 		{
