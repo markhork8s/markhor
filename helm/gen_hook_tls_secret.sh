@@ -4,6 +4,7 @@ NS=markhor
 SECRET_NAME=markhor-tls-secret
 SERVICE_NAME=markhor
 KEY_BITS=2048
+CERT_DURATION_SECONDS=2147483646
 
 echo "This script generates a new TLS key for the admission webhook and gets the cluster's CA to sign it."
 echo
@@ -12,6 +13,7 @@ echo "    Target namespace: $NS"
 echo "    Target secret name: $SECRET_NAME"
 echo "    Target service URL: $SERVICE_NAME"
 echo "    RSA key length (in bits): $KEY_BITS"
+echo "    Certificate duration (in seconds): $CERT_DURATION_SECONDS"
 
 read -n 1 A
 if [ "$A" != "y" ]; then
@@ -22,11 +24,21 @@ echo
 
 set -e
 
-# Check that the required programs are present
-command -v "kubectl" >/dev/null
-command -v "mktemp" >/dev/null
-command -v "openssl" >/dev/null
-command -v "base64" >/dev/null
+checkCommandPresent() {
+  command -v "$1" >/dev/null || {
+    echo "Missing required command: $1"
+    exit 1
+  }
+}
+
+checkCommandPresent openssl
+checkCommandPresent kubectl
+checkCommandPresent mktemp
+checkCommandPresent base64
+checkCommandPresent cat
+checkCommandPresent tr
+checkCommandPresent sleep
+checkCommandPresent rm
 
 SERVICE_NAME_COMPLETE=$SERVICE_NAME.$NS.svc
 CSR_NAME=$SERVICE_NAME-csr
@@ -72,6 +84,7 @@ metadata:
 spec:
   request: $(cat $TMPDIR/$SERVICE_NAME.csr | base64 | tr -d "\n")
   signerName: kubernetes.io/kubelet-serving
+  expirationSeconds: $CERT_DURATION_SECONDS
   groups:
     - system:authenticated
   usages:

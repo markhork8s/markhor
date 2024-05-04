@@ -14,7 +14,7 @@ import (
 func sortJson(jsonData map[string]interface{}, eid slog.Attr) *orderedmap.OrderedMap[string, interface{}] {
 	ordered, err := sortJSONData(jsonData, eid)
 	if err != nil {
-		slog.Error(fmt.Sprint("Error ordering the JSON: ", err, "\nWill keep the default order (alphabetic in k8s)"), eid)
+		slog.Debug(fmt.Sprintf("Could not order the JSON: %v. Will keep the default order (alphabetic in k8s)", err), eid)
 
 		orderedMap := orderedmap.New[string, interface{}]()
 
@@ -72,13 +72,13 @@ func sortWithOrdering(jsonData map[string]interface{}, ordering Ordering) (*orde
 		if len(k.Terms) == 0 {
 			data := jsonData[k.Name]
 			if data == nil {
-				return nil, errors.New(fmt.Sprint("Error no key ", k.Name, " in JSON"))
+				return nil, errors.New(fmt.Sprint("no key ", k.Name, " in JSON"))
 			}
 			om.Set(k.Name, data)
 		} else {
 			data, ok := jsonData[k.Name].(map[string]interface{})
 			if !ok {
-				return nil, errors.New(fmt.Sprint("Error no key ", k.Name, " in JSON"))
+				return nil, errors.New(fmt.Sprint("no key ", k.Name, " in JSON"))
 			}
 			nestedObj, err := sortWithOrdering(data, k)
 			if err != nil {

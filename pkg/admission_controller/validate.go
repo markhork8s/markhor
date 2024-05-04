@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/civts/markhor/pkg"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
@@ -24,15 +25,19 @@ func validateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	eventId := slog.String(pkg.SLOG_EVENT_ID_KEY, string(admissionReview.Request.UID))
-	slog.Debug("%s received a new request", prefix, eventId)
+	slog.Debug(prefix+" received a new request", eventId)
 
 	var admissionResponse admissionV1.AdmissionResponse
-	err = validateReview(&admissionReview, eventId)
+	name, err := validateReview(&admissionReview, eventId)
 	if err == nil {
-		slog.Info("%s successfully validated markhorsecret", prefix, eventId)
+		slog.Info(fmt.Sprint(prefix, " successfully validated the MarkhorSecret ", name), eventId)
 		admissionResponse = admissionV1.AdmissionResponse{Allowed: true, UID: admissionReview.Request.UID}
 	} else {
-		slog.Warn("%s the request was not valid: %v", prefix, err, eventId)
+		if strings.Contains(err.Error(), "expected mac") {
+			slog.Debug(fmt.Sprintf("%s the request for %s was not valid: invalid MAC", prefix, name), eventId)
+		} else {
+			slog.Debug(fmt.Sprintf("%s the request for %s was not valid: %v", prefix, name, err), eventId)
+		}
 		admissionResponse = admissionV1.AdmissionResponse{
 			Result: &metaV1.Status{
 				Status:  metaV1.StatusFailure,
@@ -54,18 +59,18 @@ func validateHandler(w http.ResponseWriter, r *http.Request) {
 	respBytes, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("could not encode response: %v", err), http.StatusInternalServerError)
-		slog.Error("%s could not encode response: %v", prefix, err, eventId)
+		slog.Error(fmt.Sprintf("%s could not encode response: %v", prefix, err), eventId)
 		return
 	}
 
 	_, err = w.Write(respBytes)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("could not write response: %v", err), http.StatusInternalServerError)
-		slog.Error("%s could not write response: %v", prefix, err, eventId)
+		slog.Error(fmt.Sprintf("%s could not write response: %v", prefix, err), eventId)
 	}
 }
 
-func validateReview(review *admissionV1.AdmissionReview, eventId slog.Attr) error {
+func validateReview(review *admissionV1.AdmissionReview, eventId slog.Attr) (string, error) {
 	var err error
 
 	// Check that the object being validated is a markhor markhorSecret
@@ -76,11 +81,12 @@ func validateReview(review *admissionV1.AdmissionReview, eventId slog.Attr) erro
 		err = field.Invalid(field.NewPath("kind"), "", "The object being validated must be a markhorsecret")
 	}
 	if err != nil {
-		return err
+		return "", err
 	}
 
+	msName := fmt.Sprint(markhorSecret.Namespace, "/", markhorSecret.Name)
 	// Check that we can successfully decrypt the data in the MarkhorSecret
 	_, err = decrypt.DecryptMarkhorSecretEvent(&markhorSecret, eventId)
 
-	return err
+	return msName, err
 }

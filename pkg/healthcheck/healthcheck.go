@@ -22,11 +22,17 @@ func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 
 const healthcheckEndpoint = "/health"
 
-func SetupHealthcheck(conf config.HealthcheckConfig) {
-	if conf.Enabled {
-		slog.Debug(fmt.Sprint("Healthcheck endpoint created on port ", conf.Port))
+func SetupHealthcheck(cf *config.Config) {
+	ch := cf.Healthcheck
+	if ch.Enabled {
 		http.HandleFunc(healthcheckEndpoint, healthCheckHandler)
-		http.ListenAndServe(fmt.Sprintf(":%d", conf.Port), nil)
+		if cf.Tls.Mode == config.TLSExternalMode {
+			slog.Debug(fmt.Sprint("Healthcheck http endpoint created on port ", ch.Port))
+			http.ListenAndServe(fmt.Sprintf(":%d", ch.Port), nil)
+		} else {
+			slog.Debug(fmt.Sprint("Healthcheck https endpoint created on port ", ch.Port))
+			http.ListenAndServeTLS(fmt.Sprintf(":%d", ch.Port), cf.Tls.CertPath, cf.Tls.KeyPath, nil)
+		}
 	} else {
 		slog.Debug("Skipping healthcheck -disabled in the config-")
 	}

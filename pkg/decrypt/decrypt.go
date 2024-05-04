@@ -19,7 +19,7 @@ func DecryptMarkhorSecretEvent(markhorSecret *v1.MarkhorSecret, eid slog.Attr) (
 	var jsonObj map[string]interface{}
 	err := json.Unmarshal([]byte(jsonConfigStr), &jsonObj)
 	if err != nil {
-		slog.Error(fmt.Sprint("Error unmarshalling encrypted JSON: ", err), eid)
+		slog.Debug(fmt.Sprint("Could not unmarshal encrypted JSON: ", err), eid)
 		return nil, err
 	}
 	message, ok := CheckSopsVersion(jsonObj)
@@ -40,7 +40,7 @@ func DecryptMarkhorSecret(jsonObj map[string]interface{}, eid slog.Attr) (map[st
 
 	decryptedDataBytes, err := decrypt.Data(encData, "json")
 	if err != nil {
-		slog.Error(fmt.Sprint("Error decrypting JSON: ", err), eid)
+		slog.Debug(fmt.Sprint("Could not decrypt the JSON: ", err), eid)
 		return nil, err
 	}
 

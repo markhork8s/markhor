@@ -12,13 +12,11 @@ spec:
     metadata:
       labels:
         app: markhor
-      annotations:
-        linkerd.io/inject: enabled
     spec:
       serviceAccountName: markhor-service-account
       containers:
       - name: markhor
-        image: markhor/markhor:0.0.5
+        image: markhor/markhor:0.0.12
         env:
           - name: SOPS_AGE_KEY_FILE
             value: /age-secrets/age_keys.txt
@@ -32,10 +30,18 @@ spec:
           httpGet:
             path: /health
             port: 8000
+            scheme: HTTPS
+            httpHeaders:
+              - name: Host
+                value: markhor.markhor.svc
         readinessProbe:
           httpGet:
             path: /health
             port: 8000
+            scheme: HTTPS
+            httpHeaders:
+              - name: Host
+                value: markhor.markhor.svc
         volumeMounts:
           - name: markhor-config
             mountPath: /etc/markhor

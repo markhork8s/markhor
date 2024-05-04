@@ -3,6 +3,8 @@ package main
 import (
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/civts/markhor/pkg/admission_controller"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
@@ -26,8 +28,20 @@ func main() {
 
 	mClient, clientset := cs.GetK8sClients(config.Kubernetes.KubeconfigPath)
 
-	go healthcheck.SetupHealthcheck(config.Healthcheck)
+	go healthcheck.SetupHealthcheck(config)
 	go admission_controller.SetupAdmissionController(config)
+	go cs.WatchMarkhorSecrets(mClient, clientset, config)
 
-	cs.WatchMarkhorSecrets(mClient, clientset, config)
+	setupGracefulShutdown()
+}
+
+func setupGracefulShutdown() {
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
+
+	<-shutdown
+
+	slog.Info("Termination signal received. Shutting down...")
+	slog.Info("Goodbye!")
+	os.Exit(0)
 }

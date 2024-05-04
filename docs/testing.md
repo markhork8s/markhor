@@ -1,3 +1,4 @@
+# Minikube
 1. `nix-shell -p minikube kubectl`
     To get minikube and kubectl
 1. `minikube start`
@@ -9,3 +10,6 @@
 1. Open VSCode
   1. Ensure the path to `cluster.conf` is correct in `.vscode/launch.json`
   1. Press F5
+
+# K3S
+`export KUBECONFIG=/etc/rancher/k3s/k3s.yaml`

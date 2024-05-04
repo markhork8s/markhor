@@ -57,10 +57,16 @@ func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clie
 		switch event.Type {
 		case watch.Added:
 			slog.Info(fmt.Sprint("A MarkhorSecret was added: ", secretName), eid)
-			handlers.HandleAddition(args)
+			res := handlers.HandleAddition(args)
+			if res {
+				slog.Info(fmt.Sprint("New secret created correctly: ", secretName), eid)
+			}
 		case watch.Modified:
 			slog.Info(fmt.Sprint("A MarkhorSecret was updated: ", secretName), eid)
-			handlers.HandleAddition(args)
+			res := handlers.HandleAddition(args)
+			if res {
+				slog.Info(fmt.Sprint("Secret updated correctly: ", secretName), eid)
+			}
 		case watch.Deleted:
 			slog.Info(fmt.Sprint("A MarkhorSecret was deleted: ", secretName), eid)
 			handlers.HandleDeletion(args)

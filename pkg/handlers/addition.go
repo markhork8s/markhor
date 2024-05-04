@@ -16,14 +16,14 @@ import (
 
 const MANAGED_BY = "github.com/civts/markhor"
 
-func HandleAddition(attrs HandlerAttrs) {
+func HandleAddition(attrs HandlerAttrs) bool {
 
 	namespace := attrs.MarkhorSecret.ObjectMeta.Namespace
 	secretName := fmt.Sprintf("%s/%s", namespace, attrs.MarkhorSecret.ObjectMeta.Name)
 	decryptedData, err := decrypt.DecryptMarkhorSecretEvent(attrs.MarkhorSecret, attrs.EventId)
 	if err != nil {
 		slog.Error(fmt.Sprint("Could not decrypt MarkhorSecret ", secretName), attrs.EventId)
-		return
+		return false
 	}
 
 	{ // Add managed-by annotation
@@ -31,12 +31,12 @@ func HandleAddition(attrs HandlerAttrs) {
 		metadata, ok := decryptedData["metadata"]
 		if !ok {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
-			return
+			return false
 		}
 		metadataObj, ok := metadata.(map[string]interface{})
 		if !ok {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
-			return
+			return false
 		}
 		annotations, ok := metadataObj["annotations"]
 		if !ok {
@@ -82,10 +82,11 @@ func HandleAddition(attrs HandlerAttrs) {
 			Force:        attrs.Config.Behavior.Fieldmanager.ForceUpdates,
 		})
 		if err != nil {
-			slog.Error(fmt.Sprint("Error creating the secret: ", err), attrs.EventId)
+			slog.Error(fmt.Sprint("Error creating/updating the secret: ", err), attrs.EventId)
 			//Apply failed with 1 conflict: conflict with>another fieldmanager has the secret
+			return false
 		} else {
-			slog.Info(fmt.Sprint("New secret created correctly: ", secretName), attrs.EventId)
+			return true
 		}
 	}
 }

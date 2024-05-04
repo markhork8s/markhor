@@ -63,15 +63,18 @@ func TestHealthcheckHandler_Unhealthy(t *testing.T) {
 }
 
 func TestSetupHealthcheckEnabled_DefaultPort_Unhealthy(t *testing.T) {
-	conf := config.HealthcheckConfig{
-		Enabled: true,
-		Port:    32714,
+	conf := config.Config{
+		Healthcheck: config.HealthcheckConfig{
+			Enabled: true,
+			Port:    32714,
+		},
+		Tls: config.TlsConfig{Mode: config.TLSExternalMode},
 	}
 
-	go SetupHealthcheck(conf)
+	go SetupHealthcheck(&conf)
 	time.Sleep(time.Millisecond * 300)
 
-	req, err := http.NewRequest("GET", "http://localhost:"+fmt.Sprint(conf.Port)+healthcheckEndpoint, nil)
+	req, err := http.NewRequest("GET", "http://localhost:"+fmt.Sprint(conf.Healthcheck.Port)+healthcheckEndpoint, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -89,15 +92,18 @@ func TestSetupHealthcheckEnabled_DefaultPort_Unhealthy(t *testing.T) {
 }
 
 func TestSetupHealthcheckDisabled_RequestFail(t *testing.T) {
-	conf := config.HealthcheckConfig{
-		Enabled: false,
-		Port:    8080,
+	conf := config.Config{
+		Healthcheck: config.HealthcheckConfig{
+			Enabled: false,
+			Port:    8080,
+		},
+		Tls: config.TlsConfig{Mode: config.TLSExternalMode},
 	}
 
-	go SetupHealthcheck(conf)
+	go SetupHealthcheck(&conf)
 	time.Sleep(time.Millisecond * 300)
 
-	req, err := http.NewRequest("GET", "http://localhost:"+fmt.Sprint(conf.Port)+healthcheckEndpoint, nil)
+	req, err := http.NewRequest("GET", "http://localhost:"+fmt.Sprint(conf.Healthcheck.Port)+healthcheckEndpoint, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
