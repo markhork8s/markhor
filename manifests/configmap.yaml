@@ -9,6 +9,6 @@ data:
       level: debug
 
     tls:
-      mode: file
+      enabled: true
       certPath: /etc/markhor/tls/tls.crt
       keyPath: /etc/markhor/tls/tls.key

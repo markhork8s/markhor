@@ -11,7 +11,7 @@ echo
 echo "Check that these are correct. Press 'y' to conferm or anything else to cancel"
 echo "    Target namespace: $NS"
 echo "    Target secret name: $SECRET_NAME"
-echo "    Target service URL: $SERVICE_NAME"
+echo "    Target service name: $SERVICE_NAME"
 echo "    RSA key length (in bits): $KEY_BITS"
 echo "    Certificate duration (in seconds): $CERT_DURATION_SECONDS"
 

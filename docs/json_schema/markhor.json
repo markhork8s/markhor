@@ -85,9 +85,6 @@
                     "minLength": 1
                 }
             },
-            "required": [
-                "mode"
-            ],
             "additionalProperties": false
         },
         "logging": {
@@ -122,6 +119,7 @@
                 },
                 "additionalLogFiles": {
                     "type": "array",
+                    "description": "List of files (besides stdout) where the logs of this process should be written to",
                     "items": {
                         "type": "string",
                         "description": "Path to the file where the logs should be written to",

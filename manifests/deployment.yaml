@@ -34,6 +34,7 @@ spec:
             httpHeaders:
               - name: Host
                 value: markhor.markhor.svc
+          initialDelaySeconds: 2
         readinessProbe:
           httpGet:
             path: /health
@@ -42,6 +43,7 @@ spec:
             httpHeaders:
               - name: Host
                 value: markhor.markhor.svc
+          initialDelaySeconds: 2
         volumeMounts:
           - name: markhor-config
             mountPath: /etc/markhor
