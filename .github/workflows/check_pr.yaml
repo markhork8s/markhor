@@ -1,0 +1,13 @@
+name: Check pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  code_quality:
+    uses: ./utils/code_quality.yaml
+
+  test:
+    uses: ./utils/test.yaml
