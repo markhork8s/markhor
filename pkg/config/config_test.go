@@ -39,13 +39,13 @@ var defaultConfig = &Config{
 		Namespaces:         DefaultBehaviorNamespaces,
 		ExcludedNamespaces: DefaultBehaviorExcludedNamespaces,
 	},
-	MarkorSecrets: markhorSecretsConfig{
-		HierarchySeparator: defaultOverrideStruct{
+	MarkorSecrets: MarkhorSecretsConfig{
+		HierarchySeparator: DefaultOverrideStruct{
 			Default:        DefaultMarkorSecretsHierarchySeparatorDefault,
 			AllowOverride:  DefaultMarkorSecretsHierarchySeparatorAllowOverride,
 			WarnOnOverride: DefaultMarkorSecretsHierarchySeparatorWarnOnOverride,
 		},
-		ManagedLabel: defaultOverrideStruct{
+		ManagedLabel: DefaultOverrideStruct{
 			Default:        DefaultMarkorSecretsManagedLabelDefault,
 			AllowOverride:  DefaultMarkorSecretsManagedLabelAllowOverride,
 			WarnOnOverride: DefaultMarkorSecretsManagedLabelWarnOnOverride,
@@ -269,17 +269,17 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 		Namespaces:         append(DefaultBehaviorNamespaces, "example"),
 		ExcludedNamespaces: append(DefaultBehaviorExcludedNamespaces, "example2"),
 	}
-	hierarchySeparatorConfig := defaultOverrideStruct{
+	hierarchySeparatorConfig := DefaultOverrideStruct{
 		Default:        DefaultMarkorSecretsHierarchySeparatorDefault + "-/",
 		AllowOverride:  !DefaultMarkorSecretsHierarchySeparatorAllowOverride,
 		WarnOnOverride: !DefaultMarkorSecretsHierarchySeparatorWarnOnOverride,
 	}
-	managedConfig := defaultOverrideStruct{
+	managedConfig := DefaultOverrideStruct{
 		Default:        DefaultMarkorSecretsManagedLabelDefault + "!",
 		AllowOverride:  !DefaultMarkorSecretsManagedLabelAllowOverride,
 		WarnOnOverride: !DefaultMarkorSecretsManagedLabelWarnOnOverride,
 	}
-	mSecretsConfig := markhorSecretsConfig{
+	mSecretsConfig := MarkhorSecretsConfig{
 		HierarchySeparator: hierarchySeparatorConfig,
 		ManagedLabel:       managedConfig,
 	}

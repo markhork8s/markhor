@@ -11,8 +11,8 @@ import (
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
-func sortJson(jsonData map[string]interface{}, eid slog.Attr) *orderedmap.OrderedMap[string, interface{}] {
-	ordered, err := sortJSONData(jsonData, eid)
+func sortJson(jsonData map[string]interface{}, eid slog.Attr, config config.MarkhorSecretsConfig) *orderedmap.OrderedMap[string, interface{}] {
+	ordered, err := sortJSONData(jsonData, eid, config)
 	if err != nil {
 		slog.Debug(fmt.Sprintf("Could not order the JSON: %v. Will keep the default order (alphabetic in k8s)", err), eid)
 
@@ -31,18 +31,25 @@ func sortJson(jsonData map[string]interface{}, eid slog.Attr) *orderedmap.Ordere
 	return ordered
 }
 
-func sortJSONData(jsonData map[string]interface{}, eid slog.Attr) (*orderedmap.OrderedMap[string, interface{}], error) {
+func sortJSONData(jsonData map[string]interface{}, eid slog.Attr, config config.MarkhorSecretsConfig) (*orderedmap.OrderedMap[string, interface{}], error) {
 
 	sortingParams, ok := jsonData[pkg.MARKHORPARAMS_MANIFEST_KEY].(map[string]interface{})
 	if !ok {
 		return nil, errors.New("missing key markhorParams")
 	}
-	separator, ok := sortingParams["hierarchySeparator"].(string)
-	if !ok {
-		separator = config.DefaultMarkorSecretsHierarchySeparatorDefault
-	} else {
-		slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", separator), eid)
+
+	separator := config.HierarchySeparator.Default
+	if config.HierarchySeparator.AllowOverride {
+		customSeparator, ok := sortingParams["hierarchySeparator"].(string)
+		if ok {
+			if config.HierarchySeparator.WarnOnOverride {
+				slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", customSeparator), eid)
+			} else {
+				slog.Debug(fmt.Sprintf("Using custom hierarchy separator: '%s'", customSeparator), eid)
+			}
+		}
 	}
+
 	rawOrderIntf, ok := sortingParams["order"].([]interface{})
 	if !ok {
 		return nil, errors.New("no order field found")

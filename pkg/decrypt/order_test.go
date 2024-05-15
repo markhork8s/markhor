@@ -445,7 +445,7 @@ func TestSortJson(t *testing.T) {
 		expected.Set("sops", sops)
 	}
 
-	result := sortJson(jsonData, slog.String("", ""))
+	result := sortJson(jsonData, slog.String("", ""), ms)
 
 	m1, _ := json.Marshal(result)
 	m2, _ := json.Marshal(expected)

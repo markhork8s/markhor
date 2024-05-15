@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	v1 "github.com/civts/markhor/pkg/api/types/v1"
+	"github.com/civts/markhor/pkg/config"
 	"github.com/google/go-cmp/cmp"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -88,6 +89,19 @@ const expectedJSON = `{
 	}
 }`
 
+var ms = config.MarkhorSecretsConfig{
+	HierarchySeparator: config.DefaultOverrideStruct{
+		Default:        "/",
+		AllowOverride:  true,
+		WarnOnOverride: false,
+	},
+	ManagedLabel: config.DefaultOverrideStruct{
+		Default:        "unimportant",
+		AllowOverride:  true,
+		WarnOnOverride: false,
+	},
+}
+
 func TestDecryptMarkhorSecret_Works_With_Correct_Input(t *testing.T) {
 	// Yes, this key is used only in these tests
 	const SOPS_KEY = "SOPS_AGE_KEY"
@@ -101,7 +115,7 @@ func TestDecryptMarkhorSecret_Works_With_Correct_Input(t *testing.T) {
 		t.Fatal("Failed to unmarshal encrypted JSON", err)
 	}
 
-	res, err := DecryptMarkhorSecret(cd, slog.String("eid", "_"))
+	res, err := DecryptMarkhorSecret(cd, ms, slog.String("eid", "_"))
 	if err != nil {
 		t.Fatal("Failed to decrypt markhor secret:", err)
 	}
@@ -128,7 +142,7 @@ func TestDecryptMarkhorSecret_Fails_With_Missing_Key(t *testing.T) {
 		t.Fatal("Failed to unmarshal encrypted JSON", err)
 	}
 
-	_, err = DecryptMarkhorSecret(cd, slog.String("eid", "_"))
+	_, err = DecryptMarkhorSecret(cd, ms, slog.String("eid", "_"))
 	if err == nil {
 		t.Fatal("The decryption should have failed since we did not provide the secret key", err)
 	}
@@ -145,7 +159,7 @@ func TestDecryptMarkhorSecret_Fails_With_Wrong_Key(t *testing.T) {
 		t.Fatal("Failed to unmarshal encrypted JSON", err)
 	}
 
-	_, err = DecryptMarkhorSecret(cd, slog.String("eid", "_"))
+	_, err = DecryptMarkhorSecret(cd, ms, slog.String("eid", "_"))
 	if err == nil {
 		t.Fatal("The decryption should have failed since we did not provide the right key", err)
 	}
@@ -164,7 +178,7 @@ func TestDecryptMarkhorSecret_Fails_With_Wrong_Order(t *testing.T) {
 		t.Fatal("Failed to unmarshal encrypted JSON", err)
 	}
 
-	_, err = DecryptMarkhorSecret(cd, slog.String("eid", "_"))
+	_, err = DecryptMarkhorSecret(cd, ms, slog.String("eid", "_"))
 	if err == nil {
 		t.Fatal("The decryption should have failed since the order of the fields was not correct")
 	}
@@ -183,7 +197,7 @@ func TestDecryptMarkhorSecret_Fails_With_Altered_File(t *testing.T) {
 		t.Fatal("Failed to unmarshal encrypted JSON", err)
 	}
 
-	_, err = DecryptMarkhorSecret(cd, slog.String("eid", "_"))
+	_, err = DecryptMarkhorSecret(cd, ms, slog.String("eid", "_"))
 	if err == nil {
 		t.Fatal("The decryption should have failed since the file contents were altered")
 	}
@@ -223,7 +237,7 @@ func TestDecryptMarkhorSecretEvent_Fails_With_Invalid_Json(t *testing.T) {
 					LASTAPPLIEDANNOTAION_K8s: input.Json,
 				},
 			}}
-			_, err := DecryptMarkhorSecretEvent(&m, slog.String("eid", "_"))
+			_, err := DecryptMarkhorSecretEvent(&m, ms, slog.String("eid", "_"))
 			if err == nil {
 				t.Fatal("The decryption should have failed because of the invalid JSON input number ", i, input.Json)
 			}
@@ -249,7 +263,7 @@ func TestDecryptMarkhorSecretEvent_Works_With_Correct_Input(t *testing.T) {
 			LASTAPPLIEDANNOTAION_K8s: cypheredData,
 		},
 	}}
-	res, err := DecryptMarkhorSecretEvent(&m, slog.String("eid", "_"))
+	res, err := DecryptMarkhorSecretEvent(&m, ms, slog.String("eid", "_"))
 	if err != nil {
 		t.Fatal("Failed to decrypt markhor secret:", err)
 	}

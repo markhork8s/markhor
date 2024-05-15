@@ -9,13 +9,18 @@ import (
 
 	"github.com/civts/markhor/pkg"
 	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
+	"github.com/civts/markhor/pkg/config"
 	"github.com/civts/markhor/pkg/decrypt"
 	admissionV1 "k8s.io/api/admission/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func validateHandler(w http.ResponseWriter, r *http.Request) {
+type ValidateHandler struct {
+	config config.MarkhorSecretsConfig
+}
+
+func (v *ValidateHandler) handler(w http.ResponseWriter, r *http.Request) {
 	const prefix = "[validate admission hook]"
 	var admissionReview admissionV1.AdmissionReview
 	err := json.NewDecoder(r.Body).Decode(&admissionReview)
@@ -28,7 +33,7 @@ func validateHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Debug(prefix+" received a new request", eventId)
 
 	var admissionResponse admissionV1.AdmissionResponse
-	name, err := validateReview(&admissionReview, eventId)
+	name, err := validateReview(&admissionReview, v.config, eventId)
 	if err == nil {
 		slog.Info(fmt.Sprint(prefix, " successfully validated the MarkhorSecret ", name), eventId)
 		admissionResponse = admissionV1.AdmissionResponse{Allowed: true, UID: admissionReview.Request.UID}
@@ -70,7 +75,7 @@ func validateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validateReview(review *admissionV1.AdmissionReview, eventId slog.Attr) (string, error) {
+func validateReview(review *admissionV1.AdmissionReview, config config.MarkhorSecretsConfig, eventId slog.Attr) (string, error) {
 	var err error
 
 	// Check that the object being validated is a markhor markhorSecret
@@ -86,7 +91,7 @@ func validateReview(review *admissionV1.AdmissionReview, eventId slog.Attr) (str
 
 	msName := fmt.Sprint(markhorSecret.Namespace, "/", markhorSecret.Name)
 	// Check that we can successfully decrypt the data in the MarkhorSecret
-	_, err = decrypt.DecryptMarkhorSecretEvent(&markhorSecret, eventId)
+	_, err = decrypt.DecryptMarkhorSecretEvent(&markhorSecret, config, eventId)
 
 	return msName, err
 }

@@ -15,7 +15,10 @@ func SetupAdmissionController(conf *config.Config) {
 	acConfig := conf.AdmissionController
 	if acConfig.Enabled {
 		mux := http.NewServeMux()
-		mux.HandleFunc("/validate", validateHandler)
+		vh := ValidateHandler{
+			config: conf.MarkorSecrets,
+		}
+		mux.HandleFunc("/validate", vh.handler)
 		server := &http.Server{
 			Addr:         fmt.Sprintf(":%d", acConfig.Port),
 			Handler:      mux,

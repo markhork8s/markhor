@@ -25,13 +25,13 @@ var validConfig = Config{
 		Namespaces:         []string{"namespace1", "namespace2"},
 		ExcludedNamespaces: []string{"excluded1", "excluded2"},
 	},
-	MarkorSecrets: markhorSecretsConfig{
-		HierarchySeparator: defaultOverrideStruct{
+	MarkorSecrets: MarkhorSecretsConfig{
+		HierarchySeparator: DefaultOverrideStruct{
 			Default:        "/",
 			AllowOverride:  true,
 			WarnOnOverride: false,
 		},
-		ManagedLabel: defaultOverrideStruct{
+		ManagedLabel: DefaultOverrideStruct{
 			Default:        "managed",
 			AllowOverride:  true,
 			WarnOnOverride: false,

@@ -7,7 +7,7 @@ type Config struct {
 
 	Behavior behaviorConfig `mapstructure:"behavior"`
 
-	MarkorSecrets markhorSecretsConfig `mapstructure:"markorSecrets"`
+	MarkorSecrets MarkhorSecretsConfig `mapstructure:"markorSecrets"`
 
 	Healthcheck HealthcheckConfig `mapstructure:"healthcheck"`
 
@@ -39,12 +39,12 @@ type fieldManagerConfig struct {
 	ForceUpdates bool   `mapstructure:"forceUpdates"`
 }
 
-type markhorSecretsConfig struct {
-	HierarchySeparator defaultOverrideStruct `mapstructure:"hierarchySeparator"`
-	ManagedLabel       defaultOverrideStruct `mapstructure:"managedLabel"`
+type MarkhorSecretsConfig struct {
+	HierarchySeparator DefaultOverrideStruct `mapstructure:"hierarchySeparator"`
+	ManagedLabel       DefaultOverrideStruct `mapstructure:"managedLabel"`
 }
 
-type defaultOverrideStruct struct {
+type DefaultOverrideStruct struct {
 	Default        string `mapstructure:"default"`
 	AllowOverride  bool   `mapstructure:"allowOverride"`
 	WarnOnOverride bool   `mapstructure:"warnOnOverride"`
