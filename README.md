@@ -52,7 +52,7 @@ With respect to the [alternatives](#alternatives), we are the only one that lets
   1. Deploy Markhor on your cluster (see [installation](#installation)). Give it -and only to it- the private key.
 
 - Usage:
-  1. In your development environment, create a manifest of type `MarkhorSecret` -or use our [script](./utility_scripts/secret_to_markhorsecret.py) to convert an existing Secret automatically-. **Encrypt** it using SOPS and the public key.
+  1. In your development environment, create a manifest of type `MarkhorSecret` -or use our [script](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py) to convert an existing Secret automatically-. **Encrypt** it using SOPS and the public key.
       <details>
         <summary>
         Example command to encrypt a MarkhorSecret manifest using SOPS
@@ -209,7 +209,7 @@ This section covers the configuration options available for the Markhor operator
 
 It is configured exclusively through one yaml file. The default location for this file is `/etc/markhor/config.yaml`. You may specify an alternative path for such file using the `--config` argument when invoking the program.
 
-A complete JSON-schema is available in [./docs/json_schema/markhor.json](./docs/json_schema/markhor.json).  
+A complete JSON-schema is available in [./docs/json_schema/markhor.json](https://github.com/markhork8s/markhor/blob/main/docs/json_schema/markhor.json).  
 If you are a VSCode user, you can import it to enable automatic linting and suggestions by adding this line on the top of your `config.yaml` file -provided you have the [redhat.vscode-yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) extension installed-: `# yaml-language-server: $schema=https://raw.githubusercontent.com/markhork8s/markhor/main/docs/json_schema/markhor.json`.
 
 Here is a table of the available options. The dot indicates nesting, so `a.b` means that there is a field named `b` inside a parent field named `a`.
@@ -251,14 +251,14 @@ We encourage you to enable this feature, especially if you use CD tools since it
 
 Kubernetes admission hooks, however, require to be exposed over HTTPS ([reference docs](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)). If you perform the TLS termination outside of the markhor container, just ensure `tls.enabled` is set to false in the Markhor config (the default). Otherwise, you need to provide Markhor with the TLS certificate and key.
 
-To generate the TLS certificate and key, you may use the script [./manifests/gen_hook_tls_secret.sh](./manifests/gen_hook_tls_secret.sh).
-Then you need to ensure they are mounted in the pod, that there is a service where K8s can reach it, and that the healthchecks are configured to use HTTPS -as of now, this is the configuration in [./manifests](./manifests)-.
+To generate the TLS certificate and key, you may use the script [./manifests/gen_hook_tls_secret.sh](https://github.com/markhork8s/markhor/blob/main/manifests/gen_hook_tls_secret.sh).
+Then you need to ensure they are mounted in the pod, that there is a service where K8s can reach it, and that the healthchecks are configured to use HTTPS -as of now, this is the configuration in [./manifests](https://github.com/markhork8s/markhor/blob/main/manifests)-.
 
 # MarkhorSecret Manifests
 
 This section explains how a `MarkhorSecret` manifest is structured and what the requirements for making it decypherable are.
 
-**Pro tip 💎**: You can convert instantly existing Secrets to MarkhorSecrets by using the script in [./utility_scripts/secret_to_markhorsecret.py](./utility_scripts/secret_to_markhorsecret.py)
+**Pro tip 💎**: You can convert instantly existing Secrets to MarkhorSecrets by using the script in [./utility_scripts/secret_to_markhorsecret.py](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py)
 
 ## File structure
 
@@ -327,12 +327,12 @@ All the code is in [./pkg](./pkg), except for `main.go`.
 # Code of Conduct
 
 This project follows the [Contributor Covenant](https://www.contributor-covenant.org/) code of conduct.
-You can find the details in [./CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+You can find the details in [./CODE_OF_CONDUCT.md](https://github.com/markhork8s/markhor/blob/main/CODE_OF_CONDUCT.md)
 
 # Contributing
 
 If you'd like to contribute, that is great!  
-You can find the details in [./CONTRIBUTING.md](./CONTRIBUTING.md)
+You can find the details in [./CONTRIBUTING.md](https://github.com/markhork8s/markhor/blob/main/CONTRIBUTING.md)
 
 If it is one of your first times contributing to open source projects, I strongly sugget you to take 30 minutes to read https://opensource.guide/how-to-contribute/. It is a curated series of articles that makes you aware of many little details that make great differences for both you and the maintainers of this project.
 
