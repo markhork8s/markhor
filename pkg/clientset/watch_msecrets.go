@@ -38,11 +38,24 @@ func WatchMarkhorSecrets(mClient *v1.MarkhorV1Client, k8sClient *kubernetes.Clie
 	channel := markhorSecrets.ResultChan()
 	slog.Info("Started watching the events in the cluster")
 	healthcheck.Healthy = true
+	excludedNamespaces := arrayToSet(config.Behavior.ExcludedNamespaces)
+	includedNamespaces := arrayToSet(config.Behavior.Namespaces)
 	for event := range channel {
 		eventId := uuid.New()
 		eid := slog.String(pkg.SLOG_EVENT_ID_KEY, eventId.String())
 		markhorSecret, ok := event.Object.(*apiV1.MarkhorSecret)
 		namespace := markhorSecret.ObjectMeta.Namespace
+		// Check that the MarkhorSecret belongs to a namespace we are supposed to manage (else, skip it)
+		if _, present := excludedNamespaces[namespace]; present {
+			slog.Debug(fmt.Sprint("Got an event for a MarkhorSecret in a namespace that was excluded: ", namespace))
+			continue
+		} else if len(includedNamespaces) != 0 {
+			_, present := includedNamespaces[namespace]
+			if !present {
+				slog.Debug(fmt.Sprint("Got an event for a MarkhorSecret in a namespace that was not included in the ones we should watch: ", namespace))
+				continue
+			}
+		}
 		secretName := fmt.Sprintf("%s/%s", namespace, markhorSecret.ObjectMeta.Name)
 		if !ok {
 			slog.Debug("Failed to cast the object to type MarkhorSecret")
@@ -91,4 +104,12 @@ func checkConnectTimeout(timeout int) {
 	slog.Error(fmt.Sprintf("Connecting to the k8s cluster timed out after %d seconds. Check the kubeconfig file and that the cluster is up.", timeout))
 
 	os.Exit(1)
+}
+
+func arrayToSet(stringsArray []string) map[string]struct{} {
+	stringSet := make(map[string]struct{})
+	for _, str := range stringsArray {
+		stringSet[str] = struct{}{}
+	}
+	return stringSet
 }
