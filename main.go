@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -16,7 +17,11 @@ import (
 )
 
 func init() {
-	apiV1.AddToScheme(scheme.Scheme)
+	err := apiV1.AddToScheme(scheme.Scheme)
+	if err != nil {
+		fmt.Println("Could not create the Kubernetes scheme for MarkhorSecrets. Exiting")
+		os.Exit(1)
+	}
 }
 
 func main() {

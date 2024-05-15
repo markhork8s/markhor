@@ -14,3 +14,7 @@ const DEFAULT_CONFIG_PATH string = "/etc/markhor/config.yaml"
 const MSPARAMS_MANAGED_LABEL_KEY string = "managedLabel"
 
 const SLOG_EVENT_ID_KEY string = "eventId"
+
+// Timeouts for the http(s) servers that Markhor creates (healthcheck and admission controller)
+const SERVER_READ_TIMEOUT_SECONDS = 5
+const SERVER_WRITE_TIMEOUT_SECONDS = 10

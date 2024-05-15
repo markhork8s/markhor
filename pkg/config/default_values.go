@@ -19,9 +19,10 @@ const (
 	DefaultMarkorSecretsHierarchySeparatorDefault        = "/"
 	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = false
 	DefaultMarkorSecretsHierarchySeparatorWarnOnOverride = true
-	DefaultMarkorSecretsManagedLabelDefault              = "app.kubernetes.io/managed-by"
-	DefaultMarkorSecretsManagedLabelAllowOverride        = false
-	DefaultMarkorSecretsManagedLabelWarnOnOverride       = true
+	//#nosec G101 -- This is a false positive (gosec)
+	DefaultMarkorSecretsManagedLabelDefault        = "app.kubernetes.io/managed-by"
+	DefaultMarkorSecretsManagedLabelAllowOverride  = false
+	DefaultMarkorSecretsManagedLabelWarnOnOverride = true
 )
 
 // Can't make these costants

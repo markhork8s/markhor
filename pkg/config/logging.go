@@ -24,7 +24,8 @@ func SetupLogging(config Config) error {
 	}
 
 	for _, fname := range config.Logging.AdditionalLogFiles {
-		f, err := os.OpenFile(fname, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		//#nosec G304 -- This is the intended functionality (gosec)
+		f, err := os.OpenFile(fname, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
 		if err != nil {
 			return err
 		}

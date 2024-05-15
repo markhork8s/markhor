@@ -5,19 +5,25 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/civts/markhor/pkg"
 	"github.com/civts/markhor/pkg/config"
 )
 
 var Healthy bool = false
 
 func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	var err error
 	if Healthy {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Alive and well\n"))
+		_, err = w.Write([]byte("Alive and well\n"))
 	} else {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Something is wrong\n"))
+		_, err = w.Write([]byte("Something is wrong\n"))
+	}
+	if err != nil {
+		slog.Warn(fmt.Sprint("Could not write healthcheck response: ", err))
 	}
 }
 
@@ -26,14 +32,21 @@ const healthcheckEndpoint = "/health"
 func SetupHealthcheck(cf *config.Config) {
 	ch := cf.Healthcheck
 	if ch.Enabled {
-		http.HandleFunc(healthcheckEndpoint, healthCheckHandler)
+		mux := http.NewServeMux()
+		mux.HandleFunc(healthcheckEndpoint, healthCheckHandler)
+		server := &http.Server{
+			Addr:         fmt.Sprintf(":%d", ch.Port),
+			Handler:      mux,
+			ReadTimeout:  pkg.SERVER_READ_TIMEOUT_SECONDS * time.Second,
+			WriteTimeout: pkg.SERVER_WRITE_TIMEOUT_SECONDS * time.Second,
+		}
 		var err error
 		if cf.Tls.Enabled {
 			slog.Debug(fmt.Sprint("Healthcheck https endpoint created on port ", ch.Port))
-			err = http.ListenAndServeTLS(fmt.Sprintf(":%d", ch.Port), cf.Tls.CertPath, cf.Tls.KeyPath, nil)
+			err = server.ListenAndServeTLS(cf.Tls.CertPath, cf.Tls.KeyPath)
 		} else {
 			slog.Debug(fmt.Sprint("Healthcheck http endpoint created on port ", ch.Port))
-			err = http.ListenAndServe(fmt.Sprintf(":%d", ch.Port), nil)
+			err = server.ListenAndServe()
 		}
 		if err != nil {
 			slog.Error(fmt.Sprint("Could not start the healthcheck listener on port ", ch.Port, ": ", err))
