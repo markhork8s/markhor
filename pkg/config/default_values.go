@@ -15,7 +15,6 @@ const (
 	DefaultLoggingLogToStdout                            = true
 	DefaultBehaviorFieldManagerName                      = "github.com/civts/markhor"
 	DefaultBehaviorFieldManagerForceUpdates              = false
-	DefaultBehaviorPruneDanglingMarkhorSecrets           = true
 	DefaultMarkorSecretsHierarchySeparatorDefault        = "/"
 	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = false
 	DefaultMarkorSecretsHierarchySeparatorWarnOnOverride = true

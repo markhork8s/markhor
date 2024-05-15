@@ -232,7 +232,6 @@ Here is a table of the available options. The dot indicates nesting, so `a.b` me
 |logging.additionalLogFiles|array[string]|[]|List of files (besides stdout) where the logs of this process should be written to|
 |behavior.fieldmanager.name|string|"github.com/civts/markhor"|Name of the field manager that Markhor will give to kubernetes|
 |behavior.fieldmanager.forceUpdates|boolean|False|If this is inactive -default-, Markhor will not modify secrets which have another fieldmanager -e.g., the ones created by the admins or other apps-. On the contrary, if this is active, Markhor will take over the field manager -overriding existing secrets-. In any case, when the field manager mismatches, a warning is printed.|
-|behavior.pruneDanglingMarkhorSecrets|boolean|True|If enabled, Markhor will delete all the Secrets which do not have a corresponding MarkhorSecret|
 |behavior.namespaces|array[string]|[]|List of all the namespaces where Markhor is allowed to operate in. An empty list -the default- signifies that Markhor will operate on all namespaces|
 |behavior.excludedNamespaces|array[string]|[]|List of all the namespaces where Markhor is forbidden to operate in. This has higher priority than the "namespaces" field.|
 |markorSecrets.hierarchySeparator.default|string|"/"|Which character (or string) is used as a marker for indentation in markhorParams>order. The dafault value is "/", meaning that the string "a/b" indicates a property that in JSON would be "a":{"b":"some-value"} while "a.b" indicates a property that in JSON would be "a.b":"some-value"|

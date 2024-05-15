@@ -29,11 +29,9 @@ type loggingConfig struct {
 }
 
 type behaviorConfig struct {
-	Fieldmanager fieldManagerConfig `mapstructure:"fieldmanager"`
-
-	PruneDanglingMarkhorSecrets bool     `mapstructure:"pruneDanglingMarkhorSecrets"`
-	Namespaces                  []string `mapstructure:"namespaces"`
-	ExcludedNamespaces          []string `mapstructure:"excludedNamespaces"`
+	Fieldmanager       fieldManagerConfig `mapstructure:"fieldmanager"`
+	Namespaces         []string           `mapstructure:"namespaces"`
+	ExcludedNamespaces []string           `mapstructure:"excludedNamespaces"`
 }
 
 type fieldManagerConfig struct {

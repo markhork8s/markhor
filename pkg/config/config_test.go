@@ -36,9 +36,8 @@ var defaultConfig = &Config{
 			Name:         DefaultBehaviorFieldManagerName,
 			ForceUpdates: DefaultBehaviorFieldManagerForceUpdates,
 		},
-		PruneDanglingMarkhorSecrets: DefaultBehaviorPruneDanglingMarkhorSecrets,
-		Namespaces:                  DefaultBehaviorNamespaces,
-		ExcludedNamespaces:          DefaultBehaviorExcludedNamespaces,
+		Namespaces:         DefaultBehaviorNamespaces,
+		ExcludedNamespaces: DefaultBehaviorExcludedNamespaces,
 	},
 	MarkorSecrets: markhorSecretsConfig{
 		HierarchySeparator: defaultOverrideStruct{
@@ -266,10 +265,9 @@ func TestParseConfigValidCompleteFile(t *testing.T) {
 		ForceUpdates: !DefaultBehaviorFieldManagerForceUpdates,
 	}
 	behaviorConfig := behaviorConfig{
-		Fieldmanager:                fieldManagerConfig,
-		PruneDanglingMarkhorSecrets: !DefaultBehaviorPruneDanglingMarkhorSecrets,
-		Namespaces:                  append(DefaultBehaviorNamespaces, "example"),
-		ExcludedNamespaces:          append(DefaultBehaviorExcludedNamespaces, "example2"),
+		Fieldmanager:       fieldManagerConfig,
+		Namespaces:         append(DefaultBehaviorNamespaces, "example"),
+		ExcludedNamespaces: append(DefaultBehaviorExcludedNamespaces, "example2"),
 	}
 	hierarchySeparatorConfig := defaultOverrideStruct{
 		Default:        DefaultMarkorSecretsHierarchySeparatorDefault + "-/",

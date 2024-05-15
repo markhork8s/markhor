@@ -154,11 +154,6 @@
                         }
                     }
                 },
-                "pruneDanglingMarkhorSecrets": {
-                    "type": "boolean",
-                    "description": "If enabled, Markhor will delete all the Secrets which do not have a corresponding MarkhorSecret",
-                    "default": true
-                },
                 "namespaces": {
                     "type": "array",
                     "description": "List of all the namespaces where Markhor is allowed to operate in. An empty list -the default- signifies that Markhor will operate on all namespaces",

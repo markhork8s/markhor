@@ -22,9 +22,8 @@ var validConfig = Config{
 			Name:         "fieldManager",
 			ForceUpdates: true,
 		},
-		PruneDanglingMarkhorSecrets: true,
-		Namespaces:                  []string{"namespace1", "namespace2"},
-		ExcludedNamespaces:          []string{"excluded1", "excluded2"},
+		Namespaces:         []string{"namespace1", "namespace2"},
+		ExcludedNamespaces: []string{"excluded1", "excluded2"},
 	},
 	MarkorSecrets: markhorSecretsConfig{
 		HierarchySeparator: defaultOverrideStruct{

@@ -74,7 +74,6 @@ func setDefaultConfigValues() {
 	viper.SetDefault("behavior.namespaces", DefaultBehaviorNamespaces)
 	viper.SetDefault("behavior.excludedNamespaces", DefaultBehaviorExcludedNamespaces)
 	viper.SetDefault("behavior.fieldmanager.forceUpdates", DefaultBehaviorFieldManagerForceUpdates)
-	viper.SetDefault("behavior.pruneDanglingMarkhorSecrets", DefaultBehaviorPruneDanglingMarkhorSecrets)
 	viper.SetDefault("markorSecrets.hierarchySeparator.default", DefaultMarkorSecretsHierarchySeparatorDefault)
 	viper.SetDefault("markorSecrets.hierarchySeparator.allowOverride", DefaultMarkorSecretsHierarchySeparatorAllowOverride)
 	viper.SetDefault("markorSecrets.hierarchySeparator.warnOnOverride", DefaultMarkorSecretsHierarchySeparatorWarnOnOverride)
