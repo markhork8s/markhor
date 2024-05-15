@@ -1,5 +1,5 @@
 {
-  description = "k8s env";
+  description = "Golang k8s env";
 
   inputs = {
     nixpkgs.url = "github:nixOS/nixpkgs";
@@ -24,7 +24,7 @@
             gopls
             gcc
             glibc
-            #Go specific
+            #Golang specific
             gopkgs
             go-outline
             gotest
@@ -32,6 +32,7 @@
             impl
             delve
             go-tools # includes `staticcheck`
+            gosec
             govulncheck
             kubernetes-controller-tools
             (vscode-with-extensions.override {
@@ -40,16 +41,7 @@
                 jnoortheen.nix-ide
                 golang.go
                 redhat.vscode-yaml
-              ]
-                #  ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-                #   {
-                #     name = "codegeex";
-                #     publisher = "aminer";
-                #     version = "1.0.6";
-                #     sha256 = "sha256-q8HSFZRhwZv5zApHsVoyKGqZsDDyUqjxv/qwGAuOE0c=";
-                #   }
-                # ]
-              ;
+              ];
             })
           ];
         };
