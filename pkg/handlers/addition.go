@@ -27,7 +27,6 @@ func HandleAddition(attrs HandlerAttrs) bool {
 	}
 
 	{ // Add managed-by label
-		label, present := helpers.GetLabel(decryptedData)
 		metadata, ok := decryptedData["metadata"]
 		if !ok {
 			slog.Error(fmt.Sprint("Missing metadata in ", secretName), attrs.EventId)
@@ -48,11 +47,26 @@ func HandleAddition(attrs HandlerAttrs) bool {
 			slog.Error(fmt.Sprint("Labels in ", secretName, " do not appear to be a YAML object"), attrs.EventId)
 			labelsObj = make(map[string]interface{})
 		}
+
+		label, present := helpers.GetLabel(decryptedData)
+		useCustomLabel := false
 		if present {
+			if attrs.Config.MarkorSecrets.ManagedLabel.AllowOverride {
+				useCustomLabel = true
+				msg := fmt.Sprint("Overriding managed-by label for ", secretName)
+				if attrs.Config.MarkorSecrets.ManagedLabel.WarnOnOverride {
+					slog.Warn(msg)
+				} else {
+					slog.Debug(msg)
+				}
+			}
+		}
+		if useCustomLabel {
 			labelsObj[label] = MANAGED_BY
 		} else {
 			labelsObj[attrs.Config.MarkorSecrets.ManagedLabel.Default] = MANAGED_BY
 		}
+
 		metadataObj["labels"] = labelsObj
 		decryptedData["metadata"] = metadataObj
 	}
