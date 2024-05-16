@@ -141,7 +141,7 @@ As for the **resource requirements**, Markhor runs in a single pod which consume
        Notice that, apart from the `markhorParams` field, it is exactly the manifest of the K8s Secret you'd create normally -and see section [MarkhorSecret files](#markhorsecret-files) for details on the syntax of a `MarkhorSecret` manifest-.
 
         ```yaml
-          apiVersion: markhor.example.com/v1
+          apiVersion: markhork8s.github.io/v1
           kind: MarkhorSecret
           metadata:
             name: my-new-awesome-app-secret
@@ -163,7 +163,7 @@ As for the **resource requirements**, Markhor runs in a single pod which consume
         </summary>
 
         ```yaml
-        apiVersion: markhor.example.com/v1
+        apiVersion: markhork8s.github.io/v1
         kind: MarkhorSecret
         metadata:
             name: my-new-awesome-app-secret
@@ -264,7 +264,7 @@ This section explains how a `MarkhorSecret` manifest is structured and what the 
 A MarkhorSecret manifest aims to look exactly the same as a Kubernetes Secret, with one exception: the field `markhorParams` -and the `kind` and `apiVersion` fields-.
 
 ```yaml
-  apiVersion: markhor.example.com/v1
+  apiVersion: markhork8s.github.io/v1
   kind: MarkhorSecret
   metadata:
     name: my-new-awesome-app-secret

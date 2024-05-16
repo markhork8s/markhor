@@ -240,7 +240,7 @@ func TestSortWithOrdering(t *testing.T) {
 	t.Run("Successful ordering with valid complex input", func(t *testing.T) {
 		t.Parallel()
 		jsonData := map[string]interface{}{
-			"apiVersion": "markhor.example.com/v1",
+			"apiVersion": "markhork8s.github.io/v1",
 			"kind":       "MarkhorSecret",
 			"metadata": map[string]interface{}{
 				"namespace": "default",
@@ -297,7 +297,7 @@ func TestSortWithOrdering(t *testing.T) {
 
 		expected := orderedmap.New[string, interface{}]()
 		{
-			expected.Set("apiVersion", "markhor.example.com/v1")
+			expected.Set("apiVersion", "markhork8s.github.io/v1")
 			expected.Set("kind", "MarkhorSecret")
 			metadata := orderedmap.New[string, interface{}]()
 			metadata.Set("name", "sample-secret")
@@ -375,7 +375,7 @@ func TestSortWithOrdering(t *testing.T) {
 func TestSortJson(t *testing.T) {
 	t.Parallel()
 	jsonData := map[string]interface{}{
-		"apiVersion": "markhor.example.com/v1",
+		"apiVersion": "markhork8s.github.io/v1",
 		"kind":       "MarkhorSecret",
 		"metadata": map[string]interface{}{
 			"namespace": "default",
@@ -411,7 +411,7 @@ func TestSortJson(t *testing.T) {
 
 	expected := orderedmap.New[string, interface{}]()
 	{
-		expected.Set("apiVersion", "markhor.example.com/v1")
+		expected.Set("apiVersion", "markhork8s.github.io/v1")
 		expected.Set("kind", "MarkhorSecret")
 		metadata := orderedmap.New[string, interface{}]()
 		metadata.Set("name", "sample-secret")

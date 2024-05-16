@@ -7,6 +7,6 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["create", "update", "patch", "delete"]
-- apiGroups: ["markhor.example.com"]
+- apiGroups: ["markhork8s.github.io"]
   resources: ["markhorsecrets"]
   verbs: ["list", "watch"]

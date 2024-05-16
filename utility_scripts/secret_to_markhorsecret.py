@@ -25,7 +25,7 @@ def add_markhor_field(input_file, output_file, separator, reorder):
         print(f'Error: Input YAML file must have a field {api_version_field} with value "v1"')
         sys.exit(1)
     else:
-        data[api_version_field] = "markhor.example.com/v1"
+        data[api_version_field] = "markhork8s.github.io/v1"
 
     ordering = []
     def add_keys_to_ordering(data, parent_key=""):

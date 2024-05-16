@@ -3,13 +3,13 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: markhor-validation-webhook-config
 webhooks:
-  - name: validate.markhor.example.com
+  - name: validate.markhork8s.github.io
     admissionReviewVersions:
       - v1
     sideEffects: None
     rules:
       - apiGroups:
-          - markhor.example.com
+          - markhork8s.github.io
         apiVersions:
           - v1
         resources:

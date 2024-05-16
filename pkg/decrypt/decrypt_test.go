@@ -23,7 +23,7 @@ const cypheredData = `{
 		"namespace": "default",
 		"name": "sample-secret"
 	},
-	"apiVersion": "markhor.example.com/v1",
+	"apiVersion": "markhork8s.github.io/v1",
 	"kind": "MarkhorSecret",
 	"markhorParams": {
 			"order": [
@@ -62,7 +62,7 @@ const cypheredData = `{
 }`
 
 const expectedJSON = `{
-	"apiVersion": "markhor.example.com/v1",
+	"apiVersion": "markhork8s.github.io/v1",
 	"kind": "MarkhorSecret",
 	"metadata": {
 			"name": "sample-secret",
