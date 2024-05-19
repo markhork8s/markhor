@@ -1,13 +1,62 @@
-name: Check pull request
+name: Check code quality and tests
 
 on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 jobs:
-  code_quality:
-    uses: ./utils/code_quality.yaml
+  check_quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check formatting w/ gofmt
+        run: |
+          gofmt -l -s -w .
+          git diff --exit-code
+
+      - name: Run go vet
+        run: |
+          go vet ./...
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@v2.20.0
+        env:
+          GOROOT: ""
+        with:
+          args: ./...
+
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"
+
+      - name: Run govulncheck
+        run: |
+          # Install govulncheck
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          # Update path
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          # Replace go version in go.mod otherwise govulncheck freaks out
+          sed -i 's/^go .*$/go 1.18.0/' go.mod
+          govulncheck ./...
 
   test:
-    uses: ./utils/test.yaml
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Test code
+        run: go test ./...
