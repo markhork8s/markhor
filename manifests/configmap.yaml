@@ -6,7 +6,7 @@ metadata:
 data:
   config.yaml: |
     logging:
-      level: debug
+      level: info
 
     tls:
       enabled: true

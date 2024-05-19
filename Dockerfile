@@ -1,16 +1,28 @@
-FROM golang:1.22 as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.22 as builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
+WORKDIR /go
 
 # Helps speeding up the builds when dependencies do not change
 COPY go.mod go.sum .
-RUN go mod download && go mod verify
+RUN go mod download
 
-COPY . .
-RUN go build -ldflags "-linkmode external -extldflags -static" -o markhor
+COPY main.go .
+COPY pkg ./pkg
+RUN  CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-linkmode external -extldflags -static" -o markhor
 
 # ----------------------------------
 
-FROM scratch
+FROM --platform=${BUILDPLATFORM:-linux/amd64} gcr.io/distroless/static:nonroot
 
-COPY --from=builder /go/markhor .
+COPY --from=builder /go/markhor /
 
-CMD ["./markhor"]
+LABEL org.opencontainers.image.source=https://github.com/markhork8s/markhor
+
+USER nonroot:nonroot
+
+CMD ["/markhor"]

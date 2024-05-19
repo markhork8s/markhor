@@ -58,12 +58,9 @@ spec:
         - name: markhor-config
           configMap:
             name: markhor-config
-            defaultMode: 0400
         - name: markhor-age
           secret:
             secretName: markhor-age-secret
-            defaultMode: 0400
         - name: markhor-tls
           secret:
             secretName: markhor-tls-secret
-            defaultMode: 0400
