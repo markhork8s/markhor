@@ -13,7 +13,7 @@ const (
 	DefaultLoggingLevel                                  = "info"
 	DefaultLoggingStyle                                  = "text"
 	DefaultLoggingLogToStdout                            = true
-	DefaultBehaviorFieldManagerName                      = "github.com/markhork8s/markhor"
+	DefaultBehaviorFieldManagerName                      = "markhork8s.github.io"
 	DefaultBehaviorFieldManagerForceUpdates              = false
 	DefaultMarkorSecretsHierarchySeparatorDefault        = "/"
 	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = false

@@ -145,7 +145,7 @@
                             "type": "string",
                             "description": "Name of the field manager that Markhor will give to kubernetes",
                             "minLength": 1,
-                            "default": "github.com/markhork8s/markhor"
+                            "default": "markhork8s.github.io"
                         },
                         "forceUpdates": {
                             "type": "boolean",
