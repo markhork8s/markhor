@@ -1,3 +1,11 @@
+---
+name: Bug report 🐞
+about: Help us improve
+title: ""
+labels: "bug"
+assignees: "civts"
+---
+
 # Bug report 🐞
 
 ## How to use this template

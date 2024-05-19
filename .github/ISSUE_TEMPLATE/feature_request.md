@@ -1,3 +1,11 @@
+---
+name: Feature request 🐙
+about: Help us improve
+title: ""
+labels: "enhancement"
+assignees: "civts"
+---
+
 # Feature request 🐙
 
 ## How to use this template
