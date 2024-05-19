@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Test code
-      run: go test ./...
+      - name: Test code
+        run: go test ./...

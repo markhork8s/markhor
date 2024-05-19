@@ -4,9 +4,9 @@ metadata:
   name: markhor-role-binding
   namespace: markhor
 subjects:
-- kind: ServiceAccount
-  name: markhor-service-account
-  namespace: markhor
+  - kind: ServiceAccount
+    name: markhor-service-account
+    namespace: markhor
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

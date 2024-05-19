@@ -41,6 +41,7 @@
                 jnoortheen.nix-ide
                 golang.go
                 redhat.vscode-yaml
+                esbenp.prettier-vscode
               ];
             })
           ];

@@ -15,45 +15,45 @@ spec:
     spec:
       serviceAccountName: markhor-service-account
       containers:
-      - name: markhor
-        image: markhor/markhor:0.0.12
-        env:
-          - name: SOPS_AGE_KEY_FILE
-            value: /age-secrets/age_keys.txt
-        imagePullPolicy: Never
-        ports:
-          - name: health
-            containerPort: 8000
-          - name: validationhook
-            containerPort: 443
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-            scheme: HTTPS
-            httpHeaders:
-              - name: Host
-                value: markhor.markhor.svc
-          initialDelaySeconds: 2
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-            scheme: HTTPS
-            httpHeaders:
-              - name: Host
-                value: markhor.markhor.svc
-          initialDelaySeconds: 2
-        volumeMounts:
-          - name: markhor-config
-            mountPath: /etc/markhor
-            readOnly: true
-          - name: markhor-age
-            mountPath: /age-secrets
-            readOnly: true
-          - name: markhor-tls
-            mountPath: /etc/markhor/tls
-            readOnly: true
+        - name: markhor
+          image: markhor/markhor:0.0.12
+          env:
+            - name: SOPS_AGE_KEY_FILE
+              value: /age-secrets/age_keys.txt
+          imagePullPolicy: Never
+          ports:
+            - name: health
+              containerPort: 8000
+            - name: validationhook
+              containerPort: 443
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+              scheme: HTTPS
+              httpHeaders:
+                - name: Host
+                  value: markhor.markhor.svc
+            initialDelaySeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+              scheme: HTTPS
+              httpHeaders:
+                - name: Host
+                  value: markhor.markhor.svc
+            initialDelaySeconds: 2
+          volumeMounts:
+            - name: markhor-config
+              mountPath: /etc/markhor
+              readOnly: true
+            - name: markhor-age
+              mountPath: /age-secrets
+              readOnly: true
+            - name: markhor-tls
+              mountPath: /etc/markhor/tls
+              readOnly: true
       volumes:
         - name: markhor-config
           configMap:

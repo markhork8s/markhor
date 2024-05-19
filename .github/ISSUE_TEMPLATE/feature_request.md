@@ -1,12 +1,14 @@
 # Feature request 🐙
 
 ## How to use this template
+
 - [ ] Complete all the sections of this template.
 - [ ] Remove all the content inside the \<description\> tag. This is only to explain each section of the template.
-- [ ] Make sure that no personal or sensitive information is present in this document before submitting it. If there is, replace it with asterisks "*" or just replace it with generic values (e.g., replace your domain name with "example.com").
+- [ ] Make sure that no personal or sensitive information is present in this document before submitting it. If there is, replace it with asterisks "\*" or just replace it with generic values (e.g., replace your domain name with "example.com").
 - [ ] **Delete this section** before submitting the issue.
 
 ## Pre-flight
+
 <description style="display:none">
 Check **all** the boxes before proceeding. To check a box, write it like this: [x]
 

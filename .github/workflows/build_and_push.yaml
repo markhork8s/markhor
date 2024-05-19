@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   code_quality:
@@ -11,18 +11,18 @@ jobs:
 
   test:
     uses: ./utils/test.yaml
-    
+
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }} .
-        docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }}
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }} .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }}
