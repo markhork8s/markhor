@@ -36,7 +36,7 @@ users:
   user: {}
 `
 
-func TestGetK8sClientsProducesAConfigWithRealisticKubeconfig(t *testing.T) {
+func TestGetClientsProducesAConfigWithRealisticKubeconfig(t *testing.T) {
 	f, err := createTempFile()
 	if err != nil {
 		t.Fatal("Could not write to temp file:", err)
@@ -45,7 +45,7 @@ func TestGetK8sClientsProducesAConfigWithRealisticKubeconfig(t *testing.T) {
 	f.Sync()
 	defer removeTempFile(f)
 
-	mClient, clientset := GetK8sClients(f.Name())
+	mClient, clientset := getClients(f.Name())
 
 	if mClient == nil {
 		t.Error("Expected MarkhorV1Client to be initialized, but it was nil")
