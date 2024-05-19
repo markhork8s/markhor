@@ -81,7 +81,7 @@ This section covers how to install Markhor in your Kubernetes cluster AND how to
 
 As of now, there is no Kustomization/Helm chart available (see the [roadmap](#development-roadmap) section), but the steps are quite easy to follow.
 
-As for the **resource requirements**, Markhor runs in a single pod which consumes around 22MB of RAM at idle. The container image weighs around 70MB.
+As for the **resource requirements**, Markhor runs in a single pod which consumes around 30MB of RAM at idle. The container image weighs approximately 70MB.
 
 - For the cluster administrators (one time only):
 
