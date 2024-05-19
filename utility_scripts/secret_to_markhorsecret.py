@@ -47,7 +47,7 @@ def add_markhor_field(input_file, output_file, separator, reorder):
     if reorder:
         ordering.sort()
 
-    data[markhor_params_field] = {"ordering": ordering}
+    data[markhor_params_field] = {"order": ordering}
     if custom_separator:
         data[markhor_params_field]["customSeparator"] = separator
 
