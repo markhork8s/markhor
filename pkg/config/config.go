@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/civts/markhor/pkg"
 	"github.com/spf13/viper"
@@ -25,6 +26,9 @@ func ParseConfig() (*Config, error) {
 		defer slog.Info(fmt.Sprint("Reading Markhor config from user-defined path: ", configFilePath))
 	} else {
 		defer slog.Info(fmt.Sprint("Reading Markhor config from default path: ", pkg.DEFAULT_CONFIG_PATH))
+	}
+	if err = checkFile(configFilePath); err != nil {
+		return nil, errors.New("Could not read the config file: " + err.Error())
 	}
 
 	viper.SetConfigFile(configFilePath)
@@ -55,6 +59,26 @@ func ParseConfig() (*Config, error) {
 	return &config, nil
 }
 
+// Checks if we can open a file and it is not empty
+func checkFile(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		return err
+	}
+
+	if stat.Size() == 0 {
+		return fmt.Errorf("file is empty")
+	}
+
+	return nil
+}
+
 // Defines the default Markhor config values
 func setDefaultConfigValues() {
 	viper.SetDefault("kubernetes.kubeconfigPath", DefaultKubeconfigPath)
@@ -63,7 +87,7 @@ func setDefaultConfigValues() {
 	viper.SetDefault("healthcheck.enabled", DefaultHealthcheckEnabled)
 	viper.SetDefault("admissionController.port", DefaultAdmissionControllerPort)
 	viper.SetDefault("admissionController.enabled", DefaultAdmissionControllerEnabled)
-	viper.SetDefault("tls.mode", DefaultTlsEnabled)
+	viper.SetDefault("tls.enabled", DefaultTlsEnabled)
 	viper.SetDefault("tls.keyPath", DefaultTlsKeyPath)
 	viper.SetDefault("tls.certPath", DefaultTlsCertPath)
 	viper.SetDefault("logging.level", DefaultLoggingLevel)

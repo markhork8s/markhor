@@ -27,7 +27,7 @@ func init() {
 func main() {
 	config, err := config.ParseConfig()
 	if err != nil {
-		slog.Error("Something went wrong parsing the configuration: ", err)
+		slog.Error(fmt.Sprint("Something went wrong parsing the configuration: ", err))
 		os.Exit(1)
 	}
 
