@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/civts/markhor/pkg"
+	"github.com/markhork8s/markhor/pkg"
 	"github.com/spf13/viper"
 )
 

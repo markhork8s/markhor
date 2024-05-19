@@ -3,9 +3,9 @@ package handlers
 import (
 	"log/slog"
 
-	"github.com/civts/markhor/pkg/config"
+	"github.com/markhork8s/markhor/pkg/config"
 
-	v1 "github.com/civts/markhor/pkg/api/types/v1"
+	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
 
 	"k8s.io/client-go/kubernetes"
 )

@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/civts/markhor/pkg"
 	"github.com/google/go-cmp/cmp"
+	"github.com/markhork8s/markhor/pkg"
 	"github.com/mohae/deepcopy"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"

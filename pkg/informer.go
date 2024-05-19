@@ -3,8 +3,8 @@ package pkg
 import (
 	"time"
 
-	v1 "github.com/civts/markhor/pkg/api/types/v1"
-	client_v1 "github.com/civts/markhor/pkg/clientset/v1"
+	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
+	client_v1 "github.com/markhork8s/markhor/pkg/clientset/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

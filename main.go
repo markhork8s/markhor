@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/civts/markhor/pkg/admission_controller"
-	apiV1 "github.com/civts/markhor/pkg/api/types/v1"
-	cs "github.com/civts/markhor/pkg/clientset"
-	"github.com/civts/markhor/pkg/config"
-	"github.com/civts/markhor/pkg/healthcheck"
+	"github.com/markhork8s/markhor/pkg/admission_controller"
+	apiV1 "github.com/markhork8s/markhor/pkg/api/types/v1"
+	cs "github.com/markhork8s/markhor/pkg/clientset"
+	"github.com/markhork8s/markhor/pkg/config"
+	"github.com/markhork8s/markhor/pkg/healthcheck"
 
 	"k8s.io/client-go/kubernetes/scheme"
 )

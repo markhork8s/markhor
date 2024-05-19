@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/civts/markhor/pkg"
-	"github.com/civts/markhor/pkg/config"
+	"github.com/markhork8s/markhor/pkg"
+	"github.com/markhork8s/markhor/pkg/config"
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 

@@ -3,7 +3,7 @@ package v1
 import (
 	"context"
 
-	v1 "github.com/civts/markhor/pkg/api/types/v1"
+	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/civts/markhor/pkg"
-	"github.com/civts/markhor/pkg/decrypt"
-	"github.com/civts/markhor/pkg/handlers/helpers"
+	"github.com/markhork8s/markhor/pkg"
+	"github.com/markhork8s/markhor/pkg/decrypt"
+	"github.com/markhork8s/markhor/pkg/handlers/helpers"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/client-go/applyconfigurations/core/v1"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/civts/markhor/pkg/decrypt"
+	"github.com/markhork8s/markhor/pkg/decrypt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

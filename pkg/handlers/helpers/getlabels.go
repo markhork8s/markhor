@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/civts/markhor/pkg"
+	"github.com/markhork8s/markhor/pkg"
 )
 
 func GetLabel(decryptedData map[string]interface{}) (string, bool) {

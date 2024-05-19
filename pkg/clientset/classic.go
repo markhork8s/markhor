@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	clientV1 "github.com/civts/markhor/pkg/clientset/v1"
+	clientV1 "github.com/markhork8s/markhor/pkg/clientset/v1"
 
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"

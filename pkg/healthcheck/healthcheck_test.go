@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/civts/markhor/pkg/config"
+	"github.com/markhork8s/markhor/pkg/config"
 )
 
 func TestHealthcheckHandler_Healthy(t *testing.T) {

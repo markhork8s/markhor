@@ -3,7 +3,7 @@ package clientset
 import (
 	"log/slog"
 
-	v1 "github.com/civts/markhor/pkg/clientset/v1"
+	v1 "github.com/markhork8s/markhor/pkg/clientset/v1"
 
 	"k8s.io/client-go/kubernetes"
 )

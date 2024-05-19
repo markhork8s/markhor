@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	v1 "github.com/civts/markhor/pkg/api/types/v1"
-	"github.com/civts/markhor/pkg/config"
+	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
+	"github.com/markhork8s/markhor/pkg/config"
 
 	"github.com/getsops/sops/v3/decrypt"
 )

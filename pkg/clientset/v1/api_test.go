@@ -3,7 +3,7 @@ package v1
 import (
 	"testing"
 
-	v1 "github.com/civts/markhor/pkg/api/types/v1"
+	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
 	"k8s.io/client-go/rest"
 )
 

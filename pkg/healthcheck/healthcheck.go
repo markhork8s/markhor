@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/civts/markhor/pkg"
-	"github.com/civts/markhor/pkg/config"
+	"github.com/markhork8s/markhor/pkg"
+	"github.com/markhork8s/markhor/pkg/config"
 )
 
 var Healthy bool = false
