@@ -40,7 +40,7 @@ def add_markhor_field(input_file, output_file, separator, reorder):
 
     add_keys_to_ordering(data)
 
-    ordering.append(f"{markhor_params_field}{separator}ordering")
+    ordering.append(f"{markhor_params_field}{separator}order")
     if custom_separator:
         ordering.append(f"{markhor_params_field}{separator}customSeparator")
 
