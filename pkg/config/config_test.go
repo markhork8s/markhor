@@ -66,34 +66,15 @@ var defaultConfig = &Config{
 	},
 }
 
-// When no configuration file is provided, no error should occour in
-// the configuration parsing phase
+// When no configuration file is provided through the CLI args
+// and there is no default config file
+// the configuration parsing phase should fail
 func TestValidDefaultConfig(t *testing.T) {
 	reset()
 	ensureDefaultConfigDoesNotExist(t)
 	_, err := ParseConfig()
-	if err != nil {
-		t.Fatal("Parsing the config should not have failed, but instead we got this error:", err)
-	}
-}
-
-// When no configuration file is provided, no error should occour in
-// the configuration parsing phase AND the resulting configuration should use
-// exactly the deafult values
-func TestParseConfigDefaultValuesOnMissingDefaultFile(t *testing.T) {
-	reset()
-	ensureDefaultConfigDoesNotExist(t)
-
-	// Parse the config without the --config flag specified
-	config, err := ParseConfig()
-	if err != nil {
-		t.Fatal("There was an unexpected error parsing the config: ", err)
-	}
-
-	// Add assertions to validate the returned Config struct
-	diff := cmp.Diff(config, defaultConfig)
-	if diff != "" {
-		t.Fatal("The parsed configuration is not equal to the default one:", diff)
+	if err == nil {
+		t.Fatal("Parsing the config should have failed since no valid config file could be found", err)
 	}
 }
 

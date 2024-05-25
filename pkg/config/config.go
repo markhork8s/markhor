@@ -66,7 +66,7 @@ func ParseConfig() (*Config, error) {
 	return &config, nil
 }
 
-// Checks if we can open a file and it is not empty.
+// Checks if we can open a file.
 // The input shall be sanitized prior to its usage here
 func checkFile(path string) error {
 	//#nosec G304 -- This is a false positive (gosec)
@@ -82,7 +82,7 @@ func checkFile(path string) error {
 	}
 
 	if stat.Size() == 0 {
-		return fmt.Errorf("file is empty")
+		slog.Warn("The provided config file is empty. Will use the default values")
 	}
 
 	return nil
