@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/markhork8s/markhor/pkg"
 	"github.com/spf13/viper"
@@ -23,6 +24,12 @@ func ParseConfig() (*Config, error) {
 
 	usingCustomConfigFile := configFilePath != pkg.DEFAULT_CONFIG_PATH
 	if usingCustomConfigFile {
+		isYaml := strings.HasSuffix(configFilePath, ".yaml")
+		isYml := strings.HasSuffix(configFilePath, ".yml")
+		if !(isYaml || isYml) {
+			return nil, errors.New("the config file path must end with either .yaml or .yml")
+		}
+
 		defer slog.Info(fmt.Sprint("Reading Markhor config from user-defined path: ", configFilePath))
 	} else {
 		defer slog.Info(fmt.Sprint("Reading Markhor config from default path: ", pkg.DEFAULT_CONFIG_PATH))
@@ -59,8 +66,10 @@ func ParseConfig() (*Config, error) {
 	return &config, nil
 }
 
-// Checks if we can open a file and it is not empty
+// Checks if we can open a file and it is not empty.
+// The input shall be sanitized prior to its usage here
 func checkFile(path string) error {
+	//#nosec G304 -- This is a false positive (gosec)
 	file, err := os.Open(path)
 	if err != nil {
 		return err
