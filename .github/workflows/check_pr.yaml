@@ -65,8 +65,6 @@ jobs:
           go install golang.org/x/vuln/cmd/govulncheck@latest
           # Update path
           export PATH="$(go env GOPATH)/bin:$PATH"
-          # Replace go version in go.mod otherwise govulncheck freaks out
-          #sed -i 's/^go .*$/go 1.18.0/' go.mod
           govulncheck ./...
 
   test:

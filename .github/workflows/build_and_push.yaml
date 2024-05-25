@@ -12,30 +12,36 @@ permissions:
 jobs:
   check_quality:
     runs-on: ubuntu-latest
+    env:
+      GOTOOLCHAIN: go1.22.3
 
     steps:
-      - name: Get golang 1.22.3
-        run: |
-          rm -rf /usr/local/go
-          F=go1.22.3.linux-amd64.tar.gz
-          wget https://go.dev/dl/$F
-          sudo tar -C /usr/local -xzf $F
-          rm $F
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run go generate
-        run: |
-          export PATH="$(go env GOPATH)/bin:$PATH"
-          go install sigs.k8s.io/controller-tools/cmd/controller-gen
-          go generate ./...
-
       - name: Check formatting w/ gofmt
         run: |
           gofmt -l -s -w .
+          git diff --exit-code
+
+      - name: Check go.mod is clean
+        run: |
+          go mod tidy
+          git diff --exit-code
+
+      - name: Run go generate
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          # Install controller-gen
+          go get sigs.k8s.io/controller-tools/cmd/controller-gen
+          go install sigs.k8s.io/controller-tools/cmd/controller-gen
+          # Run code generation
+          go generate ./...
+          # Remove the new dependency
+          go mod tidy
+          # Check that the code is still the same
           git diff --exit-code
 
       - name: Run go vet
@@ -60,32 +66,34 @@ jobs:
           go install golang.org/x/vuln/cmd/govulncheck@latest
           # Update path
           export PATH="$(go env GOPATH)/bin:$PATH"
-          # Replace go version in go.mod otherwise govulncheck freaks out
-          sed -i 's/^go .*$/go 1.18.0/' go.mod
           govulncheck ./...
 
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get golang 1.22.3
-        run: |
-          rm -rf /usr/local/go
-          F=go1.22.3.linux-amd64.tar.gz
-          wget https://go.dev/dl/$F
-          sudo tar -C /usr/local -xzf $F
-          rm $F
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
+      - name: Check go.mod is clean
+        run: |
+          go mod tidy
+          git diff --exit-code
+
       - name: Run go generate
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
+          # Install controller-gen
+          go get sigs.k8s.io/controller-tools/cmd/controller-gen
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
+          # Run code generation
           go generate ./...
+          # Remove the new dependency
+          go mod tidy
+          # Check that the code is still the same
+          git diff --exit-code
 
       - name: Test code
         run: go test ./...
