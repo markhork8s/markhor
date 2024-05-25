@@ -19,6 +19,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Run go generate
+        run: |
+          go generate ./...
+
       - name: Check formatting w/ gofmt
         run: |
           gofmt -l -s -w .
@@ -59,6 +63,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Run go generate
+        run: |
+          go generate ./...
+
       - name: Test code
         run: go test ./...
 
@@ -80,6 +88,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Run go generate
+        run: |
+          go generate ./...
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
