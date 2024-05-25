@@ -110,7 +110,7 @@ jobs:
       - name: Check tag name formatting (semver)
         run: |
           echo "Checking that ${{ github.ref_name }} starts with 'v' and then a valid semver number"
-          echo "${{ github.ref_name }}" | grep -Eq "^v[0-9]+\.[0-9]+\.[0-9]+$"
+          echo "${{ github.ref_name }}" | grep -Eq "^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+)?$"
           TAGNAME=$(echo "${{ github.ref_name }}" | sed "s/^v//")
           echo "TAG=$TAGNAME" >> $GITHUB_ENV
 
