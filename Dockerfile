@@ -13,7 +13,7 @@ RUN go mod download
 
 COPY main.go .
 COPY pkg ./pkg
-RUN CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o markhor
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o markhor
 
 # ----------------------------------
 
