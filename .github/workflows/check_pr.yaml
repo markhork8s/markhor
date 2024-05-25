@@ -25,12 +25,23 @@ jobs:
           gofmt -l -s -w .
           git diff --exit-code
 
+      - name: Check go.mod is clean
+        run: |
+          go mod tidy
+          git diff --exit-code
+
       - name: Run go generate
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
+          # Install controller-gen
           go get sigs.k8s.io/controller-tools/cmd/controller-gen
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
+          # Run code generation
           go generate ./...
+          # Remove the new dependency
+          go mod tidy
+          # Check that the code is still the same
+          git diff --exit-code
 
       - name: Run go vet
         run: |
@@ -67,11 +78,23 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Check go.mod is clean
+        run: |
+          go mod tidy
+          git diff --exit-code
+
       - name: Run go generate
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
+          # Install controller-gen
+          go get sigs.k8s.io/controller-tools/cmd/controller-gen
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
+          # Run code generation
           go generate ./...
+          # Remove the new dependency
+          go mod tidy
+          # Check that the code is still the same
+          git diff --exit-code
 
       - name: Test code
         run: go test ./...
