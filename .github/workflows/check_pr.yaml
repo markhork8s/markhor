@@ -15,8 +15,11 @@ jobs:
     steps:
       - name: Get golang 1.22.3
         run: |
-          go get golang.org/dl/go1.22.3
-          go1.22.3 download
+          rm -rf /usr/local/go
+          F=go1.22.3.linux-amd64.tar.gz
+          wget https://go.dev/dl/$F
+          tar -C /usr/local -xzf $F
+          rm $F
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,8 +69,11 @@ jobs:
     steps:
       - name: Get golang 1.22.3
         run: |
-          go get golang.org/dl/go1.22.3
-          go1.22.3 download
+          rm -rf /usr/local/go
+          F=go1.22.3.linux-amd64.tar.gz
+          wget https://go.dev/dl/$F
+          tar -C /usr/local -xzf $F
+          rm $F
 
       - name: Checkout code
         uses: actions/checkout@v4
