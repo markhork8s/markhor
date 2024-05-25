@@ -22,7 +22,7 @@ spec:
       serviceAccountName: markhor-service-account
       containers:
         - name: markhor
-          image: markhor/markhor:0.0.12
+          image: ghcr.io/markhork8s/markhor:0.0.12
           env:
             - name: SOPS_AGE_KEY_FILE
               value: /age-secrets/age_keys.txt
