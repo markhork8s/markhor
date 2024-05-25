@@ -17,16 +17,6 @@ require (
 )
 
 require (
-	github.com/gobuffalo/flect v1.0.2 // indirect
-	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/spf13/cobra v1.8.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/tools v0.21.0 // indirect
-	k8s.io/apiextensions-apiserver v0.30.0 // indirect
-	sigs.k8s.io/controller-tools v0.15.0 // indirect
-)
-
-require (
 	cloud.google.com/go v0.114.0 // indirect
 	cloud.google.com/go/auth v0.4.2 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect

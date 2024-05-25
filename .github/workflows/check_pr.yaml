@@ -11,31 +11,26 @@ on:
 jobs:
   check_quality:
     runs-on: ubuntu-latest
+    env:
+      GOTOOLCHAIN: go1.22.3
 
     steps:
-      - name: Get golang 1.22.3
-        run: |
-          rm -rf /usr/local/go
-          F=go1.22.3.linux-amd64.tar.gz
-          wget https://go.dev/dl/$F
-          sudo tar -C /usr/local -xzf $F
-          rm $F
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run go generate
-        run: |
-          export PATH="$(go env GOPATH)/bin:$PATH"
-          go install sigs.k8s.io/controller-tools/cmd/controller-gen
-          go generate ./...
-
       - name: Check formatting w/ gofmt
         run: |
           gofmt -l -s -w .
           git diff --exit-code
+
+      - name: Run go generate
+        run: |
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          go get sigs.k8s.io/controller-tools
+          go install sigs.k8s.io/controller-tools/cmd/controller-gen
+          go generate ./...
 
       - name: Run go vet
         run: |
@@ -60,21 +55,13 @@ jobs:
           # Update path
           export PATH="$(go env GOPATH)/bin:$PATH"
           # Replace go version in go.mod otherwise govulncheck freaks out
-          sed -i 's/^go .*$/go 1.18.0/' go.mod
+          #sed -i 's/^go .*$/go 1.18.0/' go.mod
           govulncheck ./...
 
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get golang 1.22.3
-        run: |
-          rm -rf /usr/local/go
-          F=go1.22.3.linux-amd64.tar.gz
-          wget https://go.dev/dl/$F
-          sudo tar -C /usr/local -xzf $F
-          rm $F
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
