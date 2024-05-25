@@ -18,7 +18,7 @@ jobs:
           rm -rf /usr/local/go
           F=go1.22.3.linux-amd64.tar.gz
           wget https://go.dev/dl/$F
-          tar -C /usr/local -xzf $F
+          sudo tar -C /usr/local -xzf $F
           rm $F
 
       - name: Checkout code
@@ -72,7 +72,7 @@ jobs:
           rm -rf /usr/local/go
           F=go1.22.3.linux-amd64.tar.gz
           wget https://go.dev/dl/$F
-          tar -C /usr/local -xzf $F
+          sudo tar -C /usr/local -xzf $F
           rm $F
 
       - name: Checkout code
