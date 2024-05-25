@@ -12,6 +12,8 @@ _"Bringing the security of SOPS to Kubernetes Secrets"_
 
 Markhor is a [Kubernetes operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) meant to let your devs deploy [SOPS](https://github.com/getsops/sops)-encrypted Secrets inside your cluster. Lightweight, flexible and reliable.
 
+> ️ℹ️ If you prefer to watch a video instead of reading, we got you covered: https://youtu.be/GMt8nquAGdw 👈
+
 ---
 
 **Jump to section**:
@@ -146,69 +148,70 @@ As for the **resource requirements**, Markhor runs in a single pod which consume
   1.  Create a `MarkhorSecret` manifest and encrypt it with SOPS (e.g., by running `sops new_secret.yaml`).
       Here is an example of a file you may create.
 
-           Notice that, apart from the `markhorParams` field, it is exactly the manifest of the K8s Secret you'd create normally -and see section [MarkhorSecret files](#markhorsecret-files) for details on the syntax of a `MarkhorSecret` manifest-.
+      Note that, apart from the `markhorParams` field, it is exactly the manifest of the K8s Secret you'd create normally -and see section [MarkhorSecret files](#markhorsecret-files) for details on the syntax of a `MarkhorSecret` manifest-.
 
-            ```yaml
-              apiVersion: markhork8s.github.io/v1
-              kind: MarkhorSecret
-              metadata:
-                name: my-new-awesome-app-secret
-                namespace: my-new-awesome-app
-              markhorParams:
-                order:
-                  - apiVersion
-                  - kind
-                  - metadata/name
-                  - metadata/namespace
-                  - markhorParams/order
-                  - data/sessionSecret
-              data:
-                sessionSecret: aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUT8=
-            ```
-          <details>
-            <summary>
-            Once encrypted with SOPS, it looks like this
-            </summary>
+      ```yaml
+      apiVersion: markhork8s.github.io/v1
+      kind: MarkhorSecret
+      metadata:
+        name: my-new-awesome-app-secret
+        namespace: my-new-awesome-app
+      markhorParams:
+        order:
+          - apiVersion
+          - kind
+          - metadata/name
+          - metadata/namespace
+          - markhorParams/order
+          - data/sessionSecret
+      data:
+        sessionSecret: aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUT8=
+      ```
 
-            ```yaml
-            apiVersion: markhork8s.github.io/v1
-            kind: MarkhorSecret
-            metadata:
-                name: my-new-awesome-app-secret
-                namespace: my-new-awesome-app
-            markhorParams:
-                order:
-                    - apiVersion
-                    - kind
-                    - metadata/name
-                    - metadata/namespace
-                    - markhorParams/order
-                    - data/sessionSecret
-            data:
-                sessionSecret: ENC[AES256_GCM,data:ZkWkp381nnkvozuBqHUMbyRhZelfJk69J8m/kxOuXexJKVBpbsGOBQ==,iv:YMaJm1YUgTMbV7IPccOQ5WjFPBxv1fEhibVglu426bY=,tag:EK3q6dg0iDNe7bP6fjCzIA==,type:str]
-            sops:
-                kms: []
-                gcp_kms: []
-                azure_kv: []
-                hc_vault: []
-                age:
-                    - recipient: age1apq7ck5adq6dkd0c242phl42fsurvpxvt9pwk0qg7ahdex7fqppqj8pe8y
-                      enc: |
-                        -----BEGIN AGE ENCRYPTED FILE-----
-                        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLOWtsNnBXNWdYL05qVXVO
-                        RGJCc0VlaDVTZ0JuQyswRCtLSHJQcUZFSGdBCktMUHgzYlppSGJEL1lyeTNtY2tv
-                        VExzMzBvaUNIeExjUFBwNTQrQ1VuNXMKLS0tIEVRZWd6MjhxVTNQRmhxeVVPZkhl
-                        THUzS3BRQWR4OEJiVEN0ODRzTXY5ejAKkflmiuAW1b6/63tFcI49nWjIzi1RGHKA
-                        NAyMjW7F2pO884j2rSCHIK1+SKItlS72QhZjC8cK4Xxm0yFPGOnjCQ==
-                        -----END AGE ENCRYPTED FILE-----
-                lastmodified: "2024-05-04T18:55:50Z"
-                mac: ENC[AES256_GCM,data:CASz0h/fcr1TCVX334YCjI4w8/H1aDjL9qhosYlGVyalJc6XdjvfbM/lCl2y6bsZ75+O5Yh8hqVyjciJvVdIQ5UUKIJCNZkMuS9iESRFuP+Mt2qsK595In0kBoG4ZTD3YOINcNwnPFTfXzQB6Ffp8wSSTzEjIzW1uAS7U32plcM=,iv:HDxJA01ufCP4k05GZgQAQbpDlZ4xc2A4q4Lq710YFV4=,tag:SMHlmW4u400YjnnxyYf+1g==,type:str]
-                pgp: []
-                encrypted_regex: ^(data|stringData)$
-                version: 3.8.1
+      <details>
+        <summary>
+        Once encrypted with SOPS, it looks like this
+        </summary>
 
-            ```
-          </details>
+      ```yaml
+      apiVersion: markhork8s.github.io/v1
+      kind: MarkhorSecret
+      metadata:
+        name: my-new-awesome-app-secret
+        namespace: my-new-awesome-app
+      markhorParams:
+        order:
+          - apiVersion
+          - kind
+          - metadata/name
+          - metadata/namespace
+          - markhorParams/order
+          - data/sessionSecret
+      data:
+        sessionSecret: ENC[AES256_GCM,data:ZkWkp381nnkvozuBqHUMbyRhZelfJk69J8m/kxOuXexJKVBpbsGOBQ==,iv:YMaJm1YUgTMbV7IPccOQ5WjFPBxv1fEhibVglu426bY=,tag:EK3q6dg0iDNe7bP6fjCzIA==,type:str]
+      sops:
+        kms: []
+        gcp_kms: []
+        azure_kv: []
+        hc_vault: []
+        age:
+          - recipient: age1apq7ck5adq6dkd0c242phl42fsurvpxvt9pwk0qg7ahdex7fqppqj8pe8y
+            enc: |
+              -----BEGIN AGE ENCRYPTED FILE-----
+              YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBLOWtsNnBXNWdYL05qVXVO
+              RGJCc0VlaDVTZ0JuQyswRCtLSHJQcUZFSGdBCktMUHgzYlppSGJEL1lyeTNtY2tv
+              VExzMzBvaUNIeExjUFBwNTQrQ1VuNXMKLS0tIEVRZWd6MjhxVTNQRmhxeVVPZkhl
+              THUzS3BRQWR4OEJiVEN0ODRzTXY5ejAKkflmiuAW1b6/63tFcI49nWjIzi1RGHKA
+              NAyMjW7F2pO884j2rSCHIK1+SKItlS72QhZjC8cK4Xxm0yFPGOnjCQ==
+              -----END AGE ENCRYPTED FILE-----
+        lastmodified: "2024-05-04T18:55:50Z"
+        mac: ENC[AES256_GCM,data:CASz0h/fcr1TCVX334YCjI4w8/H1aDjL9qhosYlGVyalJc6XdjvfbM/lCl2y6bsZ75+O5Yh8hqVyjciJvVdIQ5UUKIJCNZkMuS9iESRFuP+Mt2qsK595In0kBoG4ZTD3YOINcNwnPFTfXzQB6Ffp8wSSTzEjIzW1uAS7U32plcM=,iv:HDxJA01ufCP4k05GZgQAQbpDlZ4xc2A4q4Lq710YFV4=,tag:SMHlmW4u400YjnnxyYf+1g==,type:str]
+        pgp: []
+        encrypted_regex: ^(data|stringData)$
+        version: 3.8.1
+      ```
+
+      </details>
 
   1.  Now you can commit/push this file wherever you want. Once it reaches the cluster, the Markhor pod running inside it will take care of decrypting it and creating the corresponding secret.
 
@@ -403,13 +406,13 @@ Finished features:
 - Testing ✅
 - Validation hook to let CD know of malformed `MarkhorSecret`s ✅
 - Honor all the values set in the config file ✅
+- Video tutorial ([link](https://youtu.be/GMt8nquAGdw)) ✅
 
 TODOs (help very much appreciated 🐜):
 
 - Badges
   - https://www.bestpractices.dev/en
   - https://goreportcard.com/
-- Video tutorial ❌
 - Streamlining the installation process with helm/kustomize
 - Horizontal scaling + high availability (redis/dragonflydb?)
 - Ensuring support for all the methods allowed by SOPS :
