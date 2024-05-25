@@ -28,7 +28,7 @@ jobs:
       - name: Run go generate
         run: |
           export PATH="$(go env GOPATH)/bin:$PATH"
-          go get sigs.k8s.io/controller-tools
+          go get sigs.k8s.io/controller-tools/cmd/controller-gen
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
           go generate ./...
 
