@@ -26,7 +26,6 @@ spec:
           env:
             - name: SOPS_AGE_KEY_FILE
               value: /age-secrets/age_keys.txt
-          imagePullPolicy: Never
           ports:
             - name: health
               containerPort: 8000
