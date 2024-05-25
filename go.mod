@@ -2,6 +2,11 @@ module github.com/markhork8s/markhor
 
 go 1.22.1
 
+// Needed to avoid using vulnerable version of 'net' until
+// the ubuntu image in the CI has a go version >= 1.22.3.
+// See https://pkg.go.dev/vuln/GO-2024-2824
+toolchain go1.22.3
+
 require (
 	github.com/getsops/sops/v3 v3.8.1
 	github.com/wk8/go-ordered-map/v2 v2.1.8
