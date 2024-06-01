@@ -42,6 +42,7 @@ func sortJSONData(jsonData map[string]interface{}, eid slog.Attr, config config.
 	if config.HierarchySeparator.AllowOverride {
 		customSeparator, ok := sortingParams["hierarchySeparator"].(string)
 		if ok {
+			separator = customSeparator
 			if config.HierarchySeparator.WarnOnOverride {
 				slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", customSeparator), eid)
 			} else {
