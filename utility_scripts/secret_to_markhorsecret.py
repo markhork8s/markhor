@@ -42,14 +42,14 @@ def add_markhor_field(input_file, output_file, separator, reorder):
 
     ordering.append(f"{markhor_params_field}{separator}order")
     if custom_separator:
-        ordering.append(f"{markhor_params_field}{separator}customSeparator")
+        ordering.append(f"{markhor_params_field}{separator}hierarchySeparator")
 
     if reorder:
         ordering.sort()
 
     data[markhor_params_field] = {"order": ordering}
     if custom_separator:
-        data[markhor_params_field]["customSeparator"] = separator
+        data[markhor_params_field]["hierarchySeparator"] = separator
 
     if output_file:
         with open(output_file, "w") as file:
