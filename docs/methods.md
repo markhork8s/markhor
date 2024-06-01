@@ -181,3 +181,32 @@ This example uses service accounts, which [may not be the most secure solution](
            secret:
              secretName: gcp-kms-secret
    ```
+
+# Azure Key Vault
+
+Just refer to the instructions in the [SOPS readme](https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-azure-key-vault).
+
+1. Go to https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.KeyVault%2Fvaults
+1. Create a new vault (note its resource group YRG, vault name YVN) using not rbac but the vault auth
+
+1. open the cloud shell
+
+- create a service principal:
+  `az ad sp create-for-rbac -n my-keyvault-sp`. Note the client id (appId)
+- populate a secret
+
+- create a key `az keyvault key create --name YKN --vault-name YVN --protection software --ops encrypt decrypt`. Note YKN the name of the key
+- let the service principal access the keys `az keyvault set-policy --name $keyvault_name --resource-group sops-rg --spn $AZURE_CLIENT_ID --key-permissions encrypt decrypt`
+
+<!-- 1. Assign yourself the "Key Vault Administrator" role ([ref](https://learn.microsoft.com/en-us/answers/questions/1370440/azure-keyvault-the-operation-is-not-allowed-by-rba))
+   - Navigate to the Key Vault resource: Locate the Key Vault for which you want to assign the role.
+   - Access the Access control (IAM) blade: In the Key Vault resource, go to the "Access control (IAM)" blade.
+   - Add a role assignment: Click on the "Add" button and select "Add role assignment" from the dropdown menu.
+   - Select role: In the "Role" field, search for and select "Key Vault Administrator".
+   - Next
+   - Assign access to: In the "Assign access to" field, select "User, group, or service principal".
+   - Add your account in members
+   - Save the role assignment
+     NO- `az keyvault set-policy --name KVNAME --resource-group sops_demo --spn CLIENTID --key-permissions encrypt decrypt` -->
+
+- configure the .sops.yaml with `azure_keyvault` the link from `az keyvault key show --name sops-key --vault-name $keyvault_name --query key.kid`
