@@ -103,10 +103,6 @@ This is a basic setup, modify yours as needed
                  secretKeyRef:
                    name: aws-kms-secret
                    key: secret_access_key
-       volumes:
-         - name: aws-kms-secret
-           secret:
-             secretName: aws-kms-secret
    ```
 1. Go to your aws kms console, https://us-east-1.console.aws.amazon.com/kms/home
 1. Create a symmetric key
@@ -184,29 +180,71 @@ This example uses service accounts, which [may not be the most secure solution](
 
 # Azure Key Vault
 
-Just refer to the instructions in the [SOPS readme](https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-azure-key-vault).
+Here I used the instructions form the [SOPS readme](https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-azure-key-vault).
 
 1. Go to https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.KeyVault%2Fvaults
-1. Create a new vault (note its resource group YRG, vault name YVN) using not rbac but the vault auth
 
-1. open the cloud shell
+1. Create a new vault. I created it using the 'Vault access policy' instead of 'Azure role-based access control'. Take note of its resource group -e.g., MY_VAULT_RG- and vault name -e.g., MY_VAULT-
 
-- create a service principal:
-  `az ad sp create-for-rbac -n my-keyvault-sp`. Note the client id (appId)
-- populate a secret
+1. Open the cloud shell
 
-- create a key `az keyvault key create --name YKN --vault-name YVN --protection software --ops encrypt decrypt`. Note YKN the name of the key
-- let the service principal access the keys `az keyvault set-policy --name $keyvault_name --resource-group sops-rg --spn $AZURE_CLIENT_ID --key-permissions encrypt decrypt`
+   - Create a service principal:
+     `az ad sp create-for-rbac -n my-keyvault-sp`. Take note of the information provided (appId, password, etc.)
 
-<!-- 1. Assign yourself the "Key Vault Administrator" role ([ref](https://learn.microsoft.com/en-us/answers/questions/1370440/azure-keyvault-the-operation-is-not-allowed-by-rba))
-   - Navigate to the Key Vault resource: Locate the Key Vault for which you want to assign the role.
-   - Access the Access control (IAM) blade: In the Key Vault resource, go to the "Access control (IAM)" blade.
-   - Add a role assignment: Click on the "Add" button and select "Add role assignment" from the dropdown menu.
-   - Select role: In the "Role" field, search for and select "Key Vault Administrator".
-   - Next
-   - Assign access to: In the "Assign access to" field, select "User, group, or service principal".
-   - Add your account in members
-   - Save the role assignment
-     NO- `az keyvault set-policy --name KVNAME --resource-group sops_demo --spn CLIENTID --key-permissions encrypt decrypt` -->
+   - Allow the service principal to access the keys in the vault `az keyvault set-policy --name MY_VAULT --resource-group MY_VAULT_RG --spn APP_ID --key-permissions encrypt decrypt`
 
-- configure the .sops.yaml with `azure_keyvault` the link from `az keyvault key show --name sops-key --vault-name $keyvault_name --query key.kid`
+   - Create a key in Azure Key Vault with `az keyvault key create --name MY_KEY_NAME --vault-name MY_VAULT --protection software --ops encrypt decrypt`. Note the name you chose for the key -e.g., MY_KEY_NAME-.
+
+   - Get the link to the key with `az keyvault key show --name MY_KEY_NAME --vault-name MY_VAULT --query key.kid`. You will need it for the `.sops.yaml` file.
+
+1. Configure the `.sops.yaml` to use the key from Azure Key Vault:
+
+   ```yaml
+   creation_rules:
+     - # not azure_kv, see https://stackoverflow.com/a/73327116
+       azure_keyvault: https://MY_VAULT.vault.azure.net/keys/MY_KEY_NAME/e65...cdf
+       encrypted_regex: ^(data|stringData)$
+   ```
+
+1. On the Kubernetes cluster, create a Secret like this:
+
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: akv-kms-secret
+     namespace: markhor
+   stringData:
+     appId: Your service principal's ID
+     password: Your service principal's password
+     tenant: Your service principal's tenant
+   ```
+
+1. And edit the markhor deployment appropriately to include the newly created Secret in the env variables:
+   ```yaml
+   # This snippet contains only the relevant parts, it is not a complete deployment
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: markhor
+   spec:
+     spec:
+       containers:
+         - name: markhor
+           env:
+             - name: AZURE_TENANT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: akv-kms
+                   key: tenant
+             - name: AZURE_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: akv-kms
+                   key: appId
+             - name: AZURE_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: akv-kms
+                   key: password
+   ```
