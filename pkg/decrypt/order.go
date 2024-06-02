@@ -39,15 +39,17 @@ func sortJSONData(jsonData map[string]interface{}, eid slog.Attr, config config.
 	}
 
 	separator := config.HierarchySeparator.Default
-	if config.HierarchySeparator.AllowOverride {
-		customSeparator, ok := sortingParams["hierarchySeparator"].(string)
-		if ok {
+	customSeparator, ok := sortingParams["hierarchySeparator"].(string)
+	if ok {
+		if config.HierarchySeparator.AllowOverride {
 			separator = customSeparator
 			if config.HierarchySeparator.WarnOnOverride {
 				slog.Warn(fmt.Sprintf("Using custom hierarchy separator: '%s'", customSeparator), eid)
 			} else {
 				slog.Debug(fmt.Sprintf("Using custom hierarchy separator: '%s'", customSeparator), eid)
 			}
+		} else {
+			slog.Debug(fmt.Sprintf("This MarkhorSecret asked to use a custom hierarchy separator, '%s', but specifying a custom one is disabled in markhor's configuration (hierarchySeparator>allowOverride)", customSeparator), eid)
 		}
 	}
 
