@@ -455,3 +455,88 @@ func TestSortJson(t *testing.T) {
 		t.Errorf("Result doesn't match the expected ordering. Expected %s, got %s", s2, s1)
 	}
 }
+
+// Sorts correctly, using a custom separator
+func TestSortJsonCustomSeparator(t *testing.T) {
+	t.Parallel()
+	jsonData := map[string]interface{}{
+		"apiVersion": "markhork8s.github.io/v1",
+		"kind":       "MarkhorSecret",
+		"metadata": map[string]interface{}{
+			"namespace": "default",
+			"name":      "sample-secret",
+		},
+		"markhorParams": map[string]interface{}{
+			"order": []interface{}{
+				"apiVersion",
+				"kind",
+				"metadata>name",
+				"metadata>namespace",
+				"markhorParams>hierarchySeparator",
+				"markhorParams>order",
+				"type",
+				"data>session_secret",
+				"stringData>dir/foo/baz",
+				"stringData>dir/foo/bar",
+			},
+			"hierarchySeparator": ">",
+		},
+		"sops": map[string]interface{}{
+			"something": "values",
+		},
+		"type": "Opaque",
+		"stringData": map[string]interface{}{
+			"dir/foo/baz": "I want some pineapples",
+			"dir/foo/bar": "I want more pineapples",
+		},
+		"data": map[string]interface{}{
+			"session_secret": "aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUT8=",
+		},
+	}
+
+	expected := orderedmap.New[string, interface{}]()
+	{
+		expected.Set("apiVersion", "markhork8s.github.io/v1")
+		expected.Set("kind", "MarkhorSecret")
+		metadata := orderedmap.New[string, interface{}]()
+		metadata.Set("name", "sample-secret")
+		metadata.Set("namespace", "default")
+		expected.Set("metadata", metadata)
+		markhorParams := orderedmap.New[string, interface{}]()
+		markhorParams.Set("hierarchySeparator", ">")
+		markhorParams.Set("order", []string{
+			"apiVersion",
+			"kind",
+			"metadata>name",
+			"metadata>namespace",
+			"markhorParams>hierarchySeparator",
+			"markhorParams>order",
+			"type",
+			"data>session_secret",
+			"stringData>dir/foo/baz",
+			"stringData>dir/foo/bar",
+		})
+		expected.Set("markhorParams", markhorParams)
+		data := orderedmap.New[string, interface{}]()
+		expected.Set("type", "Opaque")
+		data.Set("session_secret", "aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUT8=")
+		expected.Set("data", data)
+		stringData := orderedmap.New[string, interface{}]()
+		stringData.Set("dir/foo/baz", "I want some pineapples")
+		stringData.Set("dir/foo/bar", "I want more pineapples")
+		expected.Set("stringData", stringData)
+		sops := orderedmap.New[string, interface{}]()
+		sops.Set("something", "values")
+		expected.Set("sops", sops)
+	}
+
+	result := sortJson(jsonData, slog.String("", ""), ms)
+
+	m1, _ := json.Marshal(result)
+	m2, _ := json.Marshal(expected)
+	s1 := string(m1)
+	s2 := string(m2)
+	if s1 != s2 {
+		t.Errorf("Result doesn't match the expected ordering. Expected %s, got %s", s2, s1)
+	}
+}

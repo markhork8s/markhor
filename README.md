@@ -248,8 +248,8 @@ Here is a table of the available options. The dot indicates nesting, so `a.b` me
 | behavior.namespaces                             | array[string] | []                             | List of all the namespaces where Markhor is allowed to operate in. An empty list -the default- signifies that Markhor will operate on all namespaces                                                                                                                                                                                   |
 | behavior.excludedNamespaces                     | array[string] | []                             | List of all the namespaces where Markhor is forbidden to operate in. This has higher priority than the "namespaces" field.                                                                                                                                                                                                             |
 | markorSecrets.hierarchySeparator.default        | string        | "/"                            | Which character (or string) is used as a marker for indentation in markhorParams>order. The dafault value is "/", meaning that the string "a/b" indicates a property that in JSON would be "a":{"b":"some-value"} while "a.b" indicates a property that in JSON would be "a.b":"some-value"                                            |
-| markorSecrets.hierarchySeparator.allowOverride  | boolean       | False                          | If false -default-, a MarkhorSecret manifest cannot override the value of the hierarchy separator defined in this configuration file -and a warning is printed if it tries to do so-.                                                                                                                                                  |
-| markorSecrets.hierarchySeparator.warnOnOverride | boolean       | True                           | Wether to print a warning when a MarkhorSecret manifest overrides the value of the hierarchy separator defined in this configuration file. Defaults to true                                                                                                                                                                            |
+| markorSecrets.hierarchySeparator.allowOverride  | boolean       | True                           | Wether a MarkhorSecret manifest can override the value of the default hierarchy separator defined in this configuration file.                                                                                                                                                                                                          |
+| markorSecrets.hierarchySeparator.warnOnOverride | boolean       | False                          | Wether to print a warning when a MarkhorSecret manifest overrides the value of the default hierarchy separator defined in this configuration file. If false, it prints a debug message. Defaults to false.                                                                                                                             |
 | markorSecrets.managedLabel.default              | string        | "app.kubernetes.io/managed-by" | The name of the label that Markhor adds to the Secrets it manages. https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels                                                                                                                                                                                     |
 | markorSecrets.managedLabel.allowOverride        | boolean       | False                          | If false -default-, a MarkhorSecret manifest cannot override the value of the custom label defined in this configuration file -and a warning is printed if it tries to do so-.                                                                                                                                                         |
 | markorSecrets.managedLabel.warnOnOverride       | boolean       | True                           | Wether to print a warning when a MarkhorSecret manifest overrides the value of the custom label defined in this configuration file. Defaults to true                                                                                                                                                                                   |
@@ -415,11 +415,12 @@ TODOs (help very much appreciated 🐜):
   - https://goreportcard.com/
 - Streamlining the installation process with helm/kustomize
 - Horizontal scaling + high availability (redis/dragonflydb?)
-- Ensuring support for all the methods allowed by SOPS :
+- Ensuring support for all the methods allowed by SOPS (see [./docs/methods.md](https://github.com/markhork8s/markhor/blob/main/docs/methods.md)):
   - age ✅
+  - AWS KMS ✅
+  - GCP KMS ✅
+  - Azure Key Vault ✅
   - pgp
-  - gcp_kms
-  - azure_kv
-  - hc_vault
+  - Hashicorp Vault
 - Metrics endpoint for prometheus _et similia_
 - Testing the K8s event handlers in the code using the mock cluster interface
