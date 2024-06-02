@@ -16,8 +16,8 @@ const (
 	DefaultBehaviorFieldManagerName                      = "markhork8s.github.io"
 	DefaultBehaviorFieldManagerForceUpdates              = false
 	DefaultMarkorSecretsHierarchySeparatorDefault        = "/"
-	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = false
-	DefaultMarkorSecretsHierarchySeparatorWarnOnOverride = true
+	DefaultMarkorSecretsHierarchySeparatorAllowOverride  = true
+	DefaultMarkorSecretsHierarchySeparatorWarnOnOverride = false
 	//#nosec G101 -- This is a false positive (gosec)
 	DefaultMarkorSecretsManagedLabelDefault        = "app.kubernetes.io/managed-by"
 	DefaultMarkorSecretsManagedLabelAllowOverride  = false
