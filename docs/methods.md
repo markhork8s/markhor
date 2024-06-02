@@ -14,7 +14,7 @@ Therefore, mainly refer to the SOPS documentation. This document is to be consid
      labels:
        app.kubernetes.io/name: markhor
        app.kubernetes.io/instance: markhor-default
-       app.kubernetes.io/version: 1.0.0
+       app.kubernetes.io/version: 1.0.1
        app.kubernetes.io/component: operator
        app.kubernetes.io/part-of: markhor
    stringData:
