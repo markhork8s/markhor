@@ -415,11 +415,12 @@ TODOs (help very much appreciated 🐜):
   - https://goreportcard.com/
 - Streamlining the installation process with helm/kustomize
 - Horizontal scaling + high availability (redis/dragonflydb?)
-- Ensuring support for all the methods allowed by SOPS :
+- Ensuring support for all the methods allowed by SOPS (see [./docs/methods.md](https://github.com/markhork8s/markhor/blob/main/docs/methods.md)):
   - age ✅
+  - AWS KMS ✅
+  - GCP KMS ✅
+  - Azure Key Vault ✅
   - pgp
-  - gcp_kms
-  - azure_kv
-  - hc_vault
+  - Hashicorp Vault
 - Metrics endpoint for prometheus _et similia_
 - Testing the K8s event handlers in the code using the mock cluster interface
