@@ -6,6 +6,21 @@
   </picture>
 </p>
 
+<div align="center">
+  <a href="https://go.dev" >
+    <img src="https://img.shields.io/badge/written%20in-go-blue?logo=go" alt="Language">
+  </a>
+  <a href="https://github.com/markhork8s/markhor/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License">
+  </a>
+  <a href="https://goreportcard.com/report/github.com/markhork8s/markhor">
+    <img src="https://goreportcard.com/badge/github.com/markhork8s/markhor" alt="Go report card">
+  </a>
+  <a href="https://github.com/markhork8s/markhor/actions">
+    <img src="https://github.com/markhork8s/markhor/actions/workflows/check_pr.yaml/badge.svg" alt="Github CI status">
+  </a>
+</div>
+
 # Markhor 🐐
 
 _"Bringing the security of SOPS to Kubernetes Secrets"_
@@ -105,7 +120,7 @@ As for the **resource requirements**, Markhor runs in a single pod which consume
 
   1. Edit the file `private_key_secret.yaml` by adding your private key in the field `age_keys.txt`
 
-  1. IF you do NOT want to use the validation admission controller (see [admission controller](#admission-controller) section):
+  1. IF you do NOT want to use the validation admission controller (see [admission controller](#admission-controller-and-tls) section):
 
      - Edit the `configmap.yaml` file to ensure that in `tls` the key `enabled` is set to false (if absent, the default value is false)
 
@@ -148,7 +163,7 @@ As for the **resource requirements**, Markhor runs in a single pod which consume
   1.  Create a `MarkhorSecret` manifest and encrypt it with SOPS (e.g., by running `sops new_secret.yaml`).
       Here is an example of a file you may create.
 
-      Note that, apart from the `markhorParams` field, it is exactly the manifest of the K8s Secret you'd create normally -and see section [MarkhorSecret files](#markhorsecret-files) for details on the syntax of a `MarkhorSecret` manifest-.
+      Note that, apart from the `markhorParams` field, it is exactly the manifest of the K8s Secret you'd create normally -and see section [MarkhorSecret files](#markhorsecret-manifests) for details on the syntax of a `MarkhorSecret` manifest-.
 
       ```yaml
       apiVersion: markhork8s.github.io/v1
