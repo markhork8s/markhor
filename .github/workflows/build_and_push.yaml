@@ -13,7 +13,7 @@ jobs:
   check_quality:
     runs-on: ubuntu-latest
     env:
-      GOTOOLCHAIN: go1.22.3
+      GOTOOLCHAIN: go1.22.4
 
     steps:
       - name: Checkout code
@@ -147,5 +147,6 @@ jobs:
         run: |
           BASE=ghcr.io/${{ github.repository }}
           IMAGENAME="$BASE:${{ env.TAG }}"
-          LATEST="$BASE:latest"
-          docker buildx build --push --platform linux/amd64,linux/arm/v6,linux/arm64 -t $IMAGENAME -t $LATEST .
+          MAJOR_VERSION=$(echo "${{ env.TAG }}" | cut -d '.' -f 1)
+          MINOR_VERSION=$(echo "${{ env.TAG }}" | cut -d '.' -f 2)
+          docker buildx build --push --platform linux/amd64,linux/arm/v6,linux/arm64 -t $IMAGENAME -t "$BASE:MAJOR_VERSION" -t "$BASE:MAJOR_VERSION.MINOR_VERSION" -t "$BASE:latest" .
