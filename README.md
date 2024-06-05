@@ -73,7 +73,8 @@ With respect to the [alternatives](#alternatives), we are the only one that lets
 
 - Usage:
 
-  1. In your development environment, create a manifest of type `MarkhorSecret` -or use our [script](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py) to convert an existing Secret automatically-. **Encrypt** it using SOPS and the public key.
+  1. In your development environment, create a manifest of type `MarkhorSecret` -or use our script (available both in [bash](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.sh) and [python](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py)) to convert an existing Secret automatically-.
+  1. **Encrypt** the manifest using SOPS and the public key.
      <details>
        <summary>
        Example command to encrypt a MarkhorSecret manifest using SOPS
@@ -287,7 +288,7 @@ Then you need to ensure they are mounted in the pod, that there is a service whe
 
 This section explains how a `MarkhorSecret` manifest is structured and what the requirements for making it decypherable are.
 
-**Pro tip 💎**: You can convert instantly existing Secrets to MarkhorSecrets by using the script in [./utility_scripts/secret_to_markhorsecret.py](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py)
+**Pro tip 💎**: You can convert instantly existing Secrets to MarkhorSecrets by using the script in `./utility_scripts/` (available both in [bash](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.sh) and [python](https://github.com/markhork8s/markhor/blob/main/utility_scripts/secret_to_markhorsecret.py)).
 
 ## File structure
 
