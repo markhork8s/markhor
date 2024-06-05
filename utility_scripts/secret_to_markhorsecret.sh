@@ -85,7 +85,7 @@ fi
 
 yq -i ".$MP_FIELD.$ORDER_FIELD = [.. | select(type != \"!!map\") | path | join(\"$SEPARATOR\")]" "$F"
 yq -i '.kind = "MarkhorSecret"' "$F"
-yq -i '.apiVersion = "v1"' "$F"
+yq -i '.apiVersion = "markhork8s.github.io/v1"' "$F"
 
 if [ -z "$OUTPUT_FILE" ]; then
   cat "$F"
