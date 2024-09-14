@@ -12,7 +12,7 @@ jobs:
   check_quality:
     runs-on: ubuntu-latest
     env:
-      GOTOOLCHAIN: go1.22.5
+      GOTOOLCHAIN: go1.22.7
 
     steps:
       - name: Checkout code

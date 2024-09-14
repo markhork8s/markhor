@@ -1,6 +1,6 @@
 module github.com/markhork8s/markhor
 
-go 1.22.5
+go 1.22.7
 
 require (
 	github.com/getsops/sops/v3 v3.9.0
