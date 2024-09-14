@@ -1,7 +1,7 @@
 package pkg
 
 // Version of this package (Markhor)
-const VERSION string = "1.0.3"
+const VERSION string = "1.0.4"
 
 // In a MarkhorSecret, this key contains the Markhor parameters
 const MARKHORPARAMS_MANIFEST_KEY string = "markhorParams"
