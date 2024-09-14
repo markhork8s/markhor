@@ -26,6 +26,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.61.2 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
+	github.com/onsi/ginkgo/v2 v2.20.1 // indirect
+	github.com/onsi/gomega v1.34.2 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 )
 
