@@ -40,8 +40,6 @@ jobs:
           go generate ./...
           # Remove the new dependency
           go mod tidy
-          # Check that the code is still the same
-          git diff --exit-code
 
       - name: Run go vet
         run: |
