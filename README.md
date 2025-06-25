@@ -13,6 +13,9 @@
   <a href="https://github.com/markhork8s/markhor/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License">
   </a>
+  <a href="https://deepwiki.com/markhork8s/markhor">
+    <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki">
+  </a>
   <a href="https://goreportcard.com/report/github.com/markhork8s/markhor">
     <img src="https://goreportcard.com/badge/github.com/markhork8s/markhor" alt="Go report card">
   </a>

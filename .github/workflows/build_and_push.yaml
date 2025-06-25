@@ -39,8 +39,6 @@ jobs:
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
           # Run code generation
           go generate ./...
-          # Remove the new dependency
-          go mod tidy
 
       - name: Run go vet
         run: |
@@ -88,8 +86,6 @@ jobs:
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
           # Run code generation
           go generate ./...
-          # Remove the new dependency
-          go mod tidy
 
       - name: Test code
         run: go test ./...
@@ -121,8 +117,6 @@ jobs:
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
           # Run code generation
           go generate ./...
-          # Remove the new dependency
-          go mod tidy
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

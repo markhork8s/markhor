@@ -87,8 +87,6 @@ jobs:
           go install sigs.k8s.io/controller-tools/cmd/controller-gen
           # Run code generation
           go generate ./...
-          # Remove the new dependency
-          go mod tidy
 
       - name: Test code
         run: go test ./...
