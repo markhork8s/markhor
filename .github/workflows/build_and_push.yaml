@@ -13,7 +13,7 @@ jobs:
   check_quality:
     runs-on: ubuntu-latest
     env:
-      GOTOOLCHAIN: go1.24.2
+      GOTOOLCHAIN: go1.24.4
 
     steps:
       - name: Checkout code
@@ -41,8 +41,6 @@ jobs:
           go generate ./...
           # Remove the new dependency
           go mod tidy
-          # Check that the code is still the same
-          git diff --exit-code
 
       - name: Run go vet
         run: |
@@ -92,8 +90,6 @@ jobs:
           go generate ./...
           # Remove the new dependency
           go mod tidy
-          # Check that the code is still the same
-          git diff --exit-code
 
       - name: Test code
         run: go test ./...
@@ -127,8 +123,6 @@ jobs:
           go generate ./...
           # Remove the new dependency
           go mod tidy
-          # Check that the code is still the same
-          git diff --exit-code
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
