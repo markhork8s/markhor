@@ -95,7 +95,7 @@ func TestSetupHealthcheckDisabled_RequestFail(t *testing.T) {
 	conf := config.Config{
 		Healthcheck: config.HealthcheckConfig{
 			Enabled: false,
-			Port:    8080,
+			Port:    59123,
 		},
 		Tls: config.TlsConfig{Enabled: false},
 	}
