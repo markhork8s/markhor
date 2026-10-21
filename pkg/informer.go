@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"context"
+
 	v1 "github.com/markhork8s/markhor/pkg/api/types/v1"
 	client_v1 "github.com/markhork8s/markhor/pkg/clientset/v1"
 
@@ -17,10 +19,10 @@ func WatchResources(client client_v1.MarkhorV1Interface) cache.Store {
 			Handler:    cache.ResourceEventHandlerFuncs{},
 			ObjectType: &v1.MarkhorSecret{},
 			ListerWatcher: &cache.ListWatch{
-				ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+				ListWithContextFunc: func(ctx context.Context, lo metav1.ListOptions) (result runtime.Object, err error) {
 					return client.MarkhorSecrets().List(lo)
 				},
-				WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+				WatchFuncWithContext: func(ctx context.Context, lo metav1.ListOptions) (watch.Interface, error) {
 					return client.MarkhorSecrets().Watch(lo)
 				},
 			},
